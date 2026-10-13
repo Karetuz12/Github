@@ -21,7 +21,7 @@ Liitä tämä keskusteluun, joka on auki kansiossa `C:\Users\kparn\Desktop\skyvi
 ```
 Ota käyttöön Room Info -muutokset tiedostosta room-info-2026-10-13.patch (liitteenä / polku: ___).
 1. Tarkista git status. Jos Culta-widgetin keskeneräisiä muutoksia on yhä tallentamatta, älä sotke niitä: tee tämä erillisessä puhtaassa kopiossa kuten taksimuutoksessa.
-2. Aja `git apply --check` ja sitten `git apply` (tai kopioi tiedostot/-kansion 3 tiedostoa päälle, jos patch ei mene). Commitoi.
+2. Aja `git apply --check` ja sitten `git apply` (tai kopioi tiedostot/-kansion 6 tiedostoa päälle, jos patch ei mene). Commitoi.
 3. Tarkista tietokannasta (content_doc), onko 'sections' tai 'programme' tallennettu hallinnasta. Tallennus ohittaa koodin oletukset: päivitä silloin 'sections' (keittiö, ikkunalämmitys + sauna, revontulikortti "app" ensimmäiseksi) ja lisää 'programme'-dokumenttiin comingSoon: true + comingSoonText defaults.ts:n mukaan.
 4. npm test + npm run build, julkaise Verceliin ja tarkista /king, /suite ja /aurora-cabin.
 5. Safarit: vertaa sivun retket (activities, lib/content/defaults.ts + mahdollinen tallennettu 'activities'-dokumentti) skyviewigloos.comin safarisivuihin – nimet, kestot, kuvaukset, "from"-hinnat ja mitä hintaan sisältyy. Tarkista samalla Bokunista, että tuotteiden 1294560, 1294556, 1295117 ja 1294558 hinnat täsmäävät. Näytä ristiriidat taulukkona ennen kuin muutat mitään.
