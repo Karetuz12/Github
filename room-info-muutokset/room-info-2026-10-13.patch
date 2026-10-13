@@ -1,0 +1,99 @@
+diff --git a/app/(site)/[room]/page.tsx b/app/(site)/[room]/page.tsx
+index fc12325..1483f21 100644
+--- a/app/(site)/[room]/page.tsx
++++ b/app/(site)/[room]/page.tsx
+@@ -79,7 +79,7 @@ export default async function RoomPage({ params }: PageProps<"/[room]">) {
+             case "activities":
+               return activities && <ActivitiesSection key={s.id} a={activities} n={n} settings={settings} />;
+             case "aurora":
+-              return <AuroraSection key={s.id} s={s} n={n} room={room.slug} noun={room.noun} />;
++              return <AuroraSection key={s.id} s={s} n={n} />;
+             case "help":
+               return <HelpSection key={s.id} s={s} n={n} settings={settings} />;
+           }
+diff --git a/components/site/blocks.tsx b/components/site/blocks.tsx
+index fcb77ff..25c13f1 100644
+--- a/components/site/blocks.tsx
++++ b/components/site/blocks.tsx
+@@ -1,6 +1,5 @@
+ import type { Item, Programme, Section, Settings } from "@/lib/content/types";
+ import { Actions } from "./actions";
+-import { AuroraLive } from "./aurora-live";
+ import { telLink, waLink } from "@/lib/requests";
+ 
+ /** Puhelinnumerot (+358 …) teksteissä klikattaviksi soittolinkeiksi. */
+@@ -192,7 +191,7 @@ export function ProgrammeSection({ p, n }: { p: Programme; n: number }) {
+   );
+ }
+ 
+-export function AuroraSection({ s, n, room, noun }: { s: Section; n: number; room: string; noun: string }) {
++export function AuroraSection({ s, n }: { s: Section; n: number }) {
+   // Kortti jolla on iso aika (meta) = "Lights down. Look up."; muut kohdat tavallisina kortteina alle.
+   const lights = s.items.find((it) => it.meta);
+   const rest = s.items.filter((it) => it !== lights);
+@@ -200,7 +199,6 @@ export function AuroraSection({ s, n, room, noun }: { s: Section; n: number; roo
+     <section id={s.id} className="wrap py-16 sm:py-24">
+       <SectionHead n={n} eyebrow={s.eyebrow} title={s.title} intro={s.intro} />
+       <div className="mt-10 grid gap-4 lg:grid-cols-2">
+-        <AuroraLive room={room} noun={noun} />
+         {lights && (
+           <div className="relative overflow-hidden rounded-2xl bg-green-deep p-6 text-warm sm:p-8">
+             {s.image && (
+diff --git a/lib/content/defaults.ts b/lib/content/defaults.ts
+index ece54d3..1826675 100644
+--- a/lib/content/defaults.ts
++++ b/lib/content/defaults.ts
+@@ -147,7 +147,7 @@ export const defaults: Content = {
+           id: "sauna",
+           title: "Your private sauna",
+           body:
+-            "Use the sauna control panel to switch the heater on. The sauna takes around 20 minutes to warm up. Keep the sauna door closed while it warms up and during use.\n\nPlease switch the heater off when you have finished – it also turns off automatically after 2 hours. Our reception team can help you with the controls at any time.",
++            "Use the sauna control panel to switch the heater on. The sauna takes around 20 minutes to warm up. Keep the sauna door closed while it warms up and during use.\n\nPlease switch the heater off when you have finished – it also turns off automatically after 2 hours. Our reception team can help you with the controls at any time.\n\nPlease note: the window heating does not work while the sauna is on.", // Karl 13.10.2026
+           actions: [{ kind: "whatsapp", label: "Ask for help with the sauna", text: "Hi! Could you help me with the sauna in my igloo?" }],
+         },
+         {
+@@ -161,13 +161,13 @@ export const defaults: Content = {
+           id: "heating",
+           title: "Heating, windows & lighting",
+           body:
+-            "The floors are heated. Window heating helps clear the glass for a better view of the sky; please allow a little time for the windows to clear.\n\nIf the room feels too warm or cool, or you need help with the lights, our reception team is happy to help.",
++            "The floors are heated. Window heating helps clear the glass for a better view of the sky; please allow a little time for the windows to clear.\n\nPlease note: the window heating does not work while the sauna is on.\n\nIf the room feels too warm or cool, or you need help with the lights, our reception team is happy to help.",
+           actions: [{ kind: "whatsapp", label: "Get help with room controls", text: "Hi! Could you help me with the room controls in my igloo?" }],
+         },
+         {
+           id: "kitchen",
+           title: "Kitchen",
+-          body: "Your igloo kitchen has a kettle, coffee maker, refrigerator, toaster, microwave, hot plate and air fryer.",
++          body: "Your igloo kitchen has a kettle, coffee maker, refrigerator, toaster and microwave.\n\nA hot plate and an air fryer are available on request – just ask reception.", // Karl 13.10.2026: ei vakiovarusteena, saa pyynnöstä
+         },
+         {
+           id: "housekeeping",
+@@ -297,6 +297,17 @@ export const defaults: Content = {
+       rooms: ALL,
+       visible: true,
+       items: [
++        {
++          id: "app",
++          title: "Northern lights alerts",
++          body:
++            "We recommend the Northern Lights Alert app – it lets you know when there is a good chance of seeing the aurora.\n\nAsk our reception team for more tips on where and when to look.",
++          actions: [
++            { kind: "link", href: "{{appIos}}", label: "App Store" },
++            { kind: "link", href: "{{appAndroid}}", label: "Google Play" },
++            { kind: "whatsapp", label: "Ask reception about the northern lights", text: "Hi! Could you give me some tips for seeing the northern lights?" },
++          ],
++        },
+         {
+           id: "lights",
+           title: "Lights down. Look up.",
+@@ -305,8 +316,8 @@ export const defaults: Content = {
+             "Outdoor lights are switched off from {{lightsOff}} for better Northern Lights viewing.\n\nQuiet hours are {{quietHours}}. Please keep noise to a minimum and respect the privacy of neighbouring guests.",
+         },
+       ],
+-      // Oma revontulihälytys (Aurora outlook + Notify me) korvaa Northern Lights Alert -sovelluksen,
+-      // joka vaatii majoittajan kirjautumisavaimen (SkyView ei ole sen kumppanilistalla 6.10.2026).
++      // Karl 13.10.2026: oma revontulihälytin (Aurora outlook + Notify me) piilotettu vierailta;
++      // tilalle sovellussuositus + "kysy respalta". Taustakoodi (lib/aurora*, /api/aurora) jätetty.
+     },
+     {
+       id: "help",
