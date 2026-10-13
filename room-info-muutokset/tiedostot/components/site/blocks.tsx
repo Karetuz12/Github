@@ -153,32 +153,44 @@ export function ProgrammeSection({ p, n }: { p: Programme; n: number }) {
     <section id="programme" className="border-y border-line bg-sand/50">
       <div className="wrap py-16 sm:py-24">
         <SectionHead n={n} eyebrow={p.eyebrow} title={p.title} intro={p.intro} />
-        <p className="mt-6 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-full border border-gold/40 bg-paper px-4 py-2 text-sm text-green">
-          <span className="eyebrow text-gold">Free</span>
-          {p.noBooking}
-        </p>
-        {p.season && <p className="mt-3 text-sm text-muted">Programme season: {p.season}</p>}
-        <ol className="mt-10 grid gap-4 lg:grid-cols-3">
-          {p.entries.map((e) => (
-            <li key={e.id} className="flex flex-col rounded-2xl border border-line bg-paper p-6 sm:p-7">
-              <p className="eyebrow text-gold">{e.days}</p>
-              <p className="mt-4 flex items-baseline justify-between gap-3">
-                <span className="display text-[32px] tabular-nums text-green">{e.time}</span>
-                <span className="text-sm text-muted">{e.duration}</span>
-              </p>
-              <h3 className="mt-4 text-[20px] font-medium text-green">{e.title}</h3>
-              <p className="mt-2 text-[15px] text-muted">{e.body}</p>
-              <p className="mt-auto pt-5 text-sm text-ink">
-                <span className="text-muted">Start:</span> {e.location}
-              </p>
-            </li>
-          ))}
-        </ol>
-        <div className="mt-10 grid gap-8 lg:grid-cols-2">
-          <div>
-            <h3 className="eyebrow text-green">Before you join</h3>
-            <Prose text={p.notes} className="mt-3 text-[15px] text-muted" />
+        {p.comingSoon ? (
+          <div className="mt-8 rounded-2xl border border-gold/40 bg-paper p-6 sm:p-8">
+            <p className="eyebrow text-gold">Coming soon</p>
+            {p.comingSoonText && <Prose text={p.comingSoonText} className="mt-3 max-w-2xl text-[15px] text-muted" />}
+            {p.season && <p className="mt-3 text-sm text-muted">Programme season: {p.season}</p>}
           </div>
+        ) : (
+          <>
+            <p className="mt-6 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-full border border-gold/40 bg-paper px-4 py-2 text-sm text-green">
+              <span className="eyebrow text-gold">Free</span>
+              {p.noBooking}
+            </p>
+            {p.season && <p className="mt-3 text-sm text-muted">Programme season: {p.season}</p>}
+            <ol className="mt-10 grid gap-4 lg:grid-cols-3">
+              {p.entries.map((e) => (
+                <li key={e.id} className="flex flex-col rounded-2xl border border-line bg-paper p-6 sm:p-7">
+                  <p className="eyebrow text-gold">{e.days}</p>
+                  <p className="mt-4 flex items-baseline justify-between gap-3">
+                    <span className="display text-[32px] tabular-nums text-green">{e.time}</span>
+                    <span className="text-sm text-muted">{e.duration}</span>
+                  </p>
+                  <h3 className="mt-4 text-[20px] font-medium text-green">{e.title}</h3>
+                  <p className="mt-2 text-[15px] text-muted">{e.body}</p>
+                  <p className="mt-auto pt-5 text-sm text-ink">
+                    <span className="text-muted">Start:</span> {e.location}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </>
+        )}
+        <div className="mt-10 grid gap-8 lg:grid-cols-2">
+          {!p.comingSoon && (
+            <div>
+              <h3 className="eyebrow text-green">Before you join</h3>
+              <Prose text={p.notes} className="mt-3 text-[15px] text-muted" />
+            </div>
+          )}
           <div className="border-l-2 border-gold pl-6">
             {p.selfGuided.eyebrow && <p className="eyebrow text-gold">{p.selfGuided.eyebrow}</p>}
             <h3 className="mt-2 text-[20px] font-medium text-green">{p.selfGuided.title}</h3>

@@ -426,6 +426,10 @@ export const defaults: Content = {
       actions: [{ kind: "whatsapp", label: "Ask about self-guided activities", text: "Hi! I'd like to know more about the self-guided activities." }],
     },
     season: "16 Oct 2026 – 15 Apr 2027", // resortin talvikausi (Karl 7.10.2026)
+    // Karl 13.10.2026: aktiviteetit vielä päättämättä → "Coming soon", kytketään pois hallinnasta.
+    comingSoon: true,
+    comingSoonText:
+      "Our weekly guest programme for the winter season is being finalised and will be published here soon. Ask our reception team what's on during your stay.",
     rooms: ALL,
     visible: true,
   },

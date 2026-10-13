@@ -11,8 +11,27 @@ index fc12325..1483f21 100644
              case "help":
                return <HelpSection key={s.id} s={s} n={n} settings={settings} />;
            }
+diff --git a/components/admin/more-editors.tsx b/components/admin/more-editors.tsx
+index f950802..968b889 100644
+--- a/components/admin/more-editors.tsx
++++ b/components/admin/more-editors.tsx
+@@ -16,8 +16,14 @@ export function ProgrammeEditor({ initial }: { initial: Programme }) {
+         {doc.check && <CheckNote text={doc.check} onConfirm={() => set(["check"], undefined)} />}
+         <div className="flex flex-wrap items-center gap-6">
+           <Toggle label="Näkyvissä" checked={doc.visible} onChange={(v) => set(["visible"], v)} />
++          <Toggle label="Coming soon" checked={Boolean(doc.comingSoon)} onChange={(v) => set(["comingSoon"], v)} />
+           <RoomPicker value={doc.rooms} onChange={(v) => set(["rooms"], v)} />
+         </div>
++        {doc.comingSoon && (
++          <Field label="Coming soon -teksti" hint="Näytetään ohjelmakorttien tilalla. Omatoimiset aktiviteetit näkyvät edelleen.">
++            <Area value={doc.comingSoonText} onChange={(v) => set(["comingSoonText"], v)} rows={2} />
++          </Field>
++        )}
+         <Field label="Kausi" hint="Esim. 1 Dec 2026 – 15 Apr 2027. Tyhjä = ei näytetä.">
+           <Text value={doc.season} onChange={(v) => set(["season"], v)} />
+         </Field>
 diff --git a/components/site/blocks.tsx b/components/site/blocks.tsx
-index fcb77ff..25c13f1 100644
+index fcb77ff..dab1217 100644
 --- a/components/site/blocks.tsx
 +++ b/components/site/blocks.tsx
 @@ -1,6 +1,5 @@
@@ -22,7 +41,77 @@ index fcb77ff..25c13f1 100644
  import { telLink, waLink } from "@/lib/requests";
  
  /** Puhelinnumerot (+358 …) teksteissä klikattaviksi soittolinkeiksi. */
-@@ -192,7 +191,7 @@ export function ProgrammeSection({ p, n }: { p: Programme; n: number }) {
+@@ -154,32 +153,44 @@ export function ProgrammeSection({ p, n }: { p: Programme; n: number }) {
+     <section id="programme" className="border-y border-line bg-sand/50">
+       <div className="wrap py-16 sm:py-24">
+         <SectionHead n={n} eyebrow={p.eyebrow} title={p.title} intro={p.intro} />
+-        <p className="mt-6 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-full border border-gold/40 bg-paper px-4 py-2 text-sm text-green">
+-          <span className="eyebrow text-gold">Free</span>
+-          {p.noBooking}
+-        </p>
+-        {p.season && <p className="mt-3 text-sm text-muted">Programme season: {p.season}</p>}
+-        <ol className="mt-10 grid gap-4 lg:grid-cols-3">
+-          {p.entries.map((e) => (
+-            <li key={e.id} className="flex flex-col rounded-2xl border border-line bg-paper p-6 sm:p-7">
+-              <p className="eyebrow text-gold">{e.days}</p>
+-              <p className="mt-4 flex items-baseline justify-between gap-3">
+-                <span className="display text-[32px] tabular-nums text-green">{e.time}</span>
+-                <span className="text-sm text-muted">{e.duration}</span>
+-              </p>
+-              <h3 className="mt-4 text-[20px] font-medium text-green">{e.title}</h3>
+-              <p className="mt-2 text-[15px] text-muted">{e.body}</p>
+-              <p className="mt-auto pt-5 text-sm text-ink">
+-                <span className="text-muted">Start:</span> {e.location}
+-              </p>
+-            </li>
+-          ))}
+-        </ol>
+-        <div className="mt-10 grid gap-8 lg:grid-cols-2">
+-          <div>
+-            <h3 className="eyebrow text-green">Before you join</h3>
+-            <Prose text={p.notes} className="mt-3 text-[15px] text-muted" />
++        {p.comingSoon ? (
++          <div className="mt-8 rounded-2xl border border-gold/40 bg-paper p-6 sm:p-8">
++            <p className="eyebrow text-gold">Coming soon</p>
++            {p.comingSoonText && <Prose text={p.comingSoonText} className="mt-3 max-w-2xl text-[15px] text-muted" />}
++            {p.season && <p className="mt-3 text-sm text-muted">Programme season: {p.season}</p>}
+           </div>
++        ) : (
++          <>
++            <p className="mt-6 inline-flex flex-wrap items-center gap-x-3 gap-y-1 rounded-full border border-gold/40 bg-paper px-4 py-2 text-sm text-green">
++              <span className="eyebrow text-gold">Free</span>
++              {p.noBooking}
++            </p>
++            {p.season && <p className="mt-3 text-sm text-muted">Programme season: {p.season}</p>}
++            <ol className="mt-10 grid gap-4 lg:grid-cols-3">
++              {p.entries.map((e) => (
++                <li key={e.id} className="flex flex-col rounded-2xl border border-line bg-paper p-6 sm:p-7">
++                  <p className="eyebrow text-gold">{e.days}</p>
++                  <p className="mt-4 flex items-baseline justify-between gap-3">
++                    <span className="display text-[32px] tabular-nums text-green">{e.time}</span>
++                    <span className="text-sm text-muted">{e.duration}</span>
++                  </p>
++                  <h3 className="mt-4 text-[20px] font-medium text-green">{e.title}</h3>
++                  <p className="mt-2 text-[15px] text-muted">{e.body}</p>
++                  <p className="mt-auto pt-5 text-sm text-ink">
++                    <span className="text-muted">Start:</span> {e.location}
++                  </p>
++                </li>
++              ))}
++            </ol>
++          </>
++        )}
++        <div className="mt-10 grid gap-8 lg:grid-cols-2">
++          {!p.comingSoon && (
++            <div>
++              <h3 className="eyebrow text-green">Before you join</h3>
++              <Prose text={p.notes} className="mt-3 text-[15px] text-muted" />
++            </div>
++          )}
+           <div className="border-l-2 border-gold pl-6">
+             {p.selfGuided.eyebrow && <p className="eyebrow text-gold">{p.selfGuided.eyebrow}</p>}
+             <h3 className="mt-2 text-[20px] font-medium text-green">{p.selfGuided.title}</h3>
+@@ -192,7 +203,7 @@ export function ProgrammeSection({ p, n }: { p: Programme; n: number }) {
    );
  }
  
@@ -31,7 +120,7 @@ index fcb77ff..25c13f1 100644
    // Kortti jolla on iso aika (meta) = "Lights down. Look up."; muut kohdat tavallisina kortteina alle.
    const lights = s.items.find((it) => it.meta);
    const rest = s.items.filter((it) => it !== lights);
-@@ -200,7 +199,6 @@ export function AuroraSection({ s, n, room, noun }: { s: Section; n: number; roo
+@@ -200,7 +211,6 @@ export function AuroraSection({ s, n, room, noun }: { s: Section; n: number; roo
      <section id={s.id} className="wrap py-16 sm:py-24">
        <SectionHead n={n} eyebrow={s.eyebrow} title={s.title} intro={s.intro} />
        <div className="mt-10 grid gap-4 lg:grid-cols-2">
@@ -40,7 +129,7 @@ index fcb77ff..25c13f1 100644
            <div className="relative overflow-hidden rounded-2xl bg-green-deep p-6 text-warm sm:p-8">
              {s.image && (
 diff --git a/lib/content/defaults.ts b/lib/content/defaults.ts
-index ece54d3..1826675 100644
+index ece54d3..da01ee3 100644
 --- a/lib/content/defaults.ts
 +++ b/lib/content/defaults.ts
 @@ -147,7 +147,7 @@ export const defaults: Content = {
@@ -97,3 +186,40 @@ index ece54d3..1826675 100644
      },
      {
        id: "help",
+@@ -415,6 +426,10 @@ export const defaults: Content = {
+       actions: [{ kind: "whatsapp", label: "Ask about self-guided activities", text: "Hi! I'd like to know more about the self-guided activities." }],
+     },
+     season: "16 Oct 2026 – 15 Apr 2027", // resortin talvikausi (Karl 7.10.2026)
++    // Karl 13.10.2026: aktiviteetit vielä päättämättä → "Coming soon", kytketään pois hallinnasta.
++    comingSoon: true,
++    comingSoonText:
++      "Our weekly guest programme for the winter season is being finalised and will be published here soon. Ask our reception team what's on during your stay.",
+     rooms: ALL,
+     visible: true,
+   },
+diff --git a/lib/content/schema.ts b/lib/content/schema.ts
+index c5f8278..7cd6a4d 100644
+--- a/lib/content/schema.ts
++++ b/lib/content/schema.ts
+@@ -109,6 +109,8 @@ const programme = z.object({
+   notes: z.string(),
+   selfGuided: item,
+   season: opt,
++  comingSoon: z.boolean().optional(),
++  comingSoonText: opt,
+   rooms,
+   visible: z.boolean(),
+   check: opt,
+diff --git a/lib/content/types.ts b/lib/content/types.ts
+index 7d103f3..4fa9528 100644
+--- a/lib/content/types.ts
++++ b/lib/content/types.ts
+@@ -91,6 +91,8 @@ export type Programme = {
+   notes: string; // "Before you join" -kappaleet
+   selfGuided: Item;
+   season?: string; // esim. "1 Dec 2026 – 15 Apr 2027"; tyhjä = ei näytetä
++  comingSoon?: boolean; // true = ohjelmakortit piiloon, tilalla comingSoonText (omatoimiset näkyvät)
++  comingSoonText?: string;
+   rooms: RoomSlug[];
+   visible: boolean;
+   check?: string;
