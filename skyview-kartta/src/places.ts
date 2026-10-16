@@ -1,4 +1,4 @@
-import { layout, toWorld, type Pt } from "./geo";
+import { layout, surfaceAt, toWorld, type Pt } from "./geo";
 import type * as THREE from "three";
 
 // Kartan kohteet. Tekstit Room Infon oletussisällöstä (lib/content/defaults.ts, 13.10.2026).
@@ -48,7 +48,11 @@ export type IconName = "igloo" | "cabin" | "bell" | "dining" | "spa" | "safari" 
 
 const wa = (text: string) => `https://wa.me/${CONTACT.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
 const tel = (n: string) => `tel:${n.replace(/\s/g, "")}`;
-const at = (p: Pt, y: number, dx = 0, dz = 0) => toWorld(p, y).add({ x: dx, y: 0, z: dz } as THREE.Vector3);
+const at = (p: Pt, y: number, dx = 0, dz = 0) => {
+  const v = toWorld(p, y).add({ x: dx, y: 0, z: dz } as THREE.Vector3);
+  v.y += surfaceAt(v.x, v.z);
+  return v;
+};
 
 const B = layout.buildings;
 const P = layout.points;
@@ -83,7 +87,7 @@ export const PLACES: Place[] = [
       { label: "Call AURA", href: tel(CONTACT.auraPhone) },
     ],
     image: "/images/aura.webp",
-    at: at(B.reception.pos, 11, -3, 0),
+    at: at(B.reception.pos, 7, -10, -3),
     view: { dist: 80 },
   },
   {
@@ -100,7 +104,7 @@ export const PLACES: Place[] = [
       { label: "Call CULTA", href: tel(CONTACT.cultaPhone) },
     ],
     image: "/images/culta.webp",
-    at: at(B.reception.pos, 12, 17, -1),
+    at: at(B.reception.pos, 8, 7.5, -3),
     view: { dist: 70, polar: 0.85 },
   },
   {
@@ -122,7 +126,7 @@ export const PLACES: Place[] = [
     maxDist: 380,
     cat: "activities",
     icon: "fire",
-    eyebrow: "Next to the main building",
+    eyebrow: "In the forest south of the car park",
     title: "Hut with a fireplace",
     body: "A traditional Lappish kota with an open fire – a warm place to sit down, dry your mittens and wait for the northern lights.",
     at: at(B.hut.pos, 7),
@@ -212,7 +216,7 @@ export const PLACES: Place[] = [
       { label: "Request a resort ride", href: wa(`Hi! I'm in igloo ${i.n} (${i.name}) and would like a ride to: `), primary: true },
       { label: "Directions", href: wa(`Hi! Could you give me directions to igloo ${i.n} (${i.name})?`) },
     ],
-    at: toWorld(i.pos, 8),
+    at: at(i.pos, 8),
     view: { dist: 75, polar: 0.95 },
   })),
   ...layout.cabins.map<Place>((c) => ({
@@ -224,7 +228,7 @@ export const PLACES: Place[] = [
     title: `Cabin ${c.n}`,
     body: "Your cabin with a private sauna and terrace hot tub. Need a lift to dinner, the spa or the Safari House? Our team can pick you up.",
     actions: [{ label: "Request a resort ride", href: wa(`Hi! I'm in Aurora Cabin ${c.n} and would like a ride to: `), primary: true }],
-    at: toWorld(c.pos, 6),
+    at: at(c.pos, 6),
     view: { dist: 65, polar: 0.95 },
   })),
 ];

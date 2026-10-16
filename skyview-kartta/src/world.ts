@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { IGLOO_ENTRY, RoadMask, SITE, heightAt, layout, rng, toWorld, type Pt } from "./geo";
+import { IGLOO_ENTRY, RoadMask, SITE, heightAt, layout, rng, surfaceAt, toWorld, type Pt } from "./geo";
 import * as M from "./models";
 
 export type Quality = "high" | "low";
@@ -23,7 +23,9 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   roadTex.wrapS = roadTex.wrapT = THREE.ClampToEdgeWrapping;
   const groundGeo = new THREE.PlaneGeometry(9000, 9000, 220, 220).rotateX(-Math.PI / 2);
   const gp = groundGeo.getAttribute("position");
-  for (let i = 0; i < gp.count; i++) gp.setY(i, heightAt(gp.getX(i), gp.getZ(i)));
+  // Alueen kohdalla karkea pohjamaa painetaan alas; sen päälle tulee tiheämpi alueverkko
+  const inner = (x: number, z: number) => Math.abs(x) < SITE.w / 2 + 90 && Math.abs(z) < SITE.d / 2 + 90;
+  for (let i = 0; i < gp.count; i++) gp.setY(i, heightAt(gp.getX(i), gp.getZ(i)) - (inner(gp.getX(i), gp.getZ(i)) ? 12 : 0));
   groundGeo.computeVertexNormals();
   const groundMat = new THREE.MeshLambertMaterial({ color: 0xf4f7fc });
   groundMat.onBeforeCompile = (sh) => {
@@ -51,6 +53,22 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   };
   scene.add(new THREE.Mesh(groundGeo, groundMat));
 
+  // Alueen tarkka maasto (rinne päärakennukselta pohjoiseen); ulottuu painetun pohjamaan yli.
+  // Reunimmat metrit painuvat pohjamaan alle, jotta saumassa ei välky.
+  const siteW = SITE.w + 280;
+  const siteD = SITE.d + 280;
+  const siteGeo = new THREE.PlaneGeometry(siteW, siteD, Math.round(siteW / 2.5), Math.round(siteD / 2.5)).rotateX(-Math.PI / 2);
+  const sp0 = siteGeo.getAttribute("position");
+  for (let i = 0; i < sp0.count; i++) {
+    const x = sp0.getX(i);
+    const z = sp0.getZ(i);
+    const edge = Math.min(siteW / 2 - Math.abs(x), siteD / 2 - Math.abs(z));
+    sp0.setY(i, surfaceAt(x, z) - 0.4 * (1 - THREE.MathUtils.smoothstep(edge, 0, 8)));
+  }
+  siteGeo.computeVertexNormals();
+  scene.add(new THREE.Mesh(siteGeo, groundMat));
+  const hc = toWorld(layout.buildings.reception.pos);
+
   // --- Iglut, mökit ------------------------------------------------------------
   const igloos = new Map<number, THREE.Vector3>();
   const cabins = new Map<number, THREE.Vector3>();
@@ -67,6 +85,7 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   const placeAll = (items: { n: number; pos: Pt }[], out: Map<number, THREE.Vector3>, r: number) =>
     items.map(({ n, pos }) => {
       const p = toWorld(pos);
+      p.y = surfaceAt(p.x, p.z);
       const face = mask.facingRoad(p.x, p.z) ?? 0;
       out.set(n, p);
       occupied.push({ p, r });
@@ -79,6 +98,7 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   const toEast: THREE.Matrix4[] = [];
   for (const { n, pos } of layout.igloos) {
     const p = toWorld(pos);
+    p.y = surfaceAt(p.x, p.z);
     igloos.set(n, p);
     occupied.push({ p, r: 9 });
     const face = mask.facingRoad(p.x, p.z) ?? 0;
@@ -93,6 +113,7 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   const B = layout.buildings;
   const put = (obj: THREE.Object3D, pos: Pt, angle = 0, r = 10) => {
     const p = toWorld(pos);
+    p.y = surfaceAt(p.x, p.z);
     obj.position.copy(p);
     obj.rotation.y = -angle * deg;
     scene.add(obj);
@@ -101,31 +122,62 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   };
   put(M.mainBuilding(), B.reception.pos, 0, 26);
   put(M.safariHouse(B.safariHouse.size[0] * 0.25, B.safariHouse.size[1] * 0.25), B.safariHouse.pos, B.safariHouse.angle, 12);
-  put(M.kota(3), B.hut.pos, 0, 6);
+  put(M.kota(3), B.hut.pos, 0, 9);
   put(M.shed(4.5, 3.5), B.hut2.pos, 0, 5);
   put(M.dome(3.2), layout.points.ovalDome, 0, 6);
   put(M.campfire(), layout.points.ovalFire, 0, 6);
 
+  // Lumisia kiviä rinteessä päärakennuksen pohjoispuolella (renderöinneissä mäen kyljessä)
+  for (let i = 0, tries = 0; i < 16 && tries < 400; tries++) {
+    const x = hc.x + (rand() - 0.5) * 60;
+    const z = hc.z - 10 - rand() * 16;
+    if (mask.near(x, z, 3) > 0.15) continue;
+    const r = 0.6 + rand() * 1.1;
+    const rock = M.rock(r, rand);
+    rock.position.set(x, surfaceAt(x, z) - r * 0.35, z);
+    rock.rotation.y = rand() * Math.PI * 2;
+    scene.add(rock);
+    occupied.push({ p: new THREE.Vector3(x, 0, z), r: r + 1.5 });
+    i++;
+  }
+
   // Porot: idän aitaus päärakennuksen vieressä ja soikion keskellä
-  const herd = (center: Pt, count: number, spread: number) => {
+  /**
+   * Poroaitaus: soikio, jonka pitkä akseli (puoliakselit a, b metreinä) on kulmassa `angle`
+   * (astetta, 0 = itä, 90 = etelä). `egg` > 0 leventää akselin suunnan vastaista päätä.
+   */
+  const herd = (center: Pt, count: number, a: number, b = a, angle = 0, egg = 0) => {
     const c = toWorld(center);
-    occupied.push({ p: c, r: spread + 4 });
+    const ca = Math.cos(angle * deg);
+    const sa = Math.sin(angle * deg);
+    const edge = (t: number, k = 1) => {
+      const w = 1 - egg * Math.cos(t);
+      const u = Math.cos(t) * a * k;
+      const v = Math.sin(t) * b * k * w;
+      return { x: c.x + u * ca - v * sa, z: c.z + u * sa + v * ca };
+    };
+    // Raivaa metsä aitauksen muodon mukaan
+    for (let t = -1; t <= 1; t += 0.5) occupied.push({ p: new THREE.Vector3(c.x + t * (a - b) * ca, 0, c.z + t * (a - b) * sa), r: b * (1 + egg) + 3 });
     for (let i = 0; i < count; i++) {
       const d = M.reindeer();
-      d.position.set(c.x + (rand() - 0.5) * spread * 2, 0, c.z + (rand() - 0.5) * spread * 2);
+      const e = edge(rand() * Math.PI * 2, 0.25 + rand() * 0.5);
+      d.position.set(e.x, surfaceAt(e.x, e.z), e.z);
       d.rotation.y = rand() * Math.PI * 2;
       scene.add(d);
     }
-    // Aita
-    const posts = new THREE.InstancedMesh(new THREE.BoxGeometry(0.15, 1.3, 0.15).translate(0, 0.65, 0), M.mats.woodLight, 40);
-    for (let i = 0; i < 40; i++) {
-      const a = (i / 40) * Math.PI * 2;
-      posts.setMatrixAt(i, new THREE.Matrix4().makeTranslation(c.x + Math.cos(a) * (spread + 3), 0, c.z + Math.sin(a) * (spread + 3)));
+    // Aita: tolpat ~1,5 m välein
+    const per = Math.PI * (3 * (a + b) - Math.sqrt((3 * a + b) * (a + 3 * b)));
+    const n = Math.round(per / 1.5);
+    const posts = new THREE.InstancedMesh(new THREE.BoxGeometry(0.15, 1.3, 0.15).translate(0, 0.65, 0), M.mats.woodLight, n);
+    for (let i = 0; i < n; i++) {
+      const e = edge((i / n) * Math.PI * 2);
+      posts.setMatrixAt(i, new THREE.Matrix4().makeTranslation(e.x, surfaceAt(e.x, e.z), e.z));
     }
     scene.add(posts);
   };
-  herd(layout.points.reindeerEast, 6, 9);
-  herd(layout.points.ovalReindeer, 4, 6);
+  // Päärakennuksen pohjoispuolen aitaus: pitkänomainen soikio, pohjoispää kallistuu länteen ja on leveämpi (käyttäjän piirros 16.10.2026)
+  herd(layout.points.reindeerEast, 6, 14, 7, 66, 0.15);
+  herd(layout.points.ovalReindeer, 4, 9);
 
   // Pysäköinti: yksi rivi autoja keula lumivalliin päin (opastekartan vinoviivoitettu alue)
   const bankA = toWorld(layout.points.snowbankA);
@@ -136,6 +188,7 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   const normal = new THREE.Vector3(along.z, 0, -along.x); // vallin koillispuoli (tien puoli)
   const bank = new THREE.Mesh(new THREE.BoxGeometry(len, 1.1, 2.4).translate(0, 0.55, 0), M.mats.snow);
   bank.position.copy(bankA).add(bankB).multiplyScalar(0.5);
+  bank.position.y = surfaceAt(bank.position.x, bank.position.z);
   bank.rotation.y = Math.atan2(-along.z, along.x);
   scene.add(bank);
   const slots = Math.floor(len / 2.8);
@@ -143,6 +196,7 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
     if (rand() < 0.3) continue; // vapaita paikkoja
     const c = M.car();
     c.position.copy(bankA).addScaledVector(along, (i + 0.5) * 2.8).addScaledVector(normal, 3.8);
+    c.position.y = surfaceAt(c.position.x, c.position.z);
     c.rotation.y = Math.atan2(-normal.z, normal.x) + Math.PI + (rand() - 0.5) * 0.06; // keula valliin päin
     scene.add(c);
   }
@@ -168,7 +222,7 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   const addTree = (x: number, z: number, scale: number) => {
     q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), rand() * Math.PI * 2);
     s.set(scale * (0.85 + rand() * 0.3), scale, scale * (0.85 + rand() * 0.3));
-    trees.push(m.compose(new THREE.Vector3(x, heightAt(x, z) - 0.2, z), q, s).clone());
+    trees.push(m.compose(new THREE.Vector3(x, surfaceAt(x, z) - 0.2, z), q, s).clone());
   };
   const free = (x: number, z: number) => {
     if (mask.near(x, z, 4) > 0.15) return false;
@@ -208,8 +262,9 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
       const v = mask.at(x, z);
       if (v < 0.3 || v > 0.7) continue; // tien reuna
       if (lampsAt.some((l) => (l.x - x) ** 2 + (l.z - z) ** 2 < 22 * 22)) continue;
-      lampsAt.push(new THREE.Vector3(x, 0, z));
-      lampPts.push(x, 3.2, z);
+      const y = surfaceAt(x, z);
+      lampsAt.push(new THREE.Vector3(x, y, z));
+      lampPts.push(x, y + 3.2, z);
     }
   const lampGeo = new THREE.BufferGeometry();
   lampGeo.setAttribute("position", new THREE.Float32BufferAttribute(lampPts, 3));
@@ -227,11 +282,16 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   );
   scene.add(lamps);
   const poles = new THREE.InstancedMesh(new THREE.BoxGeometry(0.12, 3.2, 0.12).translate(0, 1.6, 0), M.mats.dark, lampsAt.length);
-  lampsAt.forEach((l, i) => poles.setMatrixAt(i, new THREE.Matrix4().makeTranslation(l.x, 0, l.z)));
+  lampsAt.forEach((l, i) => poles.setMatrixAt(i, new THREE.Matrix4().makeTranslation(l.x, l.y, l.z)));
   scene.add(poles);
 
   // --- Savu päärakennuksen piipusta ja kodasta ----------------------------------
-  const smokeSrc = [toWorld(B.reception.pos).add(new THREE.Vector3(4, 10, -2)), toWorld(B.hut.pos).add(new THREE.Vector3(0, 4.8, 0))];
+  const smokeAt = (pos: Pt, off: THREE.Vector3) => {
+    const p = toWorld(pos).add(off);
+    p.y += surfaceAt(p.x, p.z);
+    return p;
+  };
+  const smokeSrc = [smokeAt(B.reception.pos, new THREE.Vector3(-8, 11.6, 3)), smokeAt(B.hut.pos, new THREE.Vector3(0, 4.8, 0))];
   const N = 40;
   const sp = new Float32Array(N * smokeSrc.length * 3);
   const smokeGeo = new THREE.BufferGeometry();

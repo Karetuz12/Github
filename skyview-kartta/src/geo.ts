@@ -107,6 +107,26 @@ export function heightAt(x: number, z: number): number {
 
 
 /**
+ * Maaston muoto alueella: sisäänkäynnin puoli (etelä, Safari House, pysäköinti) on tasainen ja
+ * päärakennuksen pohjoispuolelta maa laskee loivasti igluille päin (ravintolan lasit rinteen yli).
+ * Laskun suuruus hiipuu idässä ja lännessä.
+ */
+export const SLOPE = { drop: 5, gap: 3, run: 45, half: 70, fade: 70 };
+let slopeC: THREE.Vector3 | null = null;
+export function hillAt(x: number, z: number): number {
+  slopeC ??= toWorld(layout.buildings.reception.pos);
+  const z0 = slopeC.z - 6 - SLOPE.gap; // rinne alkaa pohjoisjulkisivun edestä
+  const t = THREE.MathUtils.smoothstep(z0 - z, 0, SLOPE.run);
+  const fx = 1 - THREE.MathUtils.smoothstep(Math.abs(x - slopeC.x), SLOPE.half, SLOPE.half + SLOPE.fade);
+  return -SLOPE.drop * t * fx;
+}
+
+/** Maanpinnan korkeus kohteiden sijoittamiseen: kaukaiset vaarat + alueen rinne. */
+export function surfaceAt(x: number, z: number): number {
+  return heightAt(x, z) + hillAt(x, z);
+}
+
+/**
  * Iglut, joiden sisäänkäyntisilta osoittaa eri suuntaan kuin lähimmän tien perusteella päättelisi.
  * Lasikupoli on aina pohjoisessa; silta itään tai länteen, terassi vastakkaisella puolella.
  */

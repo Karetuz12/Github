@@ -11,6 +11,7 @@ export const mats = {
   deck: new THREE.MeshLambertMaterial({ color: 0xc9a473 }),
   door: new THREE.MeshLambertMaterial({ color: 0x4a3a2c }),
   woodLight: new THREE.MeshLambertMaterial({ color: 0x6e5240 }),
+  rock: new THREE.MeshLambertMaterial({ color: 0x6b6f78, flatShading: true }),
   dark: new THREE.MeshLambertMaterial({ color: 0x3a3f48 }),
   snow: new THREE.MeshLambertMaterial({ color: 0xf2f5fa }),
   glass: new THREE.MeshLambertMaterial({ color: 0x86aaa6, emissive: 0xffb15e, emissiveIntensity: 0, flatShading: true }),
@@ -145,27 +146,53 @@ export function cabinParts(): Part[] {
   ]);
 }
 
-/** Päärakennus: vastaanotto, ravintola AURA ja Arctic Spa Culta (kattoallas). */
+/**
+ * Päärakennus arkkitehdin renderöintien ja valokuvan mukaan: tumma pystylaudoitus, tasakatot.
+ * Paikallisesti x = itä, −z = pohjoinen (julkisivu revontulien suuntaan).
+ * Länsipää: ravintola AURA lasiseinin matalan sokkelin päällä, yllä paksu reunanauha.
+ * Yläkerta: sisäänvedetty lasinauha, valaistu räystään alapinta ja reilusti ulkoneva kattolaatta.
+ * Itäpää: alhaalla sisäänvedetty pylväikkö, sen päällä kaide, jossa Arctic Spa Cultan allas näkyy
+ * lasi-ikkunana, ja takana matalampi siipi.
+ * Etelä (+z, Safari Housen puoli): sisäänkäynti – tasainen kaksikerroksinen seinä, ovi sisäänvedettynä
+ * lipan alla ja vieressä rimoitettu porrastorni.
+ */
 export function mainBuilding(): THREE.Group {
   const g = new THREE.Group();
   const add = (geom: THREE.BufferGeometry, mat: THREE.Material) => g.add(new THREE.Mesh(geom, mat));
-  // Ravintolasiipi harjakatolla
-  add(box(30, 5, 14, -3, 0, 0), mats.wood);
-  add(gable(31, 15, 4.5, -3, 5, 0), mats.snow);
-  add(box(28, 2.6, 0.2, -3, 1.2, 7.05), mats.window);
-  add(box(28, 2.6, 0.2, -3, 1.2, -7.05), mats.window);
-  // Vastaanoton pääty (länsi)
-  add(box(8, 6.5, 10, -20, 0, 0), mats.woodLight);
-  add(box(8.6, 0.4, 10.6, -20, 6.5, 0), mats.snow);
-  add(box(0.2, 3, 4, -24.05, 0, 0), mats.window);
-  // Spa-osa kattoaltaineen (itä)
-  add(box(12, 8, 12, 17, 0, -1), mats.dark);
-  add(box(10, 0.3, 9, 17, 8, -1), mats.pool);
-  add(box(12.2, 1, 0.15, 17, 8, 5), mats.glass);
-  add(box(12.2, 1, 0.15, 17, 8, -7), mats.glass);
-  add(box(11, 5, 0.2, 17, 1.5, 5.05), mats.window);
+  const N = -6; // pohjoisjulkisivu
+  // --- Ravintola (länsi) ---
+  add(box(17, 0.45, 5.6, -8.5, 0, -3.2), mats.clad); // sisäänvedetty sokkeli
+  add(box(18, 3.6, 6.2, -8.5, 0.45, -3.2), mats.glass); // lasit pohjoiseen ja länteen
+  add(box(18, 4.05, 5.6, -8.5, 0, 2.8), mats.clad); // sisäänkäynnin puoli umpinainen
+  add(box(18.6, 1.4, 12, -8.5, 4.05, -0.3), mats.clad); // reunanauha / terassin kaide
+  // --- Itäpää ---
+  add(box(15, 2.5, 7.5, 9.5, 0, 1.5), mats.dark); // pylväikön takaseinä
+  for (const x of [2.6, 6.5, 10.5, 14.5]) add(box(0.4, 2.5, 0.4, x, 0, N + 0.4), mats.clad);
+  add(box(17, 2.1, 11.4, 9.5, 2.5, -0.3), mats.clad); // kaide
+  add(box(5, 1.1, 0.12, 7, 3.2, N + 0.24), mats.pool); // altaan lasi-ikkuna
+  add(box(3, 1.2, 0.12, 15, 3.1, N + 0.24), mats.window);
+  add(box(8, 0.2, 4.2, 7.5, 4.5, N + 3), mats.pool); // vedenpinta kaiteen tasolla
+  add(box(16, 4.5, 6, 9.5, 2.5, 2.4), mats.clad); // matalampi siipi takana
+  add(box(14, 0.18, 0.1, 9.5, 6.2, -0.65), mats.window); // valolista
+  add(box(16.4, 0.25, 6.4, 9.5, 7, 2.4), mats.snow);
+  // --- Yläkerta ---
+  add(box(17, 3.2, 9, -4.5, 5.45, 1.4), mats.clad);
+  add(box(13, 2.6, 0.12, -5, 5.6, -3.15), mats.window); // lasinauha
+  add(box(0.12, 2.6, 6, -13.05, 5.6, 1.4), mats.window);
+  add(box(20, 0.15, 11.5, -5.5, 8.65, 0.4), mats.deck); // valaistu räystään alapinta
+  add(box(20, 1, 11.5, -5.5, 8.8, 0.4), mats.clad); // kattolaatta
+  add(box(20.2, 0.25, 11.7, -5.5, 9.8, 0.4), mats.snow);
+  add(box(18.6, 0.2, 3, -8.5, 5.45, -4.8), mats.snow); // terassin lumi ravintolan katolla
+  // --- Sisäänkäynti (etelä) ---
+  add(box(3.2, 2.5, 0.1, -3, 0, 5.62), mats.window); // lasiovet
+  add(box(9, 0.9, 1.6, -1.5, 2.6, 6.2), mats.clad); // lippa
+  add(box(9.2, 0.15, 1.8, -1.5, 3.5, 6.2), mats.snow);
+  add(box(2.2, 8.2, 1.4, -12, 0, 6.2), mats.clad); // porrastorni
+  add(box(1.2, 5, 0.1, -12, 1.5, 6.92), mats.dark); // rimoitus
+  add(box(1.2, 1.5, 0.1, -8, 5.8, 5.92), mats.window); // yläkerran ikkunat
+  add(box(0.6, 1.5, 0.1, -5.5, 5.8, 5.92), mats.window);
   // Savupiippu (takka)
-  add(box(1.2, 3, 1.2, 4, 7, -2), mats.dark);
+  add(box(0.8, 1.6, 0.8, -8, 9.8, 3), mats.dark);
   return g;
 }
 
@@ -183,6 +210,20 @@ export function kota(r = 3): THREE.Group {
   g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.5, r, 4.5, 6).translate(0, 2.25, 0), mats.wood));
   g.add(new THREE.Mesh(new THREE.CylinderGeometry(0.25, r * 0.55, 1.6, 6).translate(0, 3.9, 0), mats.snow));
   g.add(new THREE.Mesh(box(1, 1.8, 0.1, 0, 0, r * 0.88), mats.window));
+  return g;
+}
+
+/** Lumipeitteinen kivi: epäsäännöllinen monitahokas. */
+export function rock(r: number, rand: () => number): THREE.Group {
+  const geo = new THREE.DodecahedronGeometry(r, 0);
+  const p = geo.getAttribute("position");
+  for (let i = 0; i < p.count; i++) p.setXYZ(i, p.getX(i) * (0.8 + rand() * 0.5), p.getY(i) * (0.55 + rand() * 0.3), p.getZ(i) * (0.8 + rand() * 0.5));
+  geo.computeVertexNormals();
+  const g = new THREE.Group();
+  g.add(new THREE.Mesh(geo, mats.rock));
+  const cap = new THREE.Mesh(new THREE.SphereGeometry(r * 0.85, 7, 4, 0, Math.PI * 2, 0, Math.PI / 2).scale(1.05, 0.45, 1.05), mats.snow);
+  cap.position.y = r * 0.25;
+  g.add(cap);
   return g;
 }
 

@@ -75,7 +75,7 @@ layout = {
     "buildings": {
         "reception": {"pos": rel(1046, 846), "size": [130, 42], "angle": 0},
         "safariHouse": {"pos": rel(941, 930), "size": [80, 22], "angle": -57.6},
-        "hut": {"pos": rel(1067, 929), "size": [22, 22], "angle": 0},
+        "hut": {"pos": rel(886, 1300), "size": [22, 22], "angle": 0},  # siirretty: metsään parkkipaikan eteläpuolelle (käyttäjä 16.10.2026)
         "hut2": {"pos": rel(1017, 1080), "size": [20, 16], "angle": 0},
     },
     "points": {
@@ -85,7 +85,7 @@ layout = {
         "snowbankA": rel(758, 1066),
         "snowbankB": rel(855, 1124),
         "assembly": rel(852, 1066),
-        "reindeerEast": rel(1180, 834),
+        "reindeerEast": rel(1178, 702),  # siirretty pohjoiseen (käyttäjä 16.10.2026)
         "ovalDome": rel(300, 911),
         "ovalFire": rel(368, 930),
         "ovalReindeer": rel(442, 958),
