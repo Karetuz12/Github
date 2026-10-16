@@ -61,58 +61,55 @@ const halfOct = (rTop: number, rBot: number, h: number, y: number, open = false)
 
 /**
  * Ulokkeena leijuva lasikupolimakuuhuone: tumma umpikaide/pohja, matalat lasiseinät ja särmikäs
- * lasikupoli. Litteä puoli seinässä x = wx, keskikohta z, lattia korkeudella y.
+ * lasikupoli. Litteä puoli seinässä x = wx, kaari −x-suuntaan, keskikohta z, lattia korkeudella y.
  */
 function glassPod(wx: number, y: number, z: number): Part[] {
-  const at = (g: THREE.BufferGeometry) => g.translate(wx, 0, z);
+  const at = (g: THREE.BufferGeometry) => g.rotateY(Math.PI).translate(wx, 0, z);
   return [
-    { geom: at(halfOct(2.7, 2.45, 1.2, y - 0.95)), mat: mats.clad },
-    { geom: at(halfOct(2.75, 2.75, 0.1, y + 0.25)), mat: mats.snow },
-    { geom: at(halfOct(2.45, 2.45, 0.8, y + 0.3, true)), mat: mats.glass },
-    { geom: at(halfOct(0.55, 2.45, 1.8, y + 1.1)), mat: mats.glass },
+    { geom: at(halfOct(2.6, 2.4, 1.2, y - 0.95)), mat: mats.clad },
+    { geom: at(halfOct(2.65, 2.65, 0.1, y + 0.25)), mat: mats.snow },
+    { geom: at(halfOct(2.4, 2.4, 0.8, y + 0.3, true)), mat: mats.glass },
+    { geom: at(halfOct(0.55, 2.4, 1.8, y + 1.1)), mat: mats.glass },
   ];
 }
 
 /**
- * SkyView-iglu (kaikki ulkoa samanlaisia; arkkitehdin renderöintien mukaan).
- * Paalujen päällä tumma alakerta. Yläkerran laatikko takana vasemmalla; sen oikeaan seinään
- * kiinnittyy lasikupolimakuuhuone, joka ulkonee rakennuksen ohi ja leijuu ilmassa.
- * Yläkerran edessä terassi säleaitoineen ja ulkoporealtaineen. Sisäänkäynti vasemmalta.
- * Edessä (+z) tie.
+ * SkyView-iglu (kaikki ulkoa samanlaisia; ilmakuvien ja arkkitehdin renderöintien mukaan).
+ * Ylhäältä: neliön muotoinen kaksikerroksinen runko paalujen päällä, lasikupolimakuuhuone
+ * ulokkeena yhden sivun keskellä (−x), viereisellä sivulla (−z) kapea yksikerroksinen osa,
+ * jonka katolla terassi ja ulkoporeallas, ja vastakkaiselta sivulta (+z) pitkä sisäänkäyntisilta tielle.
  */
 export function iglooParts(): Part[] {
-  const F = 0.8; // paalujen korkeus
+  const F = 0.8; // paalut
   const L = F + 3.0; // yläkerran lattia
-  const X0 = -3, X1 = 1.7; // alakerran leveys (lasihuone ulkonee tästä ~70 %)
-  const U1 = 0.8; // yläkerran oikea seinä = lasihuoneen kiinnitys
+  const H = F + 6.2; // katto
   const posts: Part[] = [];
-  for (const x of [X0 + 0.3, 0, X1 - 0.3]) for (const z of [-2.7, 2.7]) posts.push({ geom: box(0.22, F, 0.22, x, 0, z), mat: mats.clad });
-  const W = X1 - X0;
-  const UW = U1 - X0;
+  for (const x of [-2.7, 2.7]) for (const z of [-4.5, -2.7, 0, 2.7]) posts.push({ geom: box(0.22, F, 0.22, x, 0, z), mat: mats.clad });
   return group([
     ...posts,
-    // Alakerta: isot ikkunat edessä ja oikealla
-    { geom: box(W, 3.0, 6, (X0 + X1) / 2, F), mat: mats.clad },
-    { geom: box(1.7, 2.2, 0.08, -1.7, F + 0.35, 3.04), mat: mats.window },
-    { geom: box(1.3, 2.2, 0.08, 0.5, F + 0.35, 3.04), mat: mats.window },
-    { geom: box(0.08, 2.2, 1.5, X1 + 0.04, F + 0.35, 1.6), mat: mats.window },
-    { geom: box(W + 0.1, 0.12, 6.1, (X0 + X1) / 2, L), mat: mats.snow },
-    // Yläkerran laatikko takana
-    { geom: box(UW, 3.0, 3.6, (X0 + U1) / 2, L, -1.2), mat: mats.clad },
-    { geom: box(UW + 0.2, 0.3, 3.8, (X0 + U1) / 2, L + 3.0, -1.2), mat: mats.snow },
-    { geom: box(0.9, 2.0, 0.08, -2.0, L + 0.1, 0.64), mat: mats.window },
-    // Terassi yläkerran edessä, vain lasihuoneen vasemmalla puolella: säleaidat ja poreallas
-    { geom: box(UW, 1.05, 0.08, (X0 + U1) / 2, L, 3.0), mat: mats.deck },
-    { geom: box(0.08, 1.05, 2.4, X0, L, 1.8), mat: mats.deck },
-    { geom: box(1.6, 0.85, 1.6, -1.8, L, 1.9), mat: mats.clad },
-    { geom: box(1.35, 0.06, 1.35, -1.8, L + 0.86, 1.9), mat: mats.pool },
-    // Lasikupolimakuuhuone ulokkeena oikealla
-    ...glassPod(U1, L + 0.55, 0.3), // ulottuu alakerran etureunaan, terassi päättyy siihen
-    // Sisäänkäynti: tasanne ja luiska vasemmalla
-    { geom: box(0.08, 2.1, 1.0, X0 - 0.04, F, -1.4), mat: mats.door },
-    { geom: box(1.6, 0.12, 2.8, X0 - 0.8, F - 0.12, -1.4), mat: mats.deck },
-    { geom: box(0.08, 1.0, 2.8, X0 - 1.6, F, -1.4), mat: mats.deck },
-    { geom: box(1.6, 0.5, 1.6, X0 - 0.8, 0, 0.8), mat: mats.deck },
+    // Kaksikerroksinen runko 6 × 6 m
+    { geom: box(6, H - F, 6, 0, F), mat: mats.clad },
+    { geom: box(6.2, 0.35, 6.2, 0, H), mat: mats.snow },
+    // Alakerran isot ikkunat lasihuoneen alla ja sillan puolella
+    { geom: box(0.08, 2.2, 1.6, -3.04, F + 0.35, 1.2), mat: mats.window },
+    { geom: box(0.08, 0.6, 0.6, -3.04, F + 1.6, -1.0), mat: mats.window },
+    { geom: box(1.6, 2.2, 0.08, -1.4, F + 0.35, 3.04), mat: mats.window },
+    { geom: box(0.08, 2.0, 1.4, 3.04, L + 0.4, 0), mat: mats.window },
+    // Lasikupolimakuuhuone ulokkeena (−x-sivun keskellä)
+    ...glassPod(-3, L + 0.55, 0),
+    // Kapea yksikerroksinen osa (−z), katolla terassi säleaitoineen ja poreallas
+    { geom: box(5.0, 3.0, 1.9, 0.2, F, -3.95), mat: mats.clad },
+    { geom: box(5.0, 0.12, 1.9, 0.2, L, -3.95), mat: mats.snow },
+    { geom: box(5.0, 1.0, 0.08, 0.2, L, -4.9), mat: mats.deck },
+    { geom: box(0.08, 1.0, 1.9, -2.3, L, -3.95), mat: mats.deck },
+    { geom: box(0.08, 1.0, 1.9, 2.7, L, -3.95), mat: mats.deck },
+    { geom: box(1.7, 0.8, 1.5, -0.6, L, -3.95), mat: mats.clad },
+    { geom: box(1.45, 0.06, 1.25, -0.6, L + 0.8, -3.95), mat: mats.pool },
+    // Sisäänkäyntisilta (+z) tielle, ovi sillan päässä
+    { geom: box(1.0, 2.1, 0.08, 1.2, F, 3.04), mat: mats.door },
+    { geom: box(1.6, 0.15, 7, 1.2, F - 0.15, 6.5), mat: mats.deck },
+    { geom: box(0.08, 1.0, 7, 0.4, F, 6.5), mat: mats.deck },
+    { geom: box(0.08, 1.0, 7, 2.0, F, 6.5), mat: mats.deck },
   ]);
 }
 
