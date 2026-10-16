@@ -79,11 +79,12 @@ layout = {
         "hut2": {"pos": rel(1017, 1080), "size": [20, 16], "angle": 0},
     },
     "points": {
-        "parking": rel(852, 1066),
+        # Pysäköinti autorivin luona, kokoontumispaikka sen itäpuolella (16.10.2026: opastekartan merkit ovat toisinpäin)
+        "parking": rel(814, 1066),
         # Pysäköintialueen lumivalli (vinoviivoitus) päästä päähän
         "snowbankA": rel(758, 1066),
         "snowbankB": rel(855, 1124),
-        "assembly": rel(814, 1066),
+        "assembly": rel(852, 1066),
         "reindeerEast": rel(1180, 834),
         "ovalDome": rel(300, 911),
         "ovalFire": rel(368, 930),
