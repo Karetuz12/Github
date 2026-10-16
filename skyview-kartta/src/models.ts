@@ -18,7 +18,8 @@ export const mats = {
   pool: new THREE.MeshLambertMaterial({ color: 0x3a8b93, emissive: 0x5fe8e2, emissiveIntensity: 0 }),
   fire: new THREE.MeshBasicMaterial({ color: 0xffa040 }),
   reindeer: new THREE.MeshLambertMaterial({ color: 0x5b4636 }),
-  car: new THREE.MeshLambertMaterial({ color: 0x2b3038 }),
+  car: new THREE.MeshLambertMaterial({ color: 0x4a515c }),
+  carGlass: new THREE.MeshLambertMaterial({ color: 0x1a1f26 }),
 };
 
 export function setGlow(night: number) {
@@ -205,11 +206,13 @@ export function reindeer(): THREE.Group {
   return g;
 }
 
+/** Henkilöauto, keula +x: matala konepelti edessä, ohjaamo keskellä-takana. */
 export function car(): THREE.Group {
   const g = new THREE.Group();
-  g.add(new THREE.Mesh(box(4.4, 0.9, 1.8, 0, 0.25), mats.car));
-  g.add(new THREE.Mesh(box(2.4, 0.6, 1.6, -0.2, 1.15), mats.car));
-  g.add(new THREE.Mesh(box(2.4, 0.12, 1.6, -0.2, 1.75), mats.snow));
+  g.add(new THREE.Mesh(box(4.5, 0.75, 1.8, 0, 0.3), mats.car));
+  g.add(new THREE.Mesh(box(2.3, 0.62, 1.66, -0.45, 1.05), mats.carGlass));
+  g.add(new THREE.Mesh(box(2.0, 0.1, 1.6, -0.5, 1.67), mats.snow));
+  g.add(new THREE.Mesh(box(0.06, 0.18, 1.5, 2.25, 0.62), mats.window)); // ajovalot
   return g;
 }
 

@@ -113,7 +113,7 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   herd(layout.points.reindeerEast, 6, 9);
   herd(layout.points.ovalReindeer, 4, 6);
 
-  // Pysäköinti: yksi rivi autoja keula kohti lumivallia (opastekartan vinoviivoitettu alue)
+  // Pysäköinti: yksi rivi autoja perä lumivalliin päin (opastekartan vinoviivoitettu alue)
   const bankA = toWorld(layout.points.snowbankA);
   const bankB = toWorld(layout.points.snowbankB);
   const along = bankB.clone().sub(bankA);
@@ -129,7 +129,7 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
     if (rand() < 0.3) continue; // vapaita paikkoja
     const c = M.car();
     c.position.copy(bankA).addScaledVector(along, (i + 0.5) * 2.8).addScaledVector(normal, 3.8);
-    c.rotation.y = Math.atan2(-normal.z, normal.x) + Math.PI + (rand() - 0.5) * 0.06;
+    c.rotation.y = Math.atan2(-normal.z, normal.x) + (rand() - 0.5) * 0.06; // keula poispäin vallista
     scene.add(c);
   }
 
