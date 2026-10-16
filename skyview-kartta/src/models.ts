@@ -55,62 +55,65 @@ function group(parts: Part[]): Part[] {
   return [...byMat].map(([mat, gs]) => ({ mat, geom: mergeGeometries(gs) }));
 }
 
-/** Puolikas kahdeksankulmio (lasihuoneen ja ulokkeen muoto), litteä puoli z = 0 ja kaari +z-suuntaan. */
+/** Puolikas kahdeksankulmio: litteä puoli tasossa x = 0, kaari +x-suuntaan. */
 const halfOct = (rTop: number, rBot: number, h: number, y: number, open = false) =>
-  new THREE.CylinderGeometry(rTop, rBot, h, 4, 1, open, 0, Math.PI).rotateY(-Math.PI / 2).translate(0, y + h / 2, 0);
+  new THREE.CylinderGeometry(rTop, rBot, h, 4, 1, open, 0, Math.PI).translate(0, y + h / 2, 0);
 
-/** Lasihuone: umpikaide, matalat lasiseinät ja särmikäs lasikupoli; litteä puoli seinässä (x, z). */
-function glassPod(x: number, y: number, z = 0): Part[] {
-  const at = (g: THREE.BufferGeometry) => g.translate(x, 0, z);
+/**
+ * Ulokkeena leijuva lasikupolimakuuhuone: tumma umpikaide/pohja, matalat lasiseinät ja särmikäs
+ * lasikupoli. Litteä puoli seinässä x = wx, keskikohta z, lattia korkeudella y.
+ */
+function glassPod(wx: number, y: number, z: number): Part[] {
+  const at = (g: THREE.BufferGeometry) => g.translate(wx, 0, z);
   return [
-    { geom: at(halfOct(2.55, 2.35, 1.15, y - 0.9)), mat: mats.clad },
-    { geom: at(halfOct(2.6, 2.6, 0.1, y + 0.25)), mat: mats.snow },
-    { geom: at(halfOct(2.3, 2.3, 0.8, y + 0.3, true)), mat: mats.glass },
-    { geom: at(halfOct(0.5, 2.3, 1.7, y + 1.1)), mat: mats.glass },
+    { geom: at(halfOct(2.7, 2.45, 1.2, y - 0.95)), mat: mats.clad },
+    { geom: at(halfOct(2.75, 2.75, 0.1, y + 0.25)), mat: mats.snow },
+    { geom: at(halfOct(2.45, 2.45, 0.8, y + 0.3, true)), mat: mats.glass },
+    { geom: at(halfOct(0.55, 2.45, 1.8, y + 1.1)), mat: mats.glass },
   ];
 }
 
 /**
- * SkyView-iglu (kaikki ulkoa samanlaisia; arkkitehdin renderöintien ja valokuvien mukaan).
- * Paalujen päällä kaksikerroksinen tumma rakennus. Edessä (+z, tielle päin) yläkerrassa
- * ulkoneva kahdeksankulmainen lasihuone umpikaiteen päällä. Yläkerran laatikko takana,
- * oikealla kattoterassi säleaitoineen ja ulkoporealtaineen. Sisäänkäynnin portaat vasemmalla.
+ * SkyView-iglu (kaikki ulkoa samanlaisia; arkkitehdin renderöintien mukaan).
+ * Paalujen päällä tumma alakerta. Yläkerran laatikko takana vasemmalla; sen oikeaan seinään
+ * kiinnittyy lasikupolimakuuhuone, joka ulkonee rakennuksen ohi ja leijuu ilmassa.
+ * Yläkerran edessä terassi säleaitoineen ja ulkoporealtaineen. Sisäänkäynti vasemmalta.
+ * Edessä (+z) tie.
  */
 export function iglooParts(): Part[] {
   const F = 0.8; // paalujen korkeus
   const L = F + 3.0; // yläkerran lattia
+  const X0 = -3, X1 = 1.7; // alakerran leveys (lasihuone ulkonee tästä ~70 %)
+  const U1 = 0.8; // yläkerran oikea seinä = lasihuoneen kiinnitys
   const posts: Part[] = [];
-  for (const x of [-2.7, 0, 2.7]) for (const z of [-2.7, 2.7]) posts.push({ geom: box(0.22, F, 0.22, x, 0, z), mat: mats.clad });
-  const slats = (x0: number, x1: number, z0: number, z1: number): Part[] => {
-    // Säleaita: alhainen kaide yhtenä levynä (kaukaa katsottuna riittää)
-    const w = Math.abs(x1 - x0) || 0.08;
-    const d = Math.abs(z1 - z0) || 0.08;
-    return [{ geom: box(w, 1.05, d, (x0 + x1) / 2, L, (z0 + z1) / 2), mat: mats.deck }];
-  };
+  for (const x of [X0 + 0.3, 0, X1 - 0.3]) for (const z of [-2.7, 2.7]) posts.push({ geom: box(0.22, F, 0.22, x, 0, z), mat: mats.clad });
+  const W = X1 - X0;
+  const UW = U1 - X0;
   return group([
     ...posts,
-    // Alakerta: kulmaikkunat
-    { geom: box(6, 3.0, 6, 0, F), mat: mats.clad },
-    { geom: box(1.7, 2.2, 0.08, 1.6, F + 0.35, 3.04), mat: mats.window },
-    { geom: box(0.08, 2.2, 1.6, 3.04, F + 0.35, 2.0), mat: mats.window },
-    { geom: box(1.5, 2.0, 0.08, -1.6, F + 0.45, 3.04), mat: mats.window },
-    // Yläkerran laatikko takana vasemmalla
-    { geom: box(4.2, 3.0, 3.4, -0.9, L, -1.3), mat: mats.clad },
-    { geom: box(4.4, 0.3, 3.6, -0.9, L + 3.0, -1.3), mat: mats.snow },
-    { geom: box(6.1, 0.12, 6.1, 0, L, 0), mat: mats.snow },
-    // Lasihuone: umpikaide (uloke), matalat lasiseinät ja särmikäs kupoli
-    ...glassPod(-0.9, L + 0.55, 0.4),
-    // Kattoterassi oikealla: säleaidat ja poreallas
-    ...slats(3.0, 3.0, -3.0, 3.0),
-    ...slats(1.2, 3.0, 3.0, 3.0),
-    ...slats(1.2, 3.0, -3.0, -3.0),
-    { geom: box(1.5, 0.85, 1.5, 2.15, L, -1.7), mat: mats.clad },
-    { geom: box(1.25, 0.06, 1.25, 2.15, L + 0.86, -1.7), mat: mats.pool },
-    // Sisäänkäynti: portaat ja tasanne vasemmalla
-    { geom: box(1.6, 0.12, 2.6, -3.8, F - 0.12, -1.3), mat: mats.deck },
-    { geom: box(0.08, 1.0, 2.6, -4.6, F, -1.3), mat: mats.deck },
-    { geom: box(1.6, 0.5, 1.4, -3.8, 0, 0.7), mat: mats.deck },
-    { geom: box(0.08, 2.1, 1.0, -3.04, F, -1.3), mat: mats.door },
+    // Alakerta: isot ikkunat edessä ja oikealla
+    { geom: box(W, 3.0, 6, (X0 + X1) / 2, F), mat: mats.clad },
+    { geom: box(1.7, 2.2, 0.08, -1.7, F + 0.35, 3.04), mat: mats.window },
+    { geom: box(1.3, 2.2, 0.08, 0.5, F + 0.35, 3.04), mat: mats.window },
+    { geom: box(0.08, 2.2, 1.5, X1 + 0.04, F + 0.35, 1.6), mat: mats.window },
+    { geom: box(W + 0.1, 0.12, 6.1, (X0 + X1) / 2, L), mat: mats.snow },
+    // Yläkerran laatikko takana
+    { geom: box(UW, 3.0, 3.6, (X0 + U1) / 2, L, -1.2), mat: mats.clad },
+    { geom: box(UW + 0.2, 0.3, 3.8, (X0 + U1) / 2, L + 3.0, -1.2), mat: mats.snow },
+    { geom: box(0.9, 2.0, 0.08, -2.0, L + 0.1, 0.64), mat: mats.window },
+    // Terassi edessä: säleaidat ja poreallas
+    { geom: box(W, 1.05, 0.08, (X0 + X1) / 2, L, 3.0), mat: mats.deck },
+    { geom: box(0.08, 1.05, 2.4, X0, L, 1.8), mat: mats.deck },
+    { geom: box(0.08, 1.05, 1.2, X1, L, 2.4), mat: mats.deck },
+    { geom: box(1.6, 0.85, 1.6, -1.8, L, 1.9), mat: mats.clad },
+    { geom: box(1.35, 0.06, 1.35, -1.8, L + 0.86, 1.9), mat: mats.pool },
+    // Lasikupolimakuuhuone ulokkeena oikealla
+    ...glassPod(U1, L + 0.55, -1.0),
+    // Sisäänkäynti: tasanne ja luiska vasemmalla
+    { geom: box(0.08, 2.1, 1.0, X0 - 0.04, F, -1.4), mat: mats.door },
+    { geom: box(1.6, 0.12, 2.8, X0 - 0.8, F - 0.12, -1.4), mat: mats.deck },
+    { geom: box(0.08, 1.0, 2.8, X0 - 1.6, F, -1.4), mat: mats.deck },
+    { geom: box(1.6, 0.5, 1.6, X0 - 0.8, 0, 0.8), mat: mats.deck },
   ]);
 }
 
