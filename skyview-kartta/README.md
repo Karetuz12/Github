@@ -8,7 +8,8 @@ Idea mapmystay.co:n tyyliin, mutta oma toteutus: three.js + Vite, ei taustapalve
 - Koko alue metsineen, teineen ja rakennuksineen. Tiestö ja kaikkien 50 iglun + 31 mökin paikat
   luettu suoraan opastekartasta (`2026_09_24_skyview-opastecombot.pdf`).
 - Vetäminen kääntää näkymää, oikea nappi tai kaksi sormea siirtää, rulla tai nipistys zoomaa.
-- Iglut kahtena tyyppinä valokuvien mukaan: musta torni + kahdeksankulmainen lasihuone, ja kattoterassimalli poreammeineen.
+- Iglut valokuvien mukaan (kaikki ulkoa samanlaisia): alakerran isot ikkunat, kattoterassi ulkoporeammeineen,
+  kahdeksankulmainen lasihuone ja sisäänkäynnin puuterassi.
 - Vuorokaudenaika: liukusäädin + "Now". Valaistus lasketaan auringon oikeasta paikasta Rovaniemellä
   (sinihetki, hämärä, yö), iglut ja tievalot syttyvät pimeällä, yöllä tähdet ja revontulet (kuvitus).
 - Kohteet kortteineen: vastaanotto, AURA, Culta, Safari House, kota, porot, pysäköinti, kokoontumispaikka,
@@ -57,9 +58,7 @@ kortti näyttää kohteen kartalta.
 2. Iglu 25 on kartalla **"Centarius"**. Tähdistö kirjoitetaan *Centaurus*.
 3. Nimet on otettu uudemmasta (vaaleasta) kartasta: 8 = **Sagitta**, 13 = **Auriga**. Opaste-PDF:ssä
    on vielä vanhat (8 Sagittarius, joka on myös iglu 18, ja 13 Capella).
-4. Mitkä iglut ovat kumpaakin tyyppiä: **torni** (lasihuone ulokkeella) vai **kattoterassi** (poreallas katolla)?
-   Ja kumpi on King Igloo, kumpi Igloo Suite? Lista täytetään `src/geo.ts`:n `IGLOO_TYPES`-kohtaan.
-   Siihen asti tyypit vaihtelevat kuvituksena.
+4. Mihin suuntaan lasihuone ja kattoterassi oikeasti osoittavat? Nyt ne ovat tielle päin (näkyvät aloitusnäkymässä).
 5. Ovatko soikion 31 mökkiä Aurora Cabinit? Mitä soikion keskellä on (kupoli, nuotio, porot)?
 6. Onko päärakennuksen viereinen "Hut with a fireplace" sama kuin Aurora Campin Aurora Kota?
 7. Missä sähköautojen latauspisteet ovat?
