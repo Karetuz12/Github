@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>SkyView Resort Map</title>
+    <meta name="description" content="Explore SkyView Igloo Resort in 3D – find your igloo, reception, Restaurant AURA, Arctic Spa Culta and the Safari House." />
+    <meta name="theme-color" content="#0b1428" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <canvas id="scene" aria-label="3D map of SkyView Igloo Resort"></canvas>
+    <div id="pins" aria-label="Places on the map"></div>
+
+    <header class="top">
+      <div class="brand">
+        <span class="brand-name">SkyView</span>
+        <span class="brand-sub">Igloo Resort · Resort map</span>
+      </div>
+      <button id="btn-search" class="glass pill" type="button"></button>
+    </header>
+
+    <aside id="card" class="card glass" hidden aria-live="polite"></aside>
+
+    <div id="tourbar" class="tourbar glass" hidden></div>
+
+    <div class="bottom">
+      <div class="timeline glass">
+        <span id="tl-icon"></span>
+        <input id="time" type="range" min="0" max="1439" step="5" aria-label="Time of day" />
+        <button id="btn-now" class="chip" type="button">Now</button>
+      </div>
+      <nav class="dock glass" aria-label="Map tools">
+        <button id="btn-explore" type="button"></button>
+        <button id="btn-tour" type="button"></button>
+        <div class="clock" title="Time in Rovaniemi"><b id="clock">--:--</b><small id="date"></small></div>
+        <button id="btn-view" type="button"></button>
+      </nav>
+    </div>
+
+    <div id="viewpop" class="pop glass" hidden></div>
+    <div id="explore" class="sheet glass" hidden></div>
+
+    <div class="side">
+      <button id="btn-north" class="round glass" type="button" aria-label="Face north"></button>
+      <button id="btn-home" class="round glass" type="button" aria-label="Show the whole resort"></button>
+      <button id="btn-info" class="round glass" type="button" aria-label="About this map"></button>
+    </div>
+
+    <div id="search" class="overlay" hidden>
+      <div class="search-box glass">
+        <label class="search-field"><span id="search-icon"></span><input id="search-input" type="search" placeholder="Igloo number or name, e.g. 9 or Lyra" autocomplete="off" /></label>
+        <ul id="search-results" role="listbox"></ul>
+      </div>
+    </div>
+
+    <div id="about" class="overlay" hidden>
+      <div class="about glass">
+        <h2>SkyView Igloo Resort</h2>
+        <p>Olleronvaarantie 66, 96100 Rovaniemi, Finland</p>
+        <p>Drag to turn the view, right-drag (or two fingers) to move, scroll or pinch to zoom. Tap a marker to learn more.</p>
+        <p class="muted">An illustrative 3D map based on the resort's site plan. Buildings are simplified, and the northern lights are an illustration – they can't be guaranteed.</p>
+        <button class="btn primary" type="button" data-close>Got it</button>
+      </div>
+    </div>
+
+    <div id="hint" class="hint glass" hidden></div>
+
+    <div id="loading"><span class="brand-name">SkyView</span><span class="spinner"></span></div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
