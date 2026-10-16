@@ -194,6 +194,7 @@ export class UI {
         <div class="actions">${actions}</div>
       </div>`;
     card.hidden = false;
+    this.fitCard();
     card.querySelector<HTMLButtonElement>(".card-close")!.onclick = () => this.closeCard();
     const media = card.querySelector<HTMLElement>(".card-media")!;
     const fallback = () => {
@@ -212,9 +213,19 @@ export class UI {
     } else fallback();
   }
 
+  /** Puhelimella kortti on alhaalla, isolla näytöllä oikealla: siirrä kohde näkyvälle alueelle. */
+  fitCard() {
+    const card = $("card");
+    if (card.hidden) return this.rig.setInset(0, 0);
+    const r = card.getBoundingClientRect();
+    if (r.left > innerWidth / 2) this.rig.setInset(innerWidth - r.left, 0);
+    else this.rig.setInset(0, innerHeight - r.top);
+  }
+
   closeCard() {
     this.active = null;
     $("card").hidden = true;
+    this.rig.setInset(0, 0);
     const url = new URL(location.href);
     url.searchParams.delete("place");
     history.replaceState(null, "", url);

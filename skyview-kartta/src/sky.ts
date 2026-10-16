@@ -36,22 +36,39 @@ float fbm(vec2 p) {
 vec3 aurora(vec3 dir) {
   if (dir.y < 0.01) return vec3(0.0);
   vec3 col = vec3(0.0);
-  float t = uTime * 0.04;
+  float T = uTime;
+  float t = T * 0.09;
   const int N = 18;
   float jit = hash(gl_FragCoord.xy) / float(N); // häivyttää kerrosten porrastuksen
   for (int i = 0; i < N; i++) {
-    float fi = float(i) / float(N) + jit;
+    float fi = float(i) / float(N) + jit;       // 0 = verhon alareuna, 1 = yläreuna
     float h = 0.35 + fi * 2.2;                 // kerroksen korkeus → verhon pystysuunta
     vec2 p = dir.xz / dir.y * h;
-    float wave = sin(p.x * 0.35 + t * 2.0 + fbm(vec2(p.x * 0.15, t)) * 4.0) * 0.9
-               + fbm(vec2(p.x * 0.6 - t, 1.7)) * 1.2;
+    // Verhon poimut liikkuvat sivusuunnassa ja muuttavat muotoaan
+    float wave = sin(p.x * 0.35 + t * 2.0 + fbm(vec2(p.x * 0.15, t * 0.7)) * 4.0) * 0.9
+               + fbm(vec2(p.x * 0.6 - t * 1.5, 1.7 + t * 0.3)) * 1.2;
     float d = p.y + 7.0 + wave;                 // pohjoisessa (−z) kulkeva vyö, matalalla horisontin yllä
     float band = exp(-d * d * 2.2);
-    float rays = 0.35 + fbm(vec2(p.x * 3.2 + wave, t * 3.0)) * 1.3;
-    vec3 c = mix(vec3(0.15, 1.0, 0.55), vec3(0.55, 0.25, 0.95), smoothstep(0.35, 1.0, fi));
-    col += c * band * rays * (1.0 - fi * 0.7);
+    // Toinen, himmeämpi kaari korkeammalla
+    float d2 = p.y + 11.5 + wave * 0.7 + sin(p.x * 0.22 - t * 1.3) * 0.8;
+    float band2 = exp(-d2 * d2 * 1.6) * 0.3;
+    // Säteet välkkyvät ja liukuvat vyötä pitkin
+    float rays = 0.3 + fbm(vec2(p.x * 3.2 + wave - T * 0.35, T * 0.5)) * 1.4;
+    // Kirkkaampia purkauksia kulkee vyön läpi
+    float surge = 0.75 + 0.8 * smoothstep(0.35, 0.8, fbm(vec2(p.x * 0.12 - T * 0.06, T * 0.03)));
+    // Sävy vaihtelee vyötä pitkin hitaasti liikkuen: vihreä → turkoosi → violetti
+    float hue = fbm(vec2(p.x * 0.06 + T * 0.025, 4.0));
+    vec3 c = mix(vec3(0.15, 1.0, 0.45), vec3(0.1, 0.9, 0.85), smoothstep(0.38, 0.55, hue));
+    c = mix(c, vec3(0.75, 0.35, 1.3), smoothstep(0.6, 0.74, hue));
+    // ...ja korkeuden mukaan: yläosa sinertävä ja violetti
+    c = mix(c, vec3(0.4, 0.45, 1.2), smoothstep(0.3, 0.62, fi));
+    c = mix(c, vec3(1.0, 0.3, 1.0), smoothstep(0.55, 0.95, fi));
+    // Purkausten kohdalla alareunaan pinkki reunus
+    c = mix(c, vec3(1.3, 0.3, 0.65), (1.0 - smoothstep(0.0, 0.2, fi)) * smoothstep(1.0, 1.4, surge) * 0.85);
+    col += (c * band * surge + vec3(0.6, 0.3, 1.0) * band2) * rays * (1.0 - fi * 0.7);
   }
-  return col / float(N) * 2.4 * smoothstep(0.0, 0.12, dir.y);
+  float breathe = 0.85 + 0.15 * sin(T * 0.21);
+  return col / float(N) * 2.9 * breathe * smoothstep(0.0, 0.12, dir.y);
 }
 
 void main() {

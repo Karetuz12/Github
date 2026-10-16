@@ -49,6 +49,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
 /* --- Kortti --- */
 .card { position: fixed; z-index: 30; top: 84px; right: 22px; width: 380px; max-height: calc(100vh - 220px); overflow: auto; border-radius: 24px; background: var(--glass-strong); animation: in 0.28s ease; }
 @keyframes in { from { opacity: 0; transform: translateY(10px); } }
+/* Keskitetyille (translateX(-50%)) – muuten elementti hyppää animaation ajaksi oikealle */
+@keyframes in-c { from { opacity: 0; transform: translate(-50%, 10px); } }
 .card-media { position: relative; height: 190px; background: linear-gradient(135deg, #1b2a4a, #0f3a35) center/cover; border-radius: 24px 24px 0 0; }
 .card-cat { position: absolute; left: 14px; top: 14px; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 6px 10px; border-radius: 999px; background: rgba(8, 12, 22, 0.6); color: var(--gold); }
 .card-close { position: absolute; right: 12px; top: 12px; width: 36px; height: 36px; border-radius: 50%; border: 0; background: rgba(8, 12, 22, 0.6); display: grid; place-items: center; }
@@ -83,7 +85,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* --- Ponnahdusikkunat --- */
 .pop, .sheet { position: fixed; z-index: 25; border-radius: 22px; padding: 14px; animation: in 0.2s ease; background: var(--glass-strong); }
-.pop { bottom: calc(150px + var(--safe-b)); left: 50%; transform: translateX(-50%); width: 300px; }
+.pop { bottom: calc(150px + var(--safe-b)); left: 50%; transform: translateX(-50%); width: 300px; animation-name: in-c; max-height: calc(100dvh - 240px - var(--safe-b)); overflow: auto; }
 .pop h4, .sheet h4 { margin: 10px 6px 6px; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
 .pop h4:first-child { margin-top: 2px; }
 .toggle { display: flex; align-items: center; gap: 10px; padding: 9px 8px; border-radius: 12px; cursor: pointer; }
@@ -120,7 +122,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .muted { color: var(--muted); font-size: 14px; }
 
 /* --- Kierros --- */
-.tourbar { position: fixed; z-index: 21; left: 50%; transform: translateX(-50%); bottom: calc(150px + var(--safe-b)); width: min(560px, calc(100vw - 24px)); border-radius: 20px; padding: 14px 14px 14px 20px; display: flex; gap: 14px; align-items: center; animation: in 0.25s ease; }
+.tourbar { position: fixed; z-index: 21; left: 50%; transform: translateX(-50%); bottom: calc(150px + var(--safe-b)); width: min(560px, calc(100vw - 24px)); border-radius: 20px; padding: 14px 14px 14px 20px; display: flex; gap: 14px; align-items: center; animation: in-c 0.25s ease; }
 .tour-text { flex: 1; display: flex; flex-direction: column; gap: 2px; }
 .tour-text small { color: var(--gold); font-size: 12px; letter-spacing: 0.12em; }
 .tour-text b { font-family: var(--serif); font-size: 24px; font-weight: 600; }
@@ -154,11 +156,44 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .card { left: 8px; right: 8px; top: auto; bottom: calc(8px + var(--safe-b)); width: auto; max-height: 62vh; border-radius: 24px; }
   .card-media { height: 150px; }
   .card h2 { font-size: 30px; }
-  .sheet { left: 8px; right: 8px; top: auto; bottom: calc(132px + var(--safe-b)); width: auto; max-height: 58vh; }
-  .pop { bottom: calc(132px + var(--safe-b)); width: calc(100vw - 16px); }
-  .tourbar { bottom: calc(132px + var(--safe-b)); padding: 12px 12px 12px 16px; }
+  .sheet { left: 8px; right: 8px; top: auto; bottom: calc(138px + var(--safe-b)); width: auto; max-height: min(58vh, calc(100dvh - 220px - var(--safe-b))); }
+  .pop { bottom: calc(138px + var(--safe-b)); width: calc(100vw - 16px); }
+  .tourbar { bottom: calc(138px + var(--safe-b)); padding: 12px 12px 12px 16px; }
+  .tour-ctrl button { width: 36px; height: 36px; }
+  .hint { top: 72px; max-width: calc(100vw - 32px); white-space: normal; text-align: center; border-radius: 18px; }
   .tour-text b { font-size: 21px; }
   .pin .label { display: none; }
   .pin.active .label { display: block; }
+}
+/* --- Puhelin vaaka-asennossa: matala ruutu --- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .top { padding: 10px max(16px, env(safe-area-inset-left)) 10px max(16px, env(safe-area-inset-left)); }
+  .top::before { display: none; }
+  .brand-name { font-size: 20px; }
+  .brand-sub { display: none; }
+  .pill { height: 38px; padding: 0 14px; font-size: 14px; }
+  .pill span { display: none; }
+  .hint { top: 12px; }
+  /* Aikajana ja työkalut vierekkäin yhdelle riville */
+  .bottom { flex-direction: row; width: min(760px, calc(100vw - 2 * max(16px, env(safe-area-inset-left)))); bottom: calc(8px + var(--safe-b)); gap: 8px; }
+  .timeline { flex: 1; min-width: 0; }
+  .dock { padding: 4px; }
+  .dock > button { height: 38px; padding: 0 10px; }
+  .dock > button span { display: none; }
+  .clock { height: 26px; padding: 0 10px; }
+  .clock b { font-size: 18px; }
+  .clock small { display: none; }
+  .side { right: max(16px, env(safe-area-inset-right)); bottom: auto; top: 58px; flex-direction: column; gap: 8px; }
+  .round { width: 38px; height: 38px; }
+  .card { top: 8px; bottom: calc(66px + var(--safe-b)); right: max(8px, env(safe-area-inset-right)); left: auto; width: min(360px, 48vw); max-height: none; }
+  .card-media { height: 110px; }
+  .card h2 { font-size: 26px; }
+  .sheet { top: 8px; bottom: calc(66px + var(--safe-b)); left: max(8px, env(safe-area-inset-left)); right: auto; width: min(340px, 48vw); max-height: none; }
+  .pop { bottom: calc(66px + var(--safe-b)); max-height: calc(100dvh - 80px - var(--safe-b)); }
+  .tourbar { bottom: calc(66px + var(--safe-b)); padding: 10px 10px 10px 16px; }
+  .tour-text b { font-size: 19px; }
+  .tour-text span { font-size: 13px; }
+  .overlay { padding-top: 16px; }
+  #search-results { max-height: calc(100dvh - 110px); }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }

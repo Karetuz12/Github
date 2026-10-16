@@ -134,6 +134,7 @@ setInterval(() => manualMinutes === null && applyTime(), 30_000);
 
 addEventListener("resize", () => {
   rig.resize();
+  ui.fitCard();
   renderer.setSize(innerWidth, innerHeight);
   composer.setSize(innerWidth, innerHeight);
 });

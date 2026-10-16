@@ -3,14 +3,29 @@ import { MapControls } from "three/examples/jsm/controls/MapControls.js";
 import { SITE } from "./geo";
 
 export const HOME = { target: new THREE.Vector3(10, 0, -10), dist: 470, polar: 1.36, azim: 0.08 };
+// Pystynäytöllä katsotaan hieman ylempää, jotta alue täyttää kapean ruudun paremmin
+const HOME_PORTRAIT = { target: new THREE.Vector3(-5, 0, -15), dist: 500, polar: 1.1, azim: 0.08 };
+// Puhelin vaaka-asennossa: matala ruutu, tullaan lähemmäs ja ylemmäs
+const HOME_SHORT = { target: new THREE.Vector3(0, 0, -15), dist: 360, polar: 1.18, azim: 0.08 };
+const homeView = () => (innerWidth < innerHeight ? HOME_PORTRAIT : innerHeight < 500 ? HOME_SHORT : HOME);
+
+// Vaakasuuntainen näkökenttä vähintään tämän verran, ettei alue leikkaudu kapealla puhelimella
+const MIN_HFOV = 36;
+function fitFov(aspect: number) {
+  const v = 2 * Math.atan(Math.tan(THREE.MathUtils.degToRad(MIN_HFOV) / 2) / aspect);
+  return Math.max(38, THREE.MathUtils.radToDeg(v));
+}
 
 export class CameraRig {
   camera: THREE.PerspectiveCamera;
   controls: MapControls;
+  /** Kortin peittämä osa ruudusta (px): kuva siirretään, jotta kohde näkyy kortin vieressä. */
+  private inset = { x: 0, y: 0 };
+  private insetNow = { x: 0, y: 0 };
   private anim: { t0: number; dur: number; fromP: THREE.Vector3; fromT: THREE.Vector3; toP: THREE.Vector3; toT: THREE.Vector3; done?: () => void } | null = null;
 
   constructor(dom: HTMLElement) {
-    this.camera = new THREE.PerspectiveCamera(38, innerWidth / innerHeight, 1, 12000);
+    this.camera = new THREE.PerspectiveCamera(fitFov(innerWidth / innerHeight), innerWidth / innerHeight, 1, 12000);
     this.controls = new MapControls(this.camera, dom);
     const c = this.controls;
     c.enableDamping = true;
@@ -26,7 +41,8 @@ export class CameraRig {
     c.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
     c.rotateSpeed = 0.6;
     c.addEventListener("start", () => (this.anim = null));
-    this.jump(HOME.target, HOME.dist, HOME.polar, HOME.azim);
+    const h = homeView();
+    this.jump(h.target, h.dist, h.polar, h.azim);
   }
 
   private dest(target: THREE.Vector3, dist: number, polar: number, azim: number) {
@@ -37,6 +53,10 @@ export class CameraRig {
     this.controls.target.copy(target);
     this.camera.position.copy(this.dest(target, dist, polar, azim));
     this.controls.update();
+  }
+
+  setInset(right: number, bottom: number) {
+    this.inset = { x: right / 2, y: bottom / 2 };
   }
 
   get azimuth() {
@@ -66,7 +86,8 @@ export class CameraRig {
   }
 
   home(done?: () => void) {
-    this.flyTo(HOME.target.clone().setY(6), { dist: HOME.dist, polar: HOME.polar, azim: HOME.azim }, done);
+    const h = homeView();
+    this.flyTo(h.target.clone().setY(6), { dist: h.dist, polar: h.polar, azim: h.azim }, done);
   }
 
   /** Käännä pohjoinen ylös (kompassi). */
@@ -101,10 +122,21 @@ export class CameraRig {
     }
     if (this.camera.position.y < 8) this.camera.position.y = 8;
     this.controls.update();
+
+    const n = this.insetNow;
+    if (n.x !== this.inset.x || n.y !== this.inset.y) {
+      n.x += (this.inset.x - n.x) * 0.12;
+      n.y += (this.inset.y - n.y) * 0.12;
+      if (Math.abs(this.inset.x - n.x) < 0.5 && Math.abs(this.inset.y - n.y) < 0.5) Object.assign(n, this.inset);
+      if (n.x || n.y) this.camera.setViewOffset(innerWidth, innerHeight, n.x, n.y, innerWidth, innerHeight);
+      else this.camera.clearViewOffset();
+    }
   }
 
   resize() {
     this.camera.aspect = innerWidth / innerHeight;
+    this.camera.fov = fitFov(this.camera.aspect);
+    if (this.camera.view) this.camera.setViewOffset(innerWidth, innerHeight, this.insetNow.x, this.insetNow.y, innerWidth, innerHeight);
     this.camera.updateProjectionMatrix();
   }
 }
