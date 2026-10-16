@@ -159,22 +159,42 @@ export function cabinParts(): Part[] {
 export function mainBuilding(): THREE.Group {
   const g = new THREE.Group();
   const add = (geom: THREE.BufferGeometry, mat: THREE.Material) => g.add(new THREE.Mesh(geom, mat));
-  const N = -6; // pohjoisjulkisivu
   // --- Ravintola (länsi) ---
   add(box(17, 0.45, 5.6, -8.5, 0, -3.2), mats.clad); // sisäänvedetty sokkeli
   add(box(18, 3.6, 6.2, -8.5, 0.45, -3.2), mats.glass); // lasit pohjoiseen ja länteen
   add(box(18, 4.05, 5.6, -8.5, 0, 2.8), mats.clad); // sisäänkäynnin puoli umpinainen
   add(box(18.6, 1.4, 12, -8.5, 4.05, -0.3), mats.clad); // reunanauha / terassin kaide
-  // --- Itäpää ---
-  add(box(15, 2.5, 7.5, 9.5, 0, 1.5), mats.dark); // pylväikön takaseinä
-  for (const x of [2.6, 6.5, 10.5, 14.5]) add(box(0.4, 2.5, 0.4, x, 0, N + 0.4), mats.clad);
-  add(box(17, 2.1, 11.4, 9.5, 2.5, -0.3), mats.clad); // kaide
-  add(box(5, 1.1, 0.12, 7, 3.2, N + 0.24), mats.pool); // altaan lasi-ikkuna
-  add(box(3, 1.2, 0.12, 15, 3.1, N + 0.24), mats.window);
-  add(box(8, 0.2, 4.2, 7.5, 4.5, N + 3), mats.pool); // vedenpinta kaiteen tasolla
-  add(box(16, 4.5, 6, 9.5, 2.5, 2.4), mats.clad); // matalampi siipi takana
-  add(box(14, 0.18, 0.1, 9.5, 6.2, -0.65), mats.window); // valolista
-  add(box(16.4, 0.25, 6.4, 9.5, 7, 2.4), mats.snow);
+  // --- Itäpää: Arctic Spa Culta ---
+  // Ulokkeen alla sisäänvedetty, valaistu puuseinä
+  add(box(15, 2.5, 8, 9.5, 0, 1.5), mats.wood);
+  add(box(14, 0.15, 0.1, 9.5, 2.25, -2.55), mats.window); // valonauha
+  add(box(1, 2.5, 8, 17.5, 0, 1.5), mats.clad);
+  // Tumma uloke, jonka katolla allasterassi
+  add(box(17, 2.1, 11.4, 9.5, 2.5, -0.3), mats.clad);
+  add(box(17, 0.12, 11.4, 9.5, 4.6, -0.3), mats.snow);
+  // Pitkä korotettu allas lasiseinin pohjoisreunalla; lumiset reunakivet, länsipää ylivuotoreuna
+  add(box(10.2, 1.2, 3.2, 9.4, 4.6, -4.2), mats.pool);
+  add(box(10.2, 0.15, 0.35, 9.4, 5.8, -5.65), mats.snow);
+  add(box(10.2, 0.15, 0.35, 9.4, 5.8, -2.75), mats.snow);
+  add(box(0.35, 0.15, 3.2, 14.33, 5.8, -4.2), mats.snow);
+  // Oleskelutila (puuverhoilu) isoin ikkunoin allasta kohti
+  add(box(8.2, 3.2, 5.5, 8.4, 4.6, 2.6), mats.wood);
+  add(box(2.8, 2.3, 0.12, 5.9, 4.75, -0.2), mats.window);
+  add(box(1.4, 2.2, 0.12, 8.4, 4.75, -0.2), mats.window); // lasiovi
+  add(box(2.8, 2.3, 0.12, 10.9, 4.75, -0.2), mats.window);
+  add(box(8.4, 0.25, 5.7, 8.4, 7.8, 2.6), mats.snow);
+  // Sauna itäpäässä (vaakalaudoitus), panoraamaikkuna altaalle päin
+  add(box(5, 3, 5.4, 15.5, 4.6, 2.7), mats.woodLight);
+  add(box(3.6, 1.6, 0.12, 15.5, 5.3, -0.06), mats.window);
+  add(box(5.2, 0.25, 5.6, 15.5, 7.6, 2.7), mats.snow);
+  // Lasikaide terassin reunoilla
+  add(box(0.06, 1, 11.4, 17.97, 4.72, -0.3), mats.glass);
+  add(box(3.4, 1, 0.06, 16.3, 4.72, -5.97), mats.glass);
+  // Kaksi puista kylpytynnyriä altaan päädyssä
+  for (const z of [-4.8, -2.4]) {
+    add(new THREE.CylinderGeometry(0.95, 0.95, 1, 16).translate(16.2, 4.6 + 0.5, z), mats.woodLight);
+    add(new THREE.CylinderGeometry(0.8, 0.8, 0.05, 16).translate(16.2, 5.6, z), mats.pool);
+  }
   // --- Yläkerta ---
   add(box(17, 3.2, 9, -4.5, 5.45, 1.4), mats.clad);
   add(box(13, 2.6, 0.12, -5, 5.6, -3.15), mats.window); // lasinauha
