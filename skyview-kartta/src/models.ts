@@ -12,6 +12,8 @@ export const mats = {
   door: new THREE.MeshLambertMaterial({ color: 0x4a3a2c }),
   woodLight: new THREE.MeshLambertMaterial({ color: 0x6e5240 }),
   rock: new THREE.MeshLambertMaterial({ color: 0x6b6f78, flatShading: true }),
+  stone: new THREE.MeshLambertMaterial({ color: 0x55575c }), // altaan kiviverhous
+  railGlass: new THREE.MeshLambertMaterial({ color: 0xd8eef2, transparent: true, opacity: 0.28, depthWrite: false }),
   dark: new THREE.MeshLambertMaterial({ color: 0x3a3f48 }),
   snow: new THREE.MeshLambertMaterial({ color: 0xf2f5fa }),
   glass: new THREE.MeshLambertMaterial({ color: 0x86aaa6, emissive: 0xffb15e, emissiveIntensity: 0, flatShading: true }),
@@ -172,28 +174,35 @@ export function mainBuilding(): THREE.Group {
   // Tumma uloke, jonka katolla allasterassi
   add(box(17, 2.1, 11.4, 9.5, 2.5, -0.3), mats.clad);
   add(box(17, 0.12, 11.4, 9.5, 4.6, -0.3), mats.snow);
-  // Pitkä korotettu allas lasiseinin pohjoisreunalla; lumiset reunakivet, länsipää ylivuotoreuna
-  add(box(10.2, 1.2, 3.2, 9.4, 4.6, -4.2), mats.pool);
-  add(box(10.2, 0.15, 0.35, 9.4, 5.8, -5.65), mats.snow);
-  add(box(10.2, 0.15, 0.35, 9.4, 5.8, -2.75), mats.snow);
-  add(box(0.35, 0.15, 3.2, 14.33, 5.8, -4.2), mats.snow);
-  // Oleskelutila (puuverhoilu) isoin ikkunoin allasta kohti
-  add(box(8.2, 3.2, 5.5, 8.4, 4.6, 2.6), mats.wood);
-  add(box(2.8, 2.3, 0.12, 5.9, 4.75, -0.2), mats.window);
-  add(box(1.4, 2.2, 0.12, 8.4, 4.75, -0.2), mats.window); // lasiovi
-  add(box(2.8, 2.3, 0.12, 10.9, 4.75, -0.2), mats.window);
+  // Pitkä korotettu allas lasiseinin: lähtee terassilta pohjoiseen kohti näkymää ja jatkuu
+  // ulokkeen päällä rinteen yllä; pohjoispää ylivuotoreuna, sivuilla lumiset reunakivet
+  add(box(4.6, 2.1, 6.2, 10, 2.5, -9.1), mats.clad); // uloke altaan alla
+  // Kiviseinät ja vesi niiden välissä (vedenpinta hieman reunan alapuolella)
+  add(box(0.3, 1.2, 11, 8.35, 4.6, -6.1), mats.stone);
+  add(box(0.3, 1.2, 11, 11.65, 4.6, -6.1), mats.stone);
+  add(box(3.6, 1.2, 0.3, 10, 4.6, -0.75), mats.stone);
+  add(box(3.6, 1.1, 0.3, 10, 4.6, -11.45), mats.stone); // ylivuotoreuna hieman matalampi
+  add(box(3, 1, 10.4, 10, 4.6, -6.1), mats.pool);
+  add(box(0.35, 0.15, 11, 8.03, 5.8, -6.1), mats.snow);
+  add(box(0.35, 0.15, 11, 11.97, 5.8, -6.1), mats.snow);
+  add(box(4.3, 0.15, 0.35, 10, 5.8, -0.43), mats.snow);
+  // Sauna altaan päässä (valokuvan mukaan): tumma pystylaudoitus, iso valaistu ikkuna altaalle
+  add(box(8.2, 3.2, 5.5, 8.4, 4.6, 2.6), mats.clad);
+  add(box(3.8, 1.9, 0.12, 9.6, 5.2, -0.2), mats.glass); // saunan ikkuna
+  add(box(1, 2.2, 0.12, 6.3, 4.6, -0.2), mats.door);
   add(box(8.4, 0.25, 5.7, 8.4, 7.8, 2.6), mats.snow);
-  // Sauna itäpäässä (vaakalaudoitus), panoraamaikkuna altaalle päin
-  add(box(5, 3, 5.4, 15.5, 4.6, 2.7), mats.woodLight);
-  add(box(3.6, 1.6, 0.12, 15.5, 5.3, -0.06), mats.window);
+  // Oleskelutila itäpäässä (puuverhoilu), ikkunat altaalle päin
+  add(box(5, 3, 5.4, 15.5, 4.6, 2.7), mats.wood);
+  add(box(3.6, 2.2, 0.12, 15.5, 4.8, -0.06), mats.window);
   add(box(5.2, 0.25, 5.6, 15.5, 7.6, 2.7), mats.snow);
   // Lasikaide terassin reunoilla
-  add(box(0.06, 1, 11.4, 17.97, 4.72, -0.3), mats.glass);
-  add(box(3.4, 1, 0.06, 16.3, 4.72, -5.97), mats.glass);
-  // Kaksi puista kylpytynnyriä altaan päädyssä
-  for (const z of [-4.8, -2.4]) {
-    add(new THREE.CylinderGeometry(0.95, 0.95, 1, 16).translate(16.2, 4.6 + 0.5, z), mats.woodLight);
-    add(new THREE.CylinderGeometry(0.8, 0.8, 0.05, 16).translate(16.2, 5.6, z), mats.pool);
+  add(box(0.06, 1, 11.4, 17.97, 4.72, -0.3), mats.railGlass);
+  add(box(6.8, 1, 0.06, 4.6, 4.72, -5.97), mats.railGlass);
+  add(box(6, 1, 0.06, 15, 4.72, -5.97), mats.railGlass);
+  // Kaksi puista kylpytynnyriä terassilla altaan länsipuolella oleskelutilan edessä
+  for (const z of [-4.4, -2.1]) {
+    add(new THREE.CylinderGeometry(0.95, 0.95, 1, 16).translate(5.8, 4.6 + 0.5, z), mats.woodLight);
+    add(new THREE.CylinderGeometry(0.8, 0.8, 0.05, 16).translate(5.8, 5.6, z), mats.pool);
   }
   // --- Yläkerta ---
   add(box(17, 3.2, 9, -4.5, 5.45, 1.4), mats.clad);
