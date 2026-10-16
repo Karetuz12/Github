@@ -80,6 +80,9 @@ layout = {
     },
     "points": {
         "parking": rel(852, 1066),
+        # Pysäköintialueen lumivalli (vinoviivoitus) päästä päähän
+        "snowbankA": rel(758, 1066),
+        "snowbankB": rel(855, 1124),
         "assembly": rel(814, 1066),
         "reindeerEast": rel(1180, 834),
         "ovalDome": rel(300, 911),

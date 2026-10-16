@@ -113,12 +113,23 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   herd(layout.points.reindeerEast, 6, 9);
   herd(layout.points.ovalReindeer, 4, 6);
 
-  // Autot pysäköintialueella
-  const park = toWorld(layout.points.parking);
-  for (let i = 0; i < 9; i++) {
+  // Pysäköinti: yksi rivi autoja keula kohti lumivallia (opastekartan vinoviivoitettu alue)
+  const bankA = toWorld(layout.points.snowbankA);
+  const bankB = toWorld(layout.points.snowbankB);
+  const along = bankB.clone().sub(bankA);
+  const len = along.length();
+  along.normalize();
+  const normal = new THREE.Vector3(along.z, 0, -along.x); // vallin koillispuoli (tien puoli)
+  const bank = new THREE.Mesh(new THREE.BoxGeometry(len, 1.1, 2.4).translate(0, 0.55, 0), M.mats.snow);
+  bank.position.copy(bankA).add(bankB).multiplyScalar(0.5);
+  bank.rotation.y = Math.atan2(-along.z, along.x);
+  scene.add(bank);
+  const slots = Math.floor(len / 2.8);
+  for (let i = 0; i < slots; i++) {
+    if (rand() < 0.3) continue; // vapaita paikkoja
     const c = M.car();
-    c.position.set(park.x - 10 + (i % 5) * 3 + rand() * 0.4, 0, park.z + (i < 5 ? -3 : 5));
-    c.rotation.y = Math.PI / 2 + (rand() - 0.5) * 0.1;
+    c.position.copy(bankA).addScaledVector(along, (i + 0.5) * 2.8).addScaledVector(normal, 3.8);
+    c.rotation.y = Math.atan2(-normal.z, normal.x) + Math.PI + (rand() - 0.5) * 0.06;
     scene.add(c);
   }
 
