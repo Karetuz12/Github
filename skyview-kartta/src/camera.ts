@@ -21,6 +21,10 @@ export class CameraRig {
     c.maxPolarAngle = 1.42;
     c.zoomToCursor = true;
     c.screenSpacePanning = false;
+    // Vetäminen kääntää näkymää (kuten mapmystayssä); oikea nappi / kaksi sormea siirtää ja zoomaa
+    c.mouseButtons = { LEFT: THREE.MOUSE.ROTATE, MIDDLE: THREE.MOUSE.DOLLY, RIGHT: THREE.MOUSE.PAN };
+    c.touches = { ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_PAN };
+    c.rotateSpeed = 0.6;
     c.addEventListener("start", () => (this.anim = null));
     this.jump(HOME.target, HOME.dist, HOME.polar, HOME.azim);
   }

@@ -104,3 +104,10 @@ export function heightAt(x: number, z: number): number {
   const north = THREE.MathUtils.smoothstep(-z, 600, 2400) * 70;
   return far * (n * 45 + 20 + north);
 }
+
+/**
+ * Iglutyyppi numeron mukaan: "tower" = torni, lasihuone ulokkeella; "terrace" = kattoterassi poreammeineen.
+ * VAHVISTA: mitkä numerot ovat kumpaakin? Kunnes lista on täytetty, tyypit vaihtelevat kuvituksena.
+ */
+export const IGLOO_TYPES: Record<number, "tower" | "terrace"> = {};
+export const iglooType = (n: number) => IGLOO_TYPES[n] ?? (n % 3 === 0 ? "terrace" : "tower");

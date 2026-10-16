@@ -117,7 +117,7 @@ function applyTime() {
   ambient.intensity = 0.7 * nightFactor;
   // Revontulet valaisevat lunta hieman vihreäksi
   if (auroraLevel > 0) hemi.color.lerp(new THREE.Color(0x4fe0a0), 0.12 * auroraLevel);
-  renderer.toneMappingExposure = THREE.MathUtils.lerp(1.0, 1.2, nightFactor);
+  renderer.toneMappingExposure = THREE.MathUtils.lerp(1.25, 1.2, nightFactor);
   fog.density = THREE.MathUtils.lerp(0.00036, 0.0006, nightFactor);
 
   setGlow(nightFactor);

@@ -7,10 +7,13 @@ import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js
 /** Materiaalit, joiden hehkua säädetään vuorokaudenajan mukaan. */
 export const mats = {
   wood: new THREE.MeshLambertMaterial({ color: 0x5a4130 }),
+  clad: new THREE.MeshLambertMaterial({ color: 0x38393e }), // SkyView'n tumma paanu/lautaverhous
+  deck: new THREE.MeshLambertMaterial({ color: 0xc9a473 }),
+  door: new THREE.MeshLambertMaterial({ color: 0x4a3a2c }),
   woodLight: new THREE.MeshLambertMaterial({ color: 0x6e5240 }),
   dark: new THREE.MeshLambertMaterial({ color: 0x3a3f48 }),
   snow: new THREE.MeshLambertMaterial({ color: 0xf2f5fa }),
-  glass: new THREE.MeshLambertMaterial({ color: 0x223040, emissive: 0xffb15e, emissiveIntensity: 0 }),
+  glass: new THREE.MeshLambertMaterial({ color: 0x86aaa6, emissive: 0xffb15e, emissiveIntensity: 0, flatShading: true }),
   window: new THREE.MeshLambertMaterial({ color: 0x1c2733, emissive: 0xffc27a, emissiveIntensity: 0 }),
   pool: new THREE.MeshLambertMaterial({ color: 0x3a8b93, emissive: 0x5fe8e2, emissiveIntensity: 0 }),
   fire: new THREE.MeshBasicMaterial({ color: 0xffa040 }),
@@ -19,7 +22,7 @@ export const mats = {
 };
 
 export function setGlow(night: number) {
-  mats.glass.emissiveIntensity = 0.15 + night * 0.95;
+  mats.glass.emissiveIntensity = night * 1.0;
   mats.window.emissiveIntensity = 0.1 + night * 0.75;
   mats.pool.emissiveIntensity = 0.35 + night * 0.6;
 }
@@ -51,18 +54,61 @@ function group(parts: Part[]): Part[] {
   return [...byMat].map(([mat, gs]) => ({ mat, geom: mergeGeometries(gs) }));
 }
 
-/** SkyView-iglu: puurunko, lasikupoli taivaalle päin. Sisäänkäynti +z. */
-export function iglooParts(): Part[] {
-  const glassRoof = new THREE.CylinderGeometry(3.4, 3.4, 6.2, 20, 1, false, 0, Math.PI / 2)
-    .rotateZ(Math.PI / 2)
-    .rotateY(Math.PI)
-    .translate(0, 3.1, -0.4);
+export type IglooType = "tower" | "terrace";
+
+/** Puolikas kahdeksankulmio (lasihuoneen ja ulokkeen muoto) seinästä ulospäin, +x-puolelle. */
+const halfOct = (rTop: number, rBot: number, h: number, y: number, open = false) =>
+  new THREE.CylinderGeometry(rTop, rBot, h, 4, 1, open, 0, Math.PI).translate(0, y + h / 2, 0);
+
+/**
+ * Seinään kiinnitetty lasihuone: uloke, lasiseinät ja särmikäs lasikatto (kuten SkyView'n iglut).
+ * s = puoli (+1 = +x, −1 = −x), wallX = seinän etäisyys keskeltä, y = lattian korkeus.
+ */
+function glassPod(s: number, wallX: number, y: number, z = 0): Part[] {
+  const place = (g: THREE.BufferGeometry) => (s < 0 ? g.rotateY(Math.PI) : g).translate(s * wallX, 0, z);
+  return [
+    { geom: place(halfOct(2.5, 2.3, 0.8, y - 0.8)), mat: mats.clad },
+    { geom: place(halfOct(2.55, 2.55, 0.14, y)), mat: mats.snow },
+    { geom: place(halfOct(2.25, 2.25, 1.35, y + 0.1, true)), mat: mats.glass },
+    { geom: place(halfOct(0.55, 2.25, 1.1, y + 1.45)), mat: mats.glass },
+  ];
+}
+
+/**
+ * SkyView-iglu. Sisäänkäynti ja terassi +z (tielle päin), lasihuone sivulla s.
+ * tower = kaksikerroksinen torni, lasihuone ulokkeella yläkerrassa (Igloo Suite?)
+ * terrace = alakerta isoin ikkunoin, kattoterassi poreammeineen + lasihuone (King Igloo?)
+ */
+export function iglooParts(type: IglooType, s: 1 | -1): Part[] {
+  if (type === "tower") {
+    return group([
+      { geom: box(5, 6.6, 5), mat: mats.clad },
+      { geom: box(5.25, 0.35, 5.25, 0, 6.6, 0), mat: mats.snow },
+      // Alakerran osa lasihuoneen alla, iso ikkuna
+      { geom: box(2.0, 3.1, 3.6, s * 3.5, 0, 0.3), mat: mats.clad },
+      { geom: box(1.3, 2.4, 0.08, s * 3.6, 0.2, 2.14), mat: mats.window },
+      { geom: box(1.0, 2.1, 0.08, -s * 1.2, 0, 2.54), mat: mats.door },
+      ...glassPod(s, 2.5, 3.9, 0.3),
+      // Puuterassi kaiteineen
+      { geom: box(4.4, 0.6, 2.4, -s * 0.8, 0, 3.7), mat: mats.deck },
+      { geom: box(4.4, 1.0, 0.1, -s * 0.8, 0.6, 4.85), mat: mats.deck },
+      { geom: box(0.1, 1.0, 2.4, -s * 3.0, 0.6, 3.7), mat: mats.deck },
+    ]);
+  }
   return group([
-    { geom: box(6.6, 3.1, 7.6), mat: mats.wood },
-    { geom: box(6.6, 2.6, 3.0, 0, 3.1, 2.3), mat: mats.wood },
-    { geom: box(7.0, 0.35, 3.4, 0, 5.7, 2.3), mat: mats.snow },
-    { geom: glassRoof, mat: mats.glass },
-    { geom: box(1.2, 2.1, 0.1, 1.6, 0, 3.82), mat: mats.window },
+    { geom: box(6, 3.2, 6), mat: mats.clad },
+    { geom: box(1.6, 2.2, 0.08, -s * 1.4, 0.5, 3.04), mat: mats.window },
+    { geom: box(1.6, 2.2, 0.08, s * 0.6, 0.5, 3.04), mat: mats.window },
+    // Yläkerta takaosassa, kattoterassi edessä
+    { geom: box(6, 3.0, 3, 0, 3.2, -1.5), mat: mats.clad },
+    { geom: box(6.25, 0.35, 3.25, 0, 6.2, -1.5), mat: mats.snow },
+    { geom: box(6.1, 0.25, 3.1, 0, 3.2, 1.55), mat: mats.snow },
+    { geom: box(6, 1.0, 0.1, 0, 3.45, 3.0), mat: mats.deck },
+    { geom: box(0.1, 1.0, 3, -s * 3.0, 3.45, 1.5), mat: mats.deck },
+    { geom: box(1.9, 0.8, 1.9, -s * 1.6, 3.45, 1.4), mat: mats.clad },
+    { geom: box(1.6, 0.06, 1.6, -s * 1.6, 4.26, 1.4), mat: mats.pool },
+    { geom: box(0.9, 1.9, 0.08, s * 0.3, 3.45, 0.02), mat: mats.window },
+    ...glassPod(s, 3.0, 3.45, -0.6),
   ]);
 }
 
@@ -75,7 +121,7 @@ export function cabinParts(): Part[] {
   s.closePath();
   const gableGlass = new THREE.ShapeGeometry(s).translate(0, 3, 2.86);
   return group([
-    { geom: box(4.6, 3, 5.6), mat: mats.wood },
+    { geom: box(4.6, 3, 5.6), mat: mats.clad },
     { geom: gable(6.2, 5.4, 2.4, 0, 3, 0).rotateY(Math.PI / 2), mat: mats.snow },
     { geom: gableGlass, mat: mats.glass },
     { geom: box(3.6, 2, 0.1, 0, 0.4, 2.85), mat: mats.glass },
@@ -169,9 +215,9 @@ export function car(): THREE.Group {
 /** Lumipeitteinen kuusi kolmesta kartiosta; värit kärkien mukaan (lunta ylhäällä). */
 export function treeGeometry(): THREE.BufferGeometry {
   const tiers = [
-    { r: 1.9, h: 3.4, y: 0.8 },
-    { r: 1.45, h: 3.0, y: 2.9 },
-    { r: 0.95, h: 2.6, y: 4.8 },
+    { r: 1.55, h: 4.0, y: 0.8 },
+    { r: 1.15, h: 3.6, y: 3.4 },
+    { r: 0.7, h: 3.2, y: 5.8 },
   ];
   const geoms = tiers.map((t) => new THREE.ConeGeometry(t.r, t.h, 7, 1, true).translate(0, t.y + t.h / 2, 0).toNonIndexed());
   geoms.push(new THREE.CylinderGeometry(0.15, 0.2, 1.2, 5, 1, true).translate(0, 0.6, 0).toNonIndexed());
@@ -187,7 +233,7 @@ export function treeGeometry(): THREE.BufferGeometry {
     // Jokaisen kerroksen alareuna jää tummaksi, yläosa lumiseksi (tykkylumi)
     const t = [...tiers].reverse().find((t) => y >= t.y - 0.01);
     if (!t || y < 0.79) c.copy(trunk);
-    else c.copy(dark).lerp(snow, 0.5 + 0.48 * Math.min(1, (y - t.y) / t.h));
+    else c.copy(dark).lerp(snow, 0.66 + 0.34 * Math.min(1, (y - t.y) / t.h));
     col.set([c.r, c.g, c.b], i * 3);
   }
   g.setAttribute("color", new THREE.BufferAttribute(col, 3));

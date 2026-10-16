@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { RoadMask, SITE, heightAt, layout, rng, toWorld, type Pt } from "./geo";
+import { RoadMask, SITE, heightAt, iglooType, layout, rng, toWorld, type Pt } from "./geo";
 import * as M from "./models";
 
 export type Quality = "high" | "low";
@@ -72,7 +72,19 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
       occupied.push({ p, r });
       return new THREE.Matrix4().compose(p, new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), face), new THREE.Vector3(1, 1, 1));
     });
-  instanced(M.iglooParts(), placeAll(layout.igloos, igloos, 7));
+  // Iglut neljänä instanssiryhmänä: tyyppi × lasihuoneen puoli. Lasihuone itäiselle sivulle, jotta se näkyy aloitusnäkymässä.
+  const iglooMats = placeAll(layout.igloos, igloos, 8);
+  const groups = new Map<string, THREE.Matrix4[]>();
+  layout.igloos.forEach(({ n }, i) => {
+    const face = new THREE.Euler().setFromRotationMatrix(iglooMats[i]).y;
+    const side: 1 | -1 = Math.cos(face) >= 0 ? 1 : -1; // paikallinen +x osoittaa itään kun cos(kierto) > 0
+    const key = `${iglooType(n)}:${side}`;
+    groups.set(key, [...(groups.get(key) ?? []), iglooMats[i]]);
+  });
+  for (const [key, list] of groups) {
+    const [type, side] = key.split(":");
+    instanced(M.iglooParts(type as M.IglooType, Number(side) as 1 | -1), list);
+  }
   instanced(M.cabinParts(), placeAll(layout.cabins, cabins, 5));
 
   // --- Päärakennus, Safari House, kodat ----------------------------------------

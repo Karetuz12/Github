@@ -33,6 +33,7 @@ export class UI {
     this.buildSearch();
     this.buildExplore();
     this.buildViewPop();
+    this.showHint();
     addEventListener("keydown", (e) => {
       if (e.key === "Escape") this.closeAll();
       if (e.key === "/" && document.activeElement?.tagName !== "INPUT") {
@@ -69,6 +70,16 @@ export class UI {
     const range = $<HTMLInputElement>("time");
     range.addEventListener("input", () => this.hooks.setMinutes(Number(range.value)));
     $("btn-now").onclick = () => this.hooks.setMinutes(null);
+  }
+
+  private showHint() {
+    const touch = matchMedia("(pointer: coarse)").matches;
+    const el = $("hint");
+    el.textContent = touch ? "Drag to turn · two fingers to move and zoom" : "Drag to turn · right-drag to move · scroll to zoom";
+    el.hidden = false;
+    const hide = () => el.classList.add("out");
+    setTimeout(hide, 6000);
+    $("scene").addEventListener("pointerdown", hide, { once: true });
   }
 
   setClock(minutes: number, date: Date, live: boolean, night: number) {
