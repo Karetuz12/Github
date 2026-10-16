@@ -101,14 +101,13 @@ export function iglooParts(): Part[] {
     { geom: box(UW, 3.0, 3.6, (X0 + U1) / 2, L, -1.2), mat: mats.clad },
     { geom: box(UW + 0.2, 0.3, 3.8, (X0 + U1) / 2, L + 3.0, -1.2), mat: mats.snow },
     { geom: box(0.9, 2.0, 0.08, -2.0, L + 0.1, 0.64), mat: mats.window },
-    // Terassi edessä: säleaidat ja poreallas
-    { geom: box(W, 1.05, 0.08, (X0 + X1) / 2, L, 3.0), mat: mats.deck },
+    // Terassi yläkerran edessä, vain lasihuoneen vasemmalla puolella: säleaidat ja poreallas
+    { geom: box(UW, 1.05, 0.08, (X0 + U1) / 2, L, 3.0), mat: mats.deck },
     { geom: box(0.08, 1.05, 2.4, X0, L, 1.8), mat: mats.deck },
-    { geom: box(0.08, 1.05, 1.2, X1, L, 2.4), mat: mats.deck },
     { geom: box(1.6, 0.85, 1.6, -1.8, L, 1.9), mat: mats.clad },
     { geom: box(1.35, 0.06, 1.35, -1.8, L + 0.86, 1.9), mat: mats.pool },
     // Lasikupolimakuuhuone ulokkeena oikealla
-    ...glassPod(U1, L + 0.55, -1.0),
+    ...glassPod(U1, L + 0.55, 0.3), // ulottuu alakerran etureunaan, terassi päättyy siihen
     // Sisäänkäynti: tasanne ja luiska vasemmalla
     { geom: box(0.08, 2.1, 1.0, X0 - 0.04, F, -1.4), mat: mats.door },
     { geom: box(1.6, 0.12, 2.8, X0 - 0.8, F - 0.12, -1.4), mat: mats.deck },
