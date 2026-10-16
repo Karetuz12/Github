@@ -72,7 +72,20 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
       occupied.push({ p, r });
       return new THREE.Matrix4().compose(p, new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), face), new THREE.Vector3(1, 1, 1));
     });
-  instanced(M.iglooParts(), placeAll(layout.igloos, igloos, 9));
+  // Iglut: lasikupoli aina pohjoiseen (paikallinen −x → −z). Silta osoittaa itään tai länteen
+  // sen mukaan, kummalla puolella tie on; itään päin olevat ovat peilikuvia (terassi länteen).
+  const northFacing = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), -Math.PI / 2);
+  const toWest: THREE.Matrix4[] = [];
+  const toEast: THREE.Matrix4[] = [];
+  for (const { n, pos } of layout.igloos) {
+    const p = toWorld(pos);
+    igloos.set(n, p);
+    occupied.push({ p, r: 9 });
+    const face = mask.facingRoad(p.x, p.z) ?? 0;
+    (Math.sin(face) > 0 ? toEast : toWest).push(new THREE.Matrix4().compose(p, northFacing, new THREE.Vector3(1, 1, 1)));
+  }
+  instanced(M.iglooParts(false), toWest);
+  instanced(M.iglooParts(true), toEast);
   instanced(M.cabinParts(), placeAll(layout.cabins, cabins, 5));
 
   // --- Päärakennus, Safari House, kodat ----------------------------------------

@@ -79,13 +79,13 @@ function glassPod(wx: number, y: number, z: number): Part[] {
  * ulokkeena yhden sivun keskellä (−x), viereisellä sivulla (−z) kapea yksikerroksinen osa,
  * jonka katolla terassi ja ulkoporeallas, ja vastakkaiselta sivulta (+z) pitkä sisäänkäyntisilta tielle.
  */
-export function iglooParts(): Part[] {
+export function iglooParts(mirror = false): Part[] {
   const F = 0.8; // paalut
   const L = F + 3.0; // yläkerran lattia
   const H = F + 6.2; // katto
   const posts: Part[] = [];
   for (const x of [-2.7, 2.7]) for (const z of [-4.5, -2.7, 0, 2.7]) posts.push({ geom: box(0.22, F, 0.22, x, 0, z), mat: mats.clad });
-  return group([
+  const parts = group([
     ...posts,
     // Kaksikerroksinen runko 6 × 6 m
     { geom: box(6, H - F, 6, 0, F), mat: mats.clad },
@@ -111,6 +111,22 @@ export function iglooParts(): Part[] {
     { geom: box(0.08, 1.0, 7, 0.4, F, 6.5), mat: mats.deck },
     { geom: box(0.08, 1.0, 7, 2.0, F, 6.5), mat: mats.deck },
   ]);
+  return mirror ? parts.map((p) => ({ ...p, geom: flipZ(p.geom) })) : parts;
+}
+
+/** Peilikuva z-akselin suhteen (kolmioiden kiertosuunta korjataan, ettei pintoja karsita). */
+function flipZ(g: THREE.BufferGeometry): THREE.BufferGeometry {
+  const out = g.clone().scale(1, 1, -1);
+  const pos = out.getAttribute("position") as THREE.BufferAttribute;
+  const nor = out.getAttribute("normal") as THREE.BufferAttribute;
+  for (const a of [pos, nor])
+    for (let t = 0; t < a.count; t += 3)
+      for (let k = 0; k < 3; k++) {
+        const v1 = a.getComponent(t + 1, k);
+        a.setComponent(t + 1, k, a.getComponent(t + 2, k));
+        a.setComponent(t + 2, k, v1);
+      }
+  return out;
 }
 
 /** Aurora Cabin: pieni harjakattoinen mökki, lasipääty +z. */
