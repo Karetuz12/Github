@@ -1,0 +1,7 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "installCommand": "cd skyview-kartta && npm ci",
+  "buildCommand": "cd skyview-kartta && npm run build",
+  "outputDirectory": "skyview-kartta/dist"
+}
