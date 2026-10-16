@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { RoadMask, SITE, heightAt, layout, rng, toWorld, type Pt } from "./geo";
+import { IGLOO_ENTRY, RoadMask, SITE, heightAt, layout, rng, toWorld, type Pt } from "./geo";
 import * as M from "./models";
 
 export type Quality = "high" | "low";
@@ -82,7 +82,8 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
     igloos.set(n, p);
     occupied.push({ p, r: 9 });
     const face = mask.facingRoad(p.x, p.z) ?? 0;
-    (Math.sin(face) > 0 ? toEast : toWest).push(new THREE.Matrix4().compose(p, northFacing, new THREE.Vector3(1, 1, 1)));
+    const east = IGLOO_ENTRY[n] ? IGLOO_ENTRY[n] === "east" : Math.sin(face) > 0;
+    (east ? toEast : toWest).push(new THREE.Matrix4().compose(p, northFacing, new THREE.Vector3(1, 1, 1)));
   }
   instanced(M.iglooParts(false), toWest);
   instanced(M.iglooParts(true), toEast);

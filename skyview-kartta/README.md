@@ -58,7 +58,7 @@ kortti näyttää kohteen kartalta.
 2. Iglu 25 on kartalla **"Centarius"**. Tähdistö kirjoitetaan *Centaurus*.
 3. Nimet on otettu uudemmasta (vaaleasta) kartasta: 8 = **Sagitta**, 13 = **Auriga**. Opaste-PDF:ssä
    on vielä vanhat (8 Sagittarius, joka on myös iglu 18, ja 13 Capella).
-4. Lasikupolit osoittavat pohjoiseen (vahvistettu). Silta on tien puolella (itä tai länsi), terassi vastakkaisella puolella – tarkista droonikuvasta.
+4. Lasikupolit osoittavat pohjoiseen (vahvistettu). Silta on tien puolella (itä tai länsi), terassi vastakkaisella puolella. Suunta päätellään lähimmästä tiestä; poikkeukset `src/geo.ts`:n `IGLOO_ENTRY`-listaan (nyt iglu 2).
 5. Ovatko soikion 31 mökkiä Aurora Cabinit? Mitä soikion keskellä on (kupoli, nuotio, porot)?
 6. Onko päärakennuksen viereinen "Hut with a fireplace" sama kuin Aurora Campin Aurora Kota?
 7. Missä sähköautojen latauspisteet ovat?

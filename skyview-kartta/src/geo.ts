@@ -105,3 +105,11 @@ export function heightAt(x: number, z: number): number {
   return far * (n * 45 + 20 + north);
 }
 
+
+/**
+ * Iglut, joiden sisäänkäyntisilta osoittaa eri suuntaan kuin lähimmän tien perusteella päättelisi.
+ * Lasikupoli on aina pohjoisessa; silta itään tai länteen, terassi vastakkaisella puolella.
+ */
+export const IGLOO_ENTRY: Record<number, "east" | "west"> = {
+  2: "west", // Scorpio (tarkistettu kartalta 16.10.2026)
+};
