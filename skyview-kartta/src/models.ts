@@ -19,6 +19,13 @@ export const mats = {
   linen: new THREE.MeshLambertMaterial({ color: 0xf3f1ec, emissive: 0xffd9a8, emissiveIntensity: 0 }),
   linenDark: new THREE.MeshLambertMaterial({ color: 0x3a3c40 }),
   led: new THREE.MeshBasicMaterial({ color: 0xffa24a }),
+  // Iglun olohuone (valokuvan mukaan); seinät ja kalusteet hehkuvat illalla lämpimästi
+  woodPanel: new THREE.MeshLambertMaterial({ color: 0x7a4e2c, emissive: 0xffa860, emissiveIntensity: 0 }),
+  woodDark: new THREE.MeshLambertMaterial({ color: 0x3a2416, emissive: 0xff9a50, emissiveIntensity: 0 }),
+  floorDark: new THREE.MeshLambertMaterial({ color: 0x3a2a20, emissive: 0xff9a50, emissiveIntensity: 0 }),
+  sofa: new THREE.MeshLambertMaterial({ color: 0x5a605c, emissive: 0xffb070, emissiveIntensity: 0 }),
+  rug: new THREE.MeshLambertMaterial({ color: 0x8a827c, emissive: 0xffb070, emissiveIntensity: 0 }),
+  winGlass: new THREE.MeshLambertMaterial({ color: 0xbcd2d8, transparent: true, opacity: 0.16, depthWrite: false }),
   dark: new THREE.MeshLambertMaterial({ color: 0x3a3f48 }),
   snow: new THREE.MeshLambertMaterial({ color: 0xf2f5fa }),
   glass: new THREE.MeshLambertMaterial({ color: 0x86aaa6, emissive: 0xffb15e, emissiveIntensity: 0, flatShading: true }),
@@ -37,7 +44,7 @@ export const mats = {
  * Piirretyt sisätilat ikkunoihin (kuten referenssissä: illalla näkee sisälle).
  * Kuva toistuu 8 m välein; päivällä himmeä heijastus, pimeällä hehkuu.
  */
-type Interior = "restaurant" | "lounge" | "sauna" | "living";
+type Interior = "restaurant" | "lounge" | "sauna";
 const interiorMats: THREE.MeshLambertMaterial[] = [];
 const interiorCache = new Map<Interior, THREE.MeshLambertMaterial>();
 function interiorMat(kind: Interior) {
@@ -62,70 +69,7 @@ function interiorMat(kind: Interior) {
     g.fillStyle = gr;
     g.fillRect(x - r, y - r, r * 2, r * 2);
   };
-  if (kind === "living") {
-    // Iglun olohuone valokuvan mukaan (kaikissa igluissa sama): tummat puupaneelit, rimakatto,
-    // sarvikruunu, harmaa sohva, taljatuolit, harmaa matto, beiget verhot ja harsot.
-    // Vasen puolisko = päätyikkuna (sohva ja taulu), oikea = ulkoseinän ikkuna (tuolit ja pöytä).
-    grad([[0, "#24170e"], [0.13, "#2e1d12"], [0.14, "#6a4326"], [0.55, "#8a5a33"], [0.72, "#6a4428"], [0.73, "#3a2a20"], [1, "#2e2018"]]);
-    g.fillStyle = "rgba(20,12,6,0.35)";
-    for (let x = 4; x < 512; x += 14) g.fillRect(x, 36, 2, 150); // seinäpaneelien saumat
-    g.fillStyle = "rgba(0,0,0,0.25)";
-    for (let x = 0; x < 512; x += 6) g.fillRect(x, 0, 2, 34); // rimakatto
-    g.fillStyle = "#8a827c"; // matto
-    g.fillRect(40, 205, 432, 48);
-    for (const x0 of [0, 256]) {
-      glow(x0 + 128, 44, 150, "rgba(255,200,130,0.6)"); // kruunun valo
-      // Sarvikruunu: tummat haarat ja kynttilät
-      g.strokeStyle = "#3a2616";
-      g.lineWidth = 3;
-      for (const dx of [-26, -13, 0, 13, 26]) {
-        g.beginPath();
-        g.moveTo(x0 + 128, 40);
-        g.quadraticCurveTo(x0 + 128 + dx * 0.6, 54, x0 + 128 + dx, 44);
-        g.stroke();
-      }
-      g.fillStyle = "#ffe6b0";
-      for (const dx of [-26, -13, 0, 13, 26]) g.fillRect(x0 + 127 + dx, 34, 3, 8);
-      // Verhot (beige) ja harsot (valkoinen) ikkunan reunoilla
-      g.fillStyle = "#a88c6e";
-      g.fillRect(x0 + 6, 36, 22, 214);
-      g.fillRect(x0 + 228, 36, 22, 214);
-      g.fillStyle = "rgba(236,232,224,0.6)";
-      g.fillRect(x0 + 28, 36, 12, 214);
-      g.fillRect(x0 + 216, 36, 12, 214);
-    }
-    // Vasen: taulu, sohva ja torkkupeitto
-    g.fillStyle = "#151210";
-    g.fillRect(70, 72, 62, 46);
-    g.fillStyle = "#b8b4ac";
-    g.fillRect(74, 76, 54, 38);
-    g.fillStyle = "#5a5f5b";
-    g.fillRect(48, 150, 168, 52);
-    g.fillRect(48, 132, 168, 26);
-    g.fillStyle = "#4c514d";
-    for (const x of [48, 104, 160]) g.fillRect(x + 2, 136, 52, 20);
-    g.fillStyle = "#efe6d6";
-    g.fillRect(170, 146, 34, 44);
-    // Oikea: kaksi taljatuolia ja pöytä
-    for (const x of [300, 400]) {
-      g.fillStyle = "#3a2416";
-      g.fillRect(x, 150, 8, 58);
-      g.fillRect(x + 50, 150, 8, 58);
-      g.fillRect(x, 140, 58, 12);
-      g.fillStyle = "#f2ece2";
-      g.beginPath();
-      g.ellipse(x + 29, 168, 32, 16, 0, 0, Math.PI * 2);
-      g.fill();
-    }
-    g.fillStyle = "#5a3a24";
-    g.beginPath();
-    g.ellipse(380, 170, 14, 5, 0, 0, Math.PI * 2);
-    g.fill();
-    g.fillRect(378, 170, 4, 36);
-    g.fillStyle = "#e0b45a";
-    g.fillRect(374, 158, 4, 10);
-    g.fillRect(382, 160, 3, 8);
-  } else if (kind === "sauna") {
+  if (kind === "sauna") {
     grad([[0, "#5a3416"], [0.5, "#b8702e"], [1, "#6a3a18"]]);
     g.fillStyle = "rgba(60,30,10,0.35)";
     for (let y = 8; y < 256; y += 14) g.fillRect(0, y, 512, 2); // paneelit
@@ -175,7 +119,7 @@ function interiorMat(kind: Interior) {
   }
   // Ikkunanpuitteet
   g.fillStyle = "#120d0a";
-  for (let x = 0; x < 512; x += kind === "living" ? 256 : 128) g.fillRect(x, 0, 6, 256);
+  for (let x = 0; x < 512; x += 128) g.fillRect(x, 0, 6, 256);
   g.fillRect(0, 0, 512, 6);
   g.fillRect(0, 250, 512, 6);
   const tex = new THREE.CanvasTexture(c);
@@ -185,15 +129,6 @@ function interiorMat(kind: Interior) {
   interiorCache.set(kind, m);
   interiorMats.push(m);
   return m;
-}
-
-/** Iglun ikkunataso: näyttää sisätilakuvasta vaakavälin u0…u1 (toistettavaan iglumalliin). */
-function interiorGeom(kind: Interior, w: number, h: number, x: number, y: number, z: number, rotY: number, u0: number, u1: number): Part {
-  const geo = new THREE.PlaneGeometry(w, h);
-  const uv = geo.getAttribute("uv");
-  for (let i = 0; i < uv.count; i++) uv.setX(i, u0 + uv.getX(i) * (u1 - u0));
-  geo.rotateY(rotY).translate(x, y + h / 2, z);
-  return { geom: geo, mat: interiorMat(kind) };
 }
 
 /** Ikkunataso, jossa sisätilakuva toistuu leveyden mukaan (8 m / kuva). rotY: 0 = kohti +z. */
@@ -210,6 +145,8 @@ export function setGlow(night: number) {
   mats.glass.emissiveIntensity = night * 1.0;
   mats.domeGlass.emissiveIntensity = night * 0.4;
   mats.linen.emissiveIntensity = night * 0.55;
+  mats.woodPanel.emissiveIntensity = night * 0.32;
+  for (const m of [mats.woodDark, mats.floorDark, mats.sofa, mats.rug]) m.emissiveIntensity = night * 0.22;
   mats.window.emissiveIntensity = 0.1 + night * 0.75;
   mats.pool.emissiveIntensity = 0.35 + night * 0.6;
 }
@@ -244,6 +181,77 @@ function group(parts: Part[]): Part[] {
 /** Puolikas kahdeksankulmio: litteä puoli tasossa x = 0, kaari +x-suuntaan. */
 const halfOct = (rTop: number, rBot: number, h: number, y: number, open = false) =>
   new THREE.CylinderGeometry(rTop, rBot, h, 4, 1, open, 0, Math.PI).translate(0, y + h / 2, 0);
+
+/** Seinä tasossa x = c tai z = c, valinnainen aukko [a0, a1, y0, y1] (ikkuna). */
+function wall(axis: "x" | "z", c: number, a0: number, a1: number, y0: number, y1: number, hole: number[] | null, t: number, mat: THREE.Material): Part[] {
+  const out: Part[] = [];
+  const add = (b0: number, b1: number, h0: number, h1: number) => {
+    if (b1 - b0 < 0.001 || h1 - h0 < 0.001) return;
+    const len = b1 - b0, mid = (b0 + b1) / 2;
+    out.push({ geom: axis === "x" ? box(t, h1 - h0, len, c, h0, mid) : box(len, h1 - h0, t, mid, h0, c), mat });
+  };
+  if (!hole) add(a0, a1, y0, y1);
+  else {
+    const [b0, b1, h0, h1] = hole;
+    add(a0, b0, y0, y1);
+    add(b1, a1, y0, y1);
+    add(b0, b1, y0, h0);
+    add(b0, b1, h1, y1);
+  }
+  return out;
+}
+
+/**
+ * Iglun olohuone terassisiiven sisällä (valokuvan mukaan, kaikissa igluissa sama): kulmaikkunat
+ * ulkokulmassa, tummat puupaneelit, harmaa sohva sisäseinää vasten, kaksi taljatuolia ikkunoiden
+ * edessä, pyöreä pöytä, matto, taulu ja sarvikruunu. Huone x −3…3, z −5,8…−3, lattia F, katto L.
+ */
+function livingRoom(F: number, L: number): Part[] {
+  const winX = [-5.55, -3.55, F + 0.3, F + 2.6]; // päätyikkuna (−x)
+  const winZ = [-2.85, -0.65, F + 0.3, F + 2.6]; // ulkoseinän ikkuna (−z)
+  const sheep = (x: number, z: number) => new THREE.SphereGeometry(0.4, 10, 6).scale(1, 0.32, 0.95).translate(x, F + 0.62, z);
+  const chair = (x: number, z: number, backDx: number, backDz: number): Part[] => [
+    { geom: box(0.7, 0.1, 0.7, x, F + 0.45, z), mat: mats.woodDark },
+    ...[[-0.3, -0.3], [-0.3, 0.3], [0.3, -0.3], [0.3, 0.3]].map(([dx, dz]) => ({ geom: box(0.08, 0.45, 0.08, x + dx, F, z + dz), mat: mats.woodDark })),
+    { geom: box(backDx ? 0.1 : 0.7, 0.55, backDz ? 0.1 : 0.7, x + backDx, F + 0.55, z + backDz), mat: mats.woodDark },
+    { geom: sheep(x, z), mat: mats.linen },
+  ];
+  return [
+    // Ulkoseinät (tumma verhous ulkona, puupaneeli sisällä), ikkunoissa lasi
+    ...wall("x", -2.97, -5.8, -3, F, L, winX, 0.06, mats.clad),
+    ...wall("x", -2.91, -5.74, -3.06, F, L, winX, 0.06, mats.woodPanel),
+    ...wall("z", -5.77, -3, 3, F, L, winZ, 0.06, mats.clad),
+    ...wall("z", -5.71, -2.94, 2.94, F, L, winZ, 0.06, mats.woodPanel),
+    ...wall("x", 2.97, -5.8, -3, F, L, null, 0.06, mats.clad),
+    ...wall("x", 2.91, -5.74, -3.06, F, L, null, 0.06, mats.woodPanel),
+    ...wall("z", -3.06, -2.94, 2.94, F, L, null, 0.06, mats.woodPanel), // rungon puoleinen seinä
+    { geom: box(0.02, winX[3] - winX[2], winX[1] - winX[0], -2.98, winX[2], (winX[0] + winX[1]) / 2), mat: mats.winGlass },
+    { geom: box(winZ[1] - winZ[0], winZ[3] - winZ[2], 0.02, (winZ[0] + winZ[1]) / 2, winZ[2], -5.78), mat: mats.winGlass },
+    // Lattia, katto, matto
+    { geom: box(6, 0.08, 2.8, 0, F, -4.4), mat: mats.floorDark },
+    { geom: box(5.9, 0.08, 2.7, 0, L - 0.1, -4.4), mat: mats.woodDark },
+    { geom: box(2.6, 0.02, 1.7, -0.9, F + 0.08, -4.5), mat: mats.rug },
+    // Sohva sisäseinää vasten, torkkupeitto ja taulu
+    { geom: box(2.2, 0.42, 0.85, 1.5, F + 0.08, -3.55), mat: mats.sofa },
+    { geom: box(2.2, 0.5, 0.22, 1.5, F + 0.5, -3.2), mat: mats.sofa },
+    { geom: box(0.18, 0.62, 0.85, 0.4, F + 0.08, -3.55), mat: mats.sofa },
+    { geom: box(0.18, 0.62, 0.85, 2.6, F + 0.08, -3.55), mat: mats.sofa },
+    { geom: box(0.55, 0.06, 0.75, 2.15, F + 0.5, -3.6), mat: mats.linen },
+    { geom: box(0.9, 0.62, 0.03, 1.5, F + 1.45, -3.1), mat: mats.linenDark },
+    { geom: box(0.8, 0.52, 0.03, 1.5, F + 1.5, -3.12), mat: mats.linen },
+    // Taljatuolit kulmaikkunoiden edessä ja pieni pöytä
+    ...chair(-2.15, -4.4, 0.32, 0),
+    ...chair(-1.6, -5.15, 0, 0.32),
+    { geom: new THREE.CylinderGeometry(0.22, 0.22, 0.5, 12).translate(-2.4, F + 0.25, -5.35), mat: mats.woodDark },
+    // Sarvikruunu: haarat ja kynttilävalot
+    { geom: box(0.04, 0.4, 0.04, -0.9, L - 0.5, -4.5), mat: mats.woodDark },
+    { geom: new THREE.CylinderGeometry(0.38, 0.32, 0.06, 10).translate(-0.9, L - 0.55, -4.5), mat: mats.woodDark },
+    ...[0, 1, 2, 3, 4].map((k) => {
+      const a = (k / 5) * Math.PI * 2;
+      return { geom: box(0.05, 0.12, 0.05, -0.9 + Math.cos(a) * 0.34, L - 0.49, -4.5 + Math.sin(a) * 0.34), mat: mats.led };
+    }),
+  ];
+}
 
 /**
  * Ulokkeena leijuva lasikupolimakuuhuone: tumma umpikaide/pohja, matalat lasiseinät ja särmikäs
@@ -285,15 +293,13 @@ export function iglooParts(mirror = false): Part[] {
     // Kaksikerroksinen runko 6 × 6 m
     { geom: box(6, H - F, 6, 0, F), mat: mats.clad },
     { geom: box(6.2, 0.35, 6.2, 0, H), mat: mats.snow },
-    // Alakerran ainoat ikkunat: isot kulmaikkunat terassisiiven ulkokulmassa (pääty −x ja ulkoseinä −z),
-    // takana olohuone. Muita ikkunoita ei ole; yläkerrassa vain makuuhuoneen lasikupoli.
-    interiorGeom("living", 2.0, 2.3, -3.05, F + 0.3, -4.55, -Math.PI / 2, 0, 0.5),
-    interiorGeom("living", 2.2, 2.3, -1.75, F + 0.3, -5.85, Math.PI, 0.5, 1),
+    // Alakerran ainoat ikkunat ovat terassisiiven olohuoneen kulmaikkunat (ks. livingRoom);
+    // yläkerrassa vain makuuhuoneen lasikupoli.
     // Lasikupolimakuuhuone ulokkeena (−x-sivun keskellä)
     ...glassPod(-3, L + 0.55, 0),
     // Kapea yksikerroksinen osa (−z) rungon levyisenä, seinät samassa linjassa rungon kanssa;
     // katolla terassi säleaitoineen ja poreallas
-    { geom: box(6.0, 3.0, 2.8, 0, F, -4.4), mat: mats.clad },
+    ...livingRoom(F, L),
     { geom: box(6.0, 0.12, 2.8, 0, L, -4.4), mat: mats.snow },
     { geom: box(6.0, 1.0, 0.08, 0, L, -5.76), mat: mats.deck },
     { geom: box(0.08, 1.0, 2.8, -2.96, L, -4.4), mat: mats.deck },
