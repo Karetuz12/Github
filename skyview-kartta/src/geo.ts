@@ -31,8 +31,12 @@ export class RoadMask {
 
   static async load(url: string): Promise<{ mask: RoadMask; image: HTMLImageElement }> {
     const image = new Image();
-    image.src = url;
-    await image.decode();
+    // onload eikä decode(): decode voi jäädä odottamaan taustavälilehdessä
+    await new Promise((res, rej) => {
+      image.onload = res;
+      image.onerror = rej;
+      image.src = url;
+    });
     const c = document.createElement("canvas");
     c.width = image.naturalWidth;
     c.height = image.naturalHeight;

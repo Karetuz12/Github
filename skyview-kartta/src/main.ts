@@ -10,7 +10,7 @@ import { setGlow } from "./models";
 import { Sky, skyColors } from "./sky";
 import { helsinkiDate, helsinkiMinutes, sunPosition } from "./sun";
 import { UI } from "./ui";
-import { animateSmoke, buildWorld, type Quality } from "./world";
+import { animateDeer, animateSmoke, buildWorld, type Quality } from "./world";
 import "./style.css";
 
 const params = new URLSearchParams(location.search);
@@ -23,6 +23,10 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, quality === "high" ? 1.75 : 1.
 renderer.setSize(innerWidth, innerHeight);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.0;
+if (quality === "high") {
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+}
 
 const scene = new THREE.Scene();
 const fog = new THREE.FogExp2(0x0a1226, 0.00055);
@@ -32,9 +36,22 @@ scene.add(sky.mesh);
 
 const hemi = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
 const sun = new THREE.DirectionalLight(0xffffff, 1);
-const moon = new THREE.DirectionalLight(0x9fb4ff, 0.3);
-const ambient = new THREE.AmbientLight(0x6878a8, 0);
-moon.position.set(-0.5, 0.6, 0.6);
+const moon = new THREE.DirectionalLight(0x8ea8ff, 0.3);
+const ambient = new THREE.AmbientLight(0x3a52b0, 0);
+moon.position.set(-0.5, 0.6, 0.6).multiplyScalar(700);
+// Varjot alueelta: aurinko päivällä, kuu yöllä (vain tarkassa laadussa)
+for (const l of [sun, moon]) {
+  const c = l.shadow.camera;
+  c.left = -240;
+  c.right = 240;
+  c.top = 270;
+  c.bottom = -270;
+  c.near = 10;
+  c.far = 1600;
+  l.shadow.mapSize.set(2048, 2048);
+  l.shadow.bias = -0.0004;
+  l.shadow.normalBias = 0.6;
+}
 scene.add(hemi, sun, moon, ambient);
 
 const rig = new CameraRig(canvas);
@@ -107,12 +124,17 @@ function applyTime() {
   u.uAurora.value = auroraLevel;
 
   fog.color.copy(c.horizon);
-  sun.position.copy(dir);
+  sun.position.copy(dir).multiplyScalar(700);
+  if (quality === "high") {
+    sun.castShadow = elevation > 1;
+    moon.castShadow = !sun.castShadow;
+  }
   sun.intensity = THREE.MathUtils.smoothstep(elevation, -2, 10) * 2.2;
   sun.color.set(elevation < 6 ? 0xffd2a8 : 0xfff4e6);
-  hemi.color.copy(c.zenith).lerp(new THREE.Color(0xffffff), 0.35);
-  hemi.groundColor.copy(c.horizon).multiplyScalar(0.6);
-  hemi.intensity = THREE.MathUtils.lerp(2.4, 0.65, nightFactor);
+  // Yöllä syvempi sininen sävy (referenssin mukaan)
+  hemi.color.copy(c.zenith).lerp(new THREE.Color(0xffffff), THREE.MathUtils.lerp(0.35, 0.12, nightFactor)).lerp(new THREE.Color(0x3556c8), 0.55 * nightFactor);
+  hemi.groundColor.copy(c.horizon).multiplyScalar(0.6).lerp(new THREE.Color(0x1a2a5c), 0.5 * nightFactor);
+  hemi.intensity = THREE.MathUtils.lerp(2.4, 0.6, nightFactor);
   moon.intensity = 0.9 * nightFactor;
   ambient.intensity = 0.7 * nightFactor;
   // Revontulet valaisevat lunta hieman vihreäksi
@@ -123,6 +145,7 @@ function applyTime() {
   setGlow(nightFactor);
   const lampMat = world.lamps.material as THREE.PointsMaterial;
   lampMat.opacity = THREE.MathUtils.smoothstep(nightFactor, 0.2, 0.7);
+  (world.pools.material as THREE.MeshBasicMaterial).opacity = 0.55 * THREE.MathUtils.smoothstep(nightFactor, 0.2, 0.8);
   bloom.strength = THREE.MathUtils.lerp(0.2, 0.6, nightFactor);
   bloom.threshold = THREE.MathUtils.lerp(0.95, 0.7, nightFactor);
 
@@ -140,11 +163,14 @@ addEventListener("resize", () => {
 });
 
 const clock = new THREE.Clock();
+let lastT = 0;
 renderer.setAnimationLoop(() => {
   const t = clock.getElapsedTime();
   sky.uniforms.uTime.value = t;
   sky.mesh.position.copy(rig.camera.position);
   animateSmoke(world.smoke, t);
+  animateDeer(world.deer, t, Math.min(0.1, t - lastT));
+  lastT = t;
   rig.update(performance.now());
   composer.render();
   ui.updatePins();

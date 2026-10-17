@@ -104,7 +104,7 @@ export const PLACES: Place[] = [
       { label: "Call CULTA", href: tel(CONTACT.cultaPhone) },
     ],
     image: "/images/culta.webp",
-    at: at(B.reception.pos, 8, 10, -7),
+    at: at(B.reception.pos, 8, 10, -3),
     view: { dist: 70, polar: 0.85 },
   },
   {

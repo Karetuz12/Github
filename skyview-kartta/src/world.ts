@@ -10,12 +10,37 @@ export type WorldInfo = {
   cabins: Map<number, THREE.Vector3>;
   lamps: THREE.Points;
   smoke: THREE.Points;
+  /** Lyhtyjen ja iglujen lämmin valo lumella (näkyy pimeällä). */
+  pools: THREE.InstancedMesh;
+  /** Aitauksissa liikkuvat porot. */
+  deer: Deer[];
+};
+
+/** Poro aitauksessaan: kävelee uuteen kohtaan, kääntyy kulkusuuntaan ja laiduntaa välillä. */
+export type Deer = {
+  g: THREE.Object3D;
+  pick: () => { x: number; z: number };
+  tx: number;
+  tz: number;
+  wait: number;
+  speed: number;
+  phase: number;
 };
 
 const deg = Math.PI / 180;
 
 export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLImageElement, quality: Quality): WorldInfo {
   const rand = rng(7);
+  const deer: Deer[] = [];
+  const shadows = quality === "high";
+  const shade = (o: THREE.Object3D, cast = true, receive = true) => {
+    if (!shadows) return o;
+    o.traverse((m) => {
+      m.castShadow = cast;
+      m.receiveShadow = receive;
+    });
+    return o;
+  };
 
   // --- Maa: lumi + aurattu tiestö opastekartasta -------------------------------
   const roadTex = new THREE.Texture(roadsImage);
@@ -38,14 +63,33 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
         "#include <begin_vertex>\nvec4 wp = modelMatrix * vec4(transformed, 1.0);\nvRoadUv = wp.xz / uSite + 0.5;\nvXZ = wp.xz;",
       );
     sh.fragmentShader = sh.fragmentShader
-      .replace("#include <common>", "#include <common>\nuniform sampler2D uRoads;\nvarying vec2 vRoadUv;\nvarying vec2 vXZ;")
+      .replace("#include <common>", "#include <common>\nuniform sampler2D uRoads;\nuniform vec2 uSite;\nvarying vec2 vRoadUv;\nvarying vec2 vXZ;")
       .replace(
         "#include <color_fragment>",
         `#include <color_fragment>
-        float road = texture2D(uRoads, vec2(vRoadUv.x, 1.0 - vRoadUv.y)).r;
-        if (vRoadUv.x < 0.0 || vRoadUv.x > 1.0 || vRoadUv.y < 0.0 || vRoadUv.y > 1.0) road = 0.0;
-        float tracks = 0.94 + 0.06 * sin(vXZ.x * 1.7 + vXZ.y * 0.9);
-        diffuseColor.rgb *= mix(vec3(1.0), vec3(0.80, 0.82, 0.88) * tracks, road);
+        vec2 ruv = vec2(vRoadUv.x, 1.0 - vRoadUv.y);
+        bool inSite = vRoadUv.x >= 0.0 && vRoadUv.x <= 1.0 && vRoadUv.y >= 0.0 && vRoadUv.y <= 1.0;
+        float road = inSite ? texture2D(uRoads, ruv).r : 0.0;
+        // Etäisyys tien reunaan naapuripisteistä (maski on lähes kaksiarvoinen):
+        // lo = pienin arvo r metrin säteellä (tien sisällä reunan lähellä), hi = suurin (tien ulkopuolella)
+        float lo1 = 1.0, lo2 = 1.0, hi = 0.0;
+        if (inSite) {
+          for (int k = 0; k < ${quality === "high" ? 8 : 6}; k++) {
+            float a = float(k) * ${quality === "high" ? "0.7854" : "1.0472"};
+            vec2 dir = vec2(cos(a), sin(a)) / uSite;
+            lo1 = min(lo1, texture2D(uRoads, ruv + dir * 1.3).r);
+            lo2 = min(lo2, texture2D(uRoads, ruv + dir * 1.75).r);
+            hi = max(hi, texture2D(uRoads, ruv + dir * 1.8).r);
+          }
+        }
+        // Aurattu tie: hieman tummempi ja sinertävä
+        diffuseColor.rgb *= mix(vec3(1.0), vec3(0.85, 0.87, 0.93), road);
+        // Renkaanjäljet: kaksi tummaa uraa noin 1,5 m tien reunoista
+        float rut = road * step(0.5, lo1) * (1.0 - step(0.5, lo2));
+        diffuseColor.rgb *= 1.0 - 0.12 * rut;
+        // Reunavalli: kirkas lumiharja heti tien ulkopuolella, varjoviiva reunassa
+        float bank = (1.0 - road) * hi;
+        diffuseColor.rgb *= 1.0 + 0.1 * bank;
         // Kaukainen metsä: tummempi pohja horisonttiin (puut eivät ulotu sinne asti)
         float far = smoothstep(${quality === "high" ? "900.0, 1500.0" : "550.0, 900.0"}, length(vXZ));
         diffuseColor.rgb *= mix(1.0, 0.62, far);`,
@@ -66,7 +110,7 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
     sp0.setY(i, surfaceAt(x, z) - 0.4 * (1 - THREE.MathUtils.smoothstep(edge, 0, 8)));
   }
   siteGeo.computeVertexNormals();
-  scene.add(new THREE.Mesh(siteGeo, groundMat));
+  scene.add(shade(new THREE.Mesh(siteGeo, groundMat), false, true));
   const hc = toWorld(layout.buildings.reception.pos);
 
   // --- Iglut, mökit ------------------------------------------------------------
@@ -79,7 +123,7 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
       const im = new THREE.InstancedMesh(geom, mat, mats.length);
       mats.forEach((m, i) => im.setMatrixAt(i, m));
       im.computeBoundingSphere();
-      scene.add(im);
+      scene.add(shade(im));
     }
   };
   const placeAll = (items: { n: number; pos: Pt }[], out: Map<number, THREE.Vector3>, r: number) =>
@@ -116,7 +160,7 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
     p.y = surfaceAt(p.x, p.z);
     obj.position.copy(p);
     obj.rotation.y = -angle * deg;
-    scene.add(obj);
+    scene.add(shade(obj));
     occupied.push({ p, r });
     return obj;
   };
@@ -158,12 +202,14 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
     };
     // Raivaa metsä aitauksen muodon mukaan
     for (let t = -1; t <= 1; t += 0.5) occupied.push({ p: new THREE.Vector3(c.x + t * (a - b) * ca, 0, c.z + t * (a - b) * sa), r: b * (1 + egg) + 3 });
+    const pick = () => edge(Math.random() * Math.PI * 2, 0.15 + Math.random() * 0.65);
     for (let i = 0; i < count; i++) {
       const d = M.reindeer();
       const e = edge(rand() * Math.PI * 2, 0.25 + rand() * 0.5);
       d.position.set(e.x, surfaceAt(e.x, e.z), e.z);
       d.rotation.y = rand() * Math.PI * 2;
-      scene.add(d);
+      scene.add(shade(d, true, false));
+      deer.push({ g: d, pick, tx: e.x, tz: e.z, wait: rand() * 6, speed: 0.5 + rand() * 0.4, phase: rand() * 10 });
     }
     // Aita: tolpat ~1,5 m välein
     const per = Math.PI * (3 * (a + b) - Math.sqrt((3 * a + b) * (a + 3 * b)));
@@ -198,7 +244,7 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
     c.position.copy(bankA).addScaledVector(along, (i + 0.5) * 2.8).addScaledVector(normal, 3.8);
     c.position.y = surfaceAt(c.position.x, c.position.z);
     c.rotation.y = Math.atan2(-normal.z, normal.x) + Math.PI + (rand() - 0.5) * 0.06; // keula valliin päin
-    scene.add(c);
+    scene.add(shade(c, true, false));
   }
 
   // Soikion keskiosa on aukea (opastekartassa ei puita)
@@ -216,13 +262,18 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
 
   // --- Metsä ---------------------------------------------------------------------
   const trees: THREE.Matrix4[] = [];
+  const pines: THREE.Matrix4[] = [];
   const m = new THREE.Matrix4();
   const q = new THREE.Quaternion();
   const s = new THREE.Vector3();
   const addTree = (x: number, z: number, scale: number) => {
     q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), rand() * Math.PI * 2);
     s.set(scale * (0.85 + rand() * 0.3), scale, scale * (0.85 + rand() * 0.3));
-    trees.push(m.compose(new THREE.Vector3(x, surfaceAt(x, z) - 0.2, z), q, s).clone());
+    // Osa puista mäntyjä; kuuset kapeita ja korkeuden vaihtelu suurta
+    const pine = rand() < 0.12;
+    if (!pine) s.x = s.z = s.x * 0.7;
+    else s.y *= 0.9 + rand() * 0.3;
+    (pine ? pines : trees).push(m.compose(new THREE.Vector3(x, surfaceAt(x, z) - 0.2, z), q, s).clone());
   };
   const free = (x: number, z: number) => {
     if (mask.near(x, z, 4) > 0.15) return false;
@@ -239,20 +290,26 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
         const r = Math.hypot(px, pz);
         const site = inSiteBox(px, pz);
         if (r0 === 0 ? !(site || r < r1) : site || r < r0 || r >= r1) continue;
-        if (rand() < 0.12) continue; // pieniä aukkoja
+        if (rand() < 0.18) continue; // pieniä aukkoja
         if (site && !free(px, pz)) continue;
         addTree(px, pz, sizeMin + rand() * (sizeMax - sizeMin));
       }
   };
   const hi = quality === "high";
-  scatter(0, 260, hi ? 4.6 : 6, 0.55, 1.25); // alue ja lähiympäristö
-  scatter(260, hi ? 700 : 520, hi ? 7 : 10, 0.7, 1.3);
+  scatter(0, 260, hi ? 6.2 : 7.5, 0.6, 1.35); // alue ja lähiympäristö: harva, jotta lunta näkyy välistä
+  scatter(260, hi ? 700 : 520, hi ? 7.5 : 10, 0.7, 1.35);
   if (hi) scatter(700, 1300, 13, 0.9, 1.5);
 
-  const treeMesh = new THREE.InstancedMesh(M.treeGeometry(), new THREE.MeshLambertMaterial({ vertexColors: true }), trees.length);
-  trees.forEach((t, i) => treeMesh.setMatrixAt(i, t));
-  treeMesh.computeBoundingSphere();
-  scene.add(treeMesh);
+  const treeMat = new THREE.MeshLambertMaterial({ vertexColors: true });
+  for (const [geo, list] of [
+    [M.treeGeometry(), trees],
+    [M.pineGeometry(), pines],
+  ] as const) {
+    const mesh = new THREE.InstancedMesh(geo, treeMat, list.length);
+    list.forEach((t, i) => mesh.setMatrixAt(i, t));
+    mesh.computeBoundingSphere();
+    scene.add(shade(mesh, true, false));
+  }
 
   // --- Tievalot ----------------------------------------------------------------------
   const lampPts: number[] = [];
@@ -304,7 +361,66 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   smoke.frustumCulled = false;
   scene.add(smoke);
 
-  return { igloos, cabins, lamps, smoke };
+  // --- Lämmin valo lumella: lyhtyjen alla ja iglujen lasikupolien edessä ---------------
+  const poolAt: { p: THREE.Vector3; r: number }[] = [
+    ...lampsAt.map((l) => ({ p: l, r: 7 })),
+    ...[...igloos.values()].map((p) => ({ p: p.clone().add(new THREE.Vector3(0, 0, -5.5)), r: 6 })),
+    ...[...cabins.values()].map((p) => ({ p, r: 5 })),
+  ];
+  const pools = new THREE.InstancedMesh(
+    new THREE.PlaneGeometry(2, 2).rotateX(-Math.PI / 2),
+    new THREE.MeshBasicMaterial({
+      map: glowSprite(),
+      color: 0xffb066,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      opacity: 0,
+      polygonOffset: true,
+      polygonOffsetFactor: -2,
+    }),
+    poolAt.length,
+  );
+  poolAt.forEach(({ p, r }, i) => {
+    const y = surfaceAt(p.x, p.z) + 0.08;
+    pools.setMatrixAt(i, new THREE.Matrix4().compose(new THREE.Vector3(p.x, y, p.z), new THREE.Quaternion(), new THREE.Vector3(r, 1, r)));
+  });
+  pools.renderOrder = 1;
+  scene.add(pools);
+
+  return { igloos, cabins, lamps, smoke, pools, deer };
+}
+
+export function animateDeer(list: Deer[], t: number, dt: number) {
+  for (const d of list) {
+    const p = d.g.position;
+    const dx = d.tx - p.x;
+    const dz = d.tz - p.z;
+    const dist = Math.hypot(dx, dz);
+    if (d.wait > 0) {
+      // Laiduntaa: pää alhaalla (koko poro kallistuu hieman eteen)
+      d.wait -= dt;
+      d.g.rotation.z = THREE.MathUtils.lerp(d.g.rotation.z, -0.22 + 0.03 * Math.sin(t * 2 + d.phase), 0.05);
+      if (d.wait <= 0) {
+        const n = d.pick();
+        d.tx = n.x;
+        d.tz = n.z;
+      }
+    } else if (dist < 0.2) {
+      d.wait = 3 + Math.random() * 9;
+    } else {
+      const step = Math.min(dist, d.speed * dt);
+      p.x += (dx / dist) * step;
+      p.z += (dz / dist) * step;
+      p.y = surfaceAt(p.x, p.z) + Math.abs(Math.sin(t * 6 + d.phase)) * 0.04;
+      // Käänny pehmeästi kulkusuuntaan (keula +x)
+      const want = Math.atan2(-dz, dx);
+      let diff = want - d.g.rotation.y;
+      diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+      d.g.rotation.y += diff * Math.min(1, dt * 3);
+      d.g.rotation.z = THREE.MathUtils.lerp(d.g.rotation.z, 0, 0.1);
+    }
+  }
 }
 
 export function animateSmoke(smoke: THREE.Points, t: number) {

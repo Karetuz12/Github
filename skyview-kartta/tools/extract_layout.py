@@ -64,6 +64,11 @@ for b in badges:
         igloos.append({"n": n, "name": NAMES.get(n, ""), "pos": rel(x, lab["top"] - 20)})
 
 igloos.sort(key=lambda i: i["n"])
+# Käsin tehdyt korjaukset opastekarttaan (käyttäjä 17.10.2026): iglut 22–26 hieman itään
+IGLOO_SHIFT = {22: (24, 0), 23: (24, 0), 24: (24, 0), 25: (24, 0), 26: (24, 0)}
+for i in igloos:
+    dx, dy = IGLOO_SHIFT.get(i["n"], (0, 0))
+    i["pos"] = [round(i["pos"][0] + dx, 1), round(i["pos"][1] + dy, 1)]
 cabins.sort(key=lambda c: c["n"])
 
 layout = {
