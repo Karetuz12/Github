@@ -197,17 +197,19 @@ export function iglooParts(mirror = false): Part[] {
     // Kaksikerroksinen runko 6 × 6 m
     { geom: box(6, H - F, 6, 0, F), mat: mats.clad },
     { geom: box(6.2, 0.35, 6.2, 0, H), mat: mats.snow },
-    // Alakerran ikkunat lasihuoneen alla
-    { geom: box(0.08, 2.2, 1.6, -3.04, F + 0.35, 1.2), mat: mats.window },
-    { geom: box(0.08, 0.6, 0.6, -3.04, F + 1.6, -1.0), mat: mats.window },
+    // Alakerran ainoat ikkunat (−x-sivu): terassisiiven päädyssä ja rungon seinässä sen vieressä.
+    // Muita ikkunoita ei ole; yläkerrassa vain makuuhuoneen lasikupoli.
+    { geom: box(0.08, 2.2, 1.3, -3.04, F + 0.35, -3.95), mat: mats.window },
+    { geom: box(0.08, 2.2, 1.4, -3.04, F + 0.35, -1.9), mat: mats.window },
     // Lasikupolimakuuhuone ulokkeena (−x-sivun keskellä)
     ...glassPod(-3, L + 0.55, 0),
-    // Kapea yksikerroksinen osa (−z), katolla terassi säleaitoineen ja poreallas
-    { geom: box(5.0, 3.0, 1.9, 0.2, F, -3.95), mat: mats.clad },
-    { geom: box(5.0, 0.12, 1.9, 0.2, L, -3.95), mat: mats.snow },
-    { geom: box(5.0, 1.0, 0.08, 0.2, L, -4.9), mat: mats.deck },
-    { geom: box(0.08, 1.0, 1.9, -2.3, L, -3.95), mat: mats.deck },
-    { geom: box(0.08, 1.0, 1.9, 2.7, L, -3.95), mat: mats.deck },
+    // Kapea yksikerroksinen osa (−z) rungon levyisenä, seinät samassa linjassa rungon kanssa;
+    // katolla terassi säleaitoineen ja poreallas
+    { geom: box(6.0, 3.0, 1.9, 0, F, -3.95), mat: mats.clad },
+    { geom: box(6.0, 0.12, 1.9, 0, L, -3.95), mat: mats.snow },
+    { geom: box(6.0, 1.0, 0.08, 0, L, -4.86), mat: mats.deck },
+    { geom: box(0.08, 1.0, 1.9, -2.96, L, -3.95), mat: mats.deck },
+    { geom: box(0.08, 1.0, 1.9, 2.96, L, -3.95), mat: mats.deck },
     { geom: box(1.7, 0.8, 1.5, -0.6, L, -3.95), mat: mats.clad },
     { geom: box(1.45, 0.06, 1.25, -0.6, L + 0.8, -3.95), mat: mats.pool },
     // Sisäänkäyntisilta (+z) tielle, ovi seinässä sillan päässä
