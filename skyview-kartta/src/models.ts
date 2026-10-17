@@ -254,6 +254,35 @@ function livingRoom(F: number, L: number): Part[] {
 }
 
 /**
+ * Sisäänkäynti (kuvien mukaan): ovi +z-seinässä kupolin puoleisessa kulmassa, ovella tasanne ja siitä
+ * loiva luiska maahan; luiskan ulkoreuna samassa linjassa kupolin seinän (x = −3) kanssa.
+ * Kaiteissa pystyrimat ja käsijohde.
+ */
+function entranceRamp(F: number): Part[] {
+  const x0 = -2.97, x1 = -1.43, cx = (x0 + x1) / 2, w = x1 - x0;
+  const deckY = F - 0.15; // tasanteen pinta
+  const z0 = 3.0, z1 = 4.4; // tasanne
+  const len = 5.0, z2 = z1 + len, endY = 0.05;
+  const slope = Math.atan2(deckY - endY, len);
+  const yAt = (z: number) => (z <= z1 ? deckY : deckY - ((z - z1) / len) * (deckY - endY));
+  const parts: Part[] = [
+    { geom: box(1.1, 2.1, 0.1, cx, F, 3.05), mat: mats.woodLight }, // ovi
+    { geom: box(w, 0.15, z1 - z0, cx, deckY, (z0 + z1) / 2), mat: mats.deck },
+    { geom: box(w, 0.12, len / Math.cos(slope), 0, 0, 0).translate(0, -0.06, 0).rotateX(slope).translate(cx, (deckY + endY) / 2 + 0.06, (z1 + z2) / 2), mat: mats.deck },
+  ];
+  for (const x of [x0 + 0.03, x1 - 0.03]) {
+    // Käsijohde ja alajohde tasanteella ja luiskalla
+    for (const [h, t] of [[0.95, 0.07], [0.12, 0.05]] as const) {
+      parts.push({ geom: box(0.06, t, z1 - z0, x, deckY + h, (z0 + z1) / 2), mat: mats.deck });
+      parts.push({ geom: box(0.06, t, len / Math.cos(slope), 0, 0, 0).rotateX(slope).translate(x, (deckY + endY) / 2 + h, (z1 + z2) / 2), mat: mats.deck });
+    }
+    // Pystyrimat
+    for (let z = z0 + 0.1; z < z2; z += 0.18) parts.push({ geom: box(0.05, 0.9, 0.05, x, yAt(z) + 0.1, z), mat: mats.deck });
+  }
+  return parts;
+}
+
+/**
  * Ulokkeena leijuva lasikupolimakuuhuone: tumma umpikaide/pohja, matalat lasiseinät ja särmikäs
  * lasikupoli. Litteä puoli seinässä x = wx, kaari −x-suuntaan, keskikohta z, lattia korkeudella y.
  */
@@ -306,11 +335,8 @@ export function iglooParts(mirror = false): Part[] {
     { geom: box(0.08, 1.0, 2.8, 2.96, L, -4.4), mat: mats.deck },
     { geom: box(1.9, 0.8, 1.7, -0.9, L, -4.4), mat: mats.clad },
     { geom: box(1.65, 0.06, 1.45, -0.9, L + 0.8, -4.4), mat: mats.pool },
-    // Sisäänkäyntisilta (+z) tielle, ovi seinässä sillan päässä
-    { geom: box(1.1, 2.1, 0.1, 1.2, F, 3.05), mat: mats.woodLight },
-    { geom: box(1.6, 0.15, 5.5, 1.2, F - 0.15, 5.75), mat: mats.deck },
-    { geom: box(0.08, 1.0, 5.5, 0.4, F, 5.75), mat: mats.deck },
-    { geom: box(0.08, 1.0, 5.5, 2.0, F, 5.75), mat: mats.deck },
+    // Sisäänkäynti (+z): ovi, tasanne ja luiska maahan kupolin puoleisessa kulmassa
+    ...entranceRamp(F),
   ]);
   return mirror ? parts.map((p) => ({ ...p, geom: flipZ(p.geom) })) : parts;
 }
