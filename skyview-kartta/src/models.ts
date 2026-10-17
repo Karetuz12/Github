@@ -254,31 +254,39 @@ function livingRoom(F: number, L: number): Part[] {
 }
 
 /**
- * Sisäänkäynti (kuvien mukaan): ovi +z-seinässä kupolin puoleisessa kulmassa, ovella tasanne ja siitä
- * loiva luiska maahan; luiskan ulkoreuna samassa linjassa kupolin seinän (x = −3) kanssa.
- * Kaiteissa pystyrimat ja käsijohde.
+ * Sisäänkäynti (droonikuvien mukaan): ovi +z-seinässä kupolin puoleisessa kulmassa, ovella tasanne,
+ * josta luiska laskee seinän viertä (+x-suuntaan, kupolista poispäin) rungon toisen pään ohi maahan.
+ * Kaiteissa pystyrimat, käsijohde ja alajohde.
  */
 function entranceRamp(F: number): Part[] {
-  const x0 = -2.97, x1 = -1.43, cx = (x0 + x1) / 2, w = x1 - x0;
-  const deckY = F - 0.15; // tasanteen pinta
-  const z0 = 3.0, z1 = 4.4; // tasanne
-  const len = 5.0, z2 = z1 + len, endY = 0.05;
+  const z0 = 3.05, z1 = 4.55, cz = (z0 + z1) / 2, w = z1 - z0; // kulkuväylä seinän vieressä
+  const deckY = F - 0.15;
+  const lx0 = -2.97, lx1 = -1.3; // tasanne oven edessä
+  const len = 6.8, x2 = lx1 + len, endY = 0.05;
   const slope = Math.atan2(deckY - endY, len);
-  const yAt = (z: number) => (z <= z1 ? deckY : deckY - ((z - z1) / len) * (deckY - endY));
+  const yAt = (x: number) => (x <= lx1 ? deckY : deckY - ((x - lx1) / len) * (deckY - endY));
+  const along = (l: number, t: number, h: number, zc: number, y: number) =>
+    box(l / Math.cos(slope), h, t, 0, 0, 0).rotateZ(-slope).translate((lx1 + x2) / 2, y, zc);
   const parts: Part[] = [
-    { geom: box(1.1, 2.1, 0.1, cx, F, 3.05), mat: mats.woodLight }, // ovi
-    { geom: box(w, 0.15, z1 - z0, cx, deckY, (z0 + z1) / 2), mat: mats.deck },
-    { geom: box(w, 0.12, len / Math.cos(slope), 0, 0, 0).translate(0, -0.06, 0).rotateX(slope).translate(cx, (deckY + endY) / 2 + 0.06, (z1 + z2) / 2), mat: mats.deck },
+    { geom: box(1.1, 2.1, 0.1, -2.15, F, 3.05), mat: mats.woodLight }, // ovi
+    { geom: box(lx1 - lx0, 0.15, w, (lx0 + lx1) / 2, deckY, cz), mat: mats.deck },
+    { geom: along(len, w, 0.12, cz, (deckY + endY) / 2 - 0.02), mat: mats.deck },
   ];
-  for (const x of [x0 + 0.03, x1 - 0.03]) {
-    // Käsijohde ja alajohde tasanteella ja luiskalla
+  // Kaiteet: ulkoreuna koko matkalta, tasanteen pääty, ja seinän puoli rungon ohittavalla osalla
+  const rails: [number, number, number][] = [[lx0, x2, z1 - 0.03]]; // [x-alku, x-loppu, z]
+  rails.push([3.0, x2, z0 + 0.03]);
+  for (const [a, b, z] of rails) {
     for (const [h, t] of [[0.95, 0.07], [0.12, 0.05]] as const) {
-      parts.push({ geom: box(0.06, t, z1 - z0, x, deckY + h, (z0 + z1) / 2), mat: mats.deck });
-      parts.push({ geom: box(0.06, t, len / Math.cos(slope), 0, 0, 0).rotateX(slope).translate(x, (deckY + endY) / 2 + h, (z1 + z2) / 2), mat: mats.deck });
+      if (a < lx1) parts.push({ geom: box(lx1 - a, t, 0.06, (a + lx1) / 2, deckY + h, z), mat: mats.deck });
+      const ra = Math.max(a, lx1);
+      const l = b - ra;
+      parts.push({ geom: box(l / Math.cos(slope), t, 0.06, 0, 0, 0).rotateZ(-slope).translate((ra + b) / 2, (yAt(ra) + yAt(b)) / 2 + h, z), mat: mats.deck });
     }
-    // Pystyrimat
-    for (let z = z0 + 0.1; z < z2; z += 0.18) parts.push({ geom: box(0.05, 0.9, 0.05, x, yAt(z) + 0.1, z), mat: mats.deck });
+    for (let x = a + 0.1; x < b; x += 0.18) parts.push({ geom: box(0.05, 0.9, 0.05, x, yAt(x) + 0.1, z), mat: mats.deck });
   }
+  // Tasanteen pääty (kupolin puoli)
+  parts.push({ geom: box(0.06, 0.07, w, lx0 + 0.03, deckY + 0.95, cz), mat: mats.deck });
+  for (let z = z0 + 0.1; z < z1; z += 0.18) parts.push({ geom: box(0.05, 0.9, 0.05, lx0 + 0.03, deckY + 0.1, z), mat: mats.deck });
   return parts;
 }
 
