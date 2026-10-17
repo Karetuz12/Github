@@ -261,19 +261,18 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   };
 
   // --- Metsä ---------------------------------------------------------------------
-  const trees: THREE.Matrix4[] = [];
-  const pines: THREE.Matrix4[] = [];
+  // Puut neljänä tyyppinä (tuuhea kuusi, harva kuusi, mänty, nuori kuusi)
+  const trees: THREE.Matrix4[][] = [[], [], [], []];
   const m = new THREE.Matrix4();
   const q = new THREE.Quaternion();
   const s = new THREE.Vector3();
   const addTree = (x: number, z: number, scale: number) => {
     q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), rand() * Math.PI * 2);
-    s.set(scale * (0.85 + rand() * 0.3), scale, scale * (0.85 + rand() * 0.3));
-    // Osa puista mäntyjä; kuuset kapeita ja korkeuden vaihtelu suurta
-    const pine = rand() < 0.12;
-    if (!pine) s.x = s.z = s.x * 0.7;
-    else s.y *= 0.9 + rand() * 0.3;
-    (pine ? pines : trees).push(m.compose(new THREE.Vector3(x, surfaceAt(x, z) - 0.2, z), q, s).clone());
+    const r = rand();
+    const kind = r < 0.42 ? 0 : r < 0.72 ? 1 : r < 0.86 ? 2 : 3;
+    const k = 0.75 + scale * 0.35 + rand() * 0.15;
+    s.set(k * (0.9 + rand() * 0.2), k, k);
+    trees[kind].push(m.compose(new THREE.Vector3(x, surfaceAt(x, z) - 0.1, z), q, s).clone());
   };
   const free = (x: number, z: number) => {
     if (mask.near(x, z, 4) > 0.15) return false;
@@ -300,16 +299,17 @@ export function buildWorld(scene: THREE.Scene, mask: RoadMask, roadsImage: HTMLI
   scatter(260, hi ? 700 : 520, hi ? 7.5 : 10, 0.7, 1.35);
   if (hi) scatter(700, 1300, 13, 0.9, 1.5);
 
-  const treeMat = new THREE.MeshLambertMaterial({ vertexColors: true });
-  for (const [geo, list] of [
-    [M.treeGeometry(), trees],
-    [M.pineGeometry(), pines],
-  ] as const) {
-    const mesh = new THREE.InstancedMesh(geo, treeMat, list.length);
-    list.forEach((t, i) => mesh.setMatrixAt(i, t));
+  const treeMat = M.treeCardMaterial();
+  const tint = new THREE.Color();
+  trees.forEach((list, kind) => {
+    const mesh = new THREE.InstancedMesh(M.treeCardGeometry(kind), treeMat, list.length);
+    list.forEach((t, i) => {
+      mesh.setMatrixAt(i, t);
+      mesh.setColorAt(i, tint.setHSL(0.36 + rand() * 0.06, 0.12, 0.88 + rand() * 0.12)); // pientä sävyvaihtelua
+    });
     mesh.computeBoundingSphere();
     scene.add(shade(mesh, true, false));
-  }
+  });
 
   // --- Tievalot ----------------------------------------------------------------------
   const lampPts: number[] = [];

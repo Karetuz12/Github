@@ -531,73 +531,129 @@ export function car(): THREE.Group {
   return g;
 }
 
-/** Värit puihin: tumma havu, lumi oksien päällä, runko. */
-const TREE = { dark: new THREE.Color(0x2a4436), mid: new THREE.Color(0x48634f), snow: new THREE.Color(0xf2f6fc), trunk: new THREE.Color(0x4a3426) };
-
-function colorize(g: THREE.BufferGeometry, fn: (y: number, ny: number, c: THREE.Color) => void) {
-  const pos = g.getAttribute("position");
-  const nor = g.getAttribute("normal");
-  const col = new Float32Array(pos.count * 3);
-  const c = new THREE.Color();
-  for (let i = 0; i < pos.count; i++) {
-    fn(pos.getY(i), nor.getY(i), c);
-    col.set([c.r, c.g, c.b], i * 3);
-  }
-  g.setAttribute("color", new THREE.BufferAttribute(col, 3));
-  return g;
-}
-
 /**
- * Lapin kuusi: kapea ja korkea, kuusi oksakerrosta, joiden reunat ovat sahalaitaiset.
- * Havu tumma, lunta kunkin kerroksen yläpinnalla (referenssin mukaan puut erottuvat lumesta).
+ * Puut kuvatasoina (referenssin mukaan): korkeat hoikat puut, paljas runko alhaalla, ohuet
+ * vaakasuorat oksakerrokset, huurre ja lumi oksien päällä. Neljä tyyppiä samassa kuvakartassa:
+ * 0 tuuhea kuusi, 1 harva kuusi, 2 mänty, 3 nuori kuusi. Jokainen puu on kolme ristikkäistä tasoa.
  */
-export function treeGeometry(): THREE.BufferGeometry {
-  const tiers = [
-    { r: 1.35, h: 2.6, y: 0.7 },
-    { r: 1.15, h: 2.4, y: 2.1 },
-    { r: 0.95, h: 2.2, y: 3.4 },
-    { r: 0.75, h: 2.0, y: 4.6 },
-    { r: 0.52, h: 1.8, y: 5.7 },
-    { r: 0.3, h: 1.6, y: 6.7 },
-  ];
-  const geoms = tiers.map((t, k) => {
-    const g = new THREE.ConeGeometry(t.r, t.h, 9, 1, true).translate(0, t.y + t.h / 2, 0);
-    // Sahalaitainen alareuna: joka toinen oksankärki pidemmäksi
-    const pos = g.getAttribute("position");
-    for (let i = 0; i < pos.count; i++) {
-      if (pos.getY(i) > t.y + 0.01) continue;
-      const a = Math.atan2(pos.getZ(i), pos.getX(i));
-      const f = 1 + 0.18 * Math.cos(a * 9 + k);
-      pos.setX(i, pos.getX(i) * f);
-      pos.setZ(i, pos.getZ(i) * f);
-      pos.setY(i, pos.getY(i) - 0.15 * (f - 1) * 4);
+export const TREE_KINDS = [
+  { h: 15, crown: 0.28, step: [14, 20], len: 108, needles: 1 },
+  { h: 16, crown: 0.36, step: [22, 34], len: 96, needles: 0.7 },
+  { h: 17, crown: 0.72, step: [0, 0], len: 70, needles: 1 },
+  { h: 7, crown: 0.04, step: [12, 16], len: 116, needles: 1.1 },
+];
+
+let treeAtlas: THREE.CanvasTexture | null = null;
+function treeTexture() {
+  if (treeAtlas) return treeAtlas;
+  const W = 256, H = 1024;
+  const c = document.createElement("canvas");
+  c.width = W * 4;
+  c.height = H;
+  const g = c.getContext("2d")!;
+  let seed = 12345;
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  // Huurteiset neulaset: harmaanvihreää, osa lähes valkoista (referenssin puut ovat huurteisia)
+  const needleCols = ["#2a3d34", "#3a4f45", "#55685f", "#8c9a94", "#b9c4c2"];
+  const tuft = (x: number, y: number, len: number, density: number) => {
+    // Neulastupsu: lyhyitä vetoja alaspäin, päällä lunta
+    const n = Math.round(len * 0.9 * density);
+    for (let i = 0; i < n; i++) {
+      const t = rnd();
+      const px = x + (rnd() - 0.5) * len;
+      const py = y + (rnd() - 0.3) * 6;
+      g.strokeStyle = needleCols[(rnd() * needleCols.length) | 0];
+      g.lineWidth = 1.4;
+      g.beginPath();
+      g.moveTo(px, py);
+      g.lineTo(px + (rnd() - 0.5) * 6, py + 5 + rnd() * 7 * (1 - t * 0.3));
+      g.stroke();
     }
-    g.computeVertexNormals();
-    return g.toNonIndexed();
+    g.fillStyle = "rgba(240,245,251,0.95)";
+    for (let i = 0; i < n * 0.85; i++) {
+      const px = x + (rnd() - 0.5) * len * 0.95;
+      g.beginPath();
+      g.ellipse(px, y - 1 + rnd() * 4, 2.2 + rnd() * 3.2, 1.5 + rnd() * 1.6, 0, 0, Math.PI * 2);
+      g.fill();
+    }
+  };
+  TREE_KINDS.forEach((k, idx) => {
+    g.save();
+    g.translate(idx * W, 0);
+    const cx = W / 2;
+    const top = 18;
+    const base = H;
+    // Runko: kapenee ylöspäin, yläosa punertava (mänty selvemmin)
+    const gr = g.createLinearGradient(0, base, 0, top);
+    gr.addColorStop(0, "#22170f");
+    gr.addColorStop(0.5, idx === 2 ? "#6e3d22" : "#3b2516");
+    gr.addColorStop(1, idx === 2 ? "#9a5a32" : "#5a3720");
+    g.fillStyle = gr;
+    g.beginPath();
+    g.moveTo(cx - (idx === 3 ? 4 : 6), base);
+    g.lineTo(cx + (idx === 3 ? 4 : 6), base);
+    g.lineTo(cx + 1, top);
+    g.lineTo(cx - 1, top);
+    g.fill();
+    const crownY = base - (base - top) * k.crown;
+    if (idx === 2) {
+      // Mänty: latvus muutamana epätasaisena tupsuryppäänä ylhäällä
+      for (let i = 0; i < 9; i++) {
+        const y = top + 30 + rnd() * (crownY - top - 40);
+        const side = rnd() < 0.5 ? -1 : 1;
+        const l = 30 + rnd() * k.len;
+        g.strokeStyle = "#4a2c1a";
+        g.lineWidth = 2;
+        g.beginPath();
+        g.moveTo(cx, y + 10);
+        g.lineTo(cx + side * l * 0.6, y);
+        g.stroke();
+        tuft(cx + side * l * 0.45, y, l * 0.8, 1.3);
+      }
+      tuft(cx, top + 20, 60, 1.4);
+    } else {
+      // Kuuset: oksakerrokset tyvestä latvaan, lyhenevät ylöspäin; oksat hieman roikkuvat
+      let y = crownY;
+      while (y > top + 8) {
+        const f = Math.pow((y - top) / (crownY - top), 0.85);
+        for (const side of [-1, 1]) {
+          const l = k.len * f * (0.7 + rnd() * 0.45);
+          if (l < 6) continue;
+          const droop = l * (0.18 + rnd() * 0.12);
+          g.strokeStyle = "#2a1d14";
+          g.lineWidth = 1.6;
+          g.beginPath();
+          g.moveTo(cx, y);
+          g.quadraticCurveTo(cx + side * l * 0.5, y - 3, cx + side * l, y + droop);
+          g.stroke();
+          for (let t = 0.25; t <= 1; t += 0.25) tuft(cx + side * l * t, y + droop * t * t, l * 0.32, k.needles);
+        }
+        y -= k.step[0] + rnd() * (k.step[1] - k.step[0]);
+      }
+      tuft(cx, top + 6, 14, 1.5); // latva
+    }
+    g.restore();
   });
-  geoms.push(new THREE.CylinderGeometry(0.12, 0.18, 1.2, 5, 1, true).translate(0, 0.6, 0).toNonIndexed());
-  const g = mergeGeometries(geoms.map((x) => (x.deleteAttribute("uv"), x)));
-  return colorize(g, (y, ny, c) => {
-    if (y < 0.65) return c.copy(TREE.trunk);
-    const t = [...tiers].reverse().find((t) => y >= t.y - 0.4) ?? tiers[0];
-    const k = THREE.MathUtils.clamp((y - t.y) / t.h, 0, 1);
-    // Tykkylunta oksien yläpinnoilla: alareuna tumma, yläpuolisko huurteinen
-    c.copy(TREE.dark).lerp(TREE.mid, k).lerp(TREE.snow, THREE.MathUtils.smoothstep(k, 0.3, 0.9) * 0.8);
-  });
+  treeAtlas = new THREE.CanvasTexture(c);
+  treeAtlas.colorSpace = THREE.SRGBColorSpace;
+  treeAtlas.anisotropy = 4;
+  return treeAtlas;
 }
 
-/** Mänty: pitkä paljas runko ja ylhäällä harva, epätasainen latvus. */
-export function pineGeometry(): THREE.BufferGeometry {
-  const parts: THREE.BufferGeometry[] = [new THREE.CylinderGeometry(0.1, 0.2, 7.2, 6, 1, true).translate(0, 3.6, 0).toNonIndexed()];
-  for (const [x, y, z, r] of [
-    [0, 7.4, 0, 1.25],
-    [0.6, 6.6, 0.3, 0.85],
-    [-0.5, 6.9, -0.4, 0.8],
-    [0.1, 8.3, 0.1, 0.7],
-  ]) parts.push(new THREE.IcosahedronGeometry(r, 0).scale(1, 0.6, 1).translate(x, y, z).toNonIndexed());
-  const g = mergeGeometries(parts.map((x) => (x.deleteAttribute("uv"), x)));
-  return colorize(g, (y, ny, c) => {
-    if (y < 6 && Math.abs(ny) < 0.2) return c.copy(TREE.trunk);
-    c.copy(TREE.dark).lerp(TREE.mid, 0.5).lerp(TREE.snow, THREE.MathUtils.smoothstep(ny, 0.45, 0.9) * 0.6);
+export const treeCardMaterial = () =>
+  new THREE.MeshLambertMaterial({ map: treeTexture(), alphaTest: 0.42, side: THREE.DoubleSide });
+
+/** Puutyypin geometria: kolme ristikkäistä tasoa (0°, 60°, 120°), normaalit ylöspäin = tasainen valaistus. */
+export function treeCardGeometry(kind: number): THREE.BufferGeometry {
+  const k = TREE_KINDS[kind];
+  const w = k.h / 4;
+  const parts = [0, 1, 2].map((i) => {
+    const pg = new THREE.PlaneGeometry(w, k.h).translate(0, k.h / 2 - 0.15, 0).rotateY((i * Math.PI) / 3);
+    const uv = pg.getAttribute("uv");
+    for (let j = 0; j < uv.count; j++) uv.setX(j, (kind + uv.getX(j)) / 4);
+    const n = pg.getAttribute("normal");
+    for (let j = 0; j < n.count; j++) n.setXYZ(j, 0, 1, 0);
+    return pg;
   });
+  return mergeGeometries(parts);
 }
