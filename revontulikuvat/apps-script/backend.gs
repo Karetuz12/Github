@@ -1,162 +1,160 @@
 /**
- * Book Lapland – revontulikuvat: Google Sheets -taustapalvelu
+ * Book Lapland – Northern lights photos: Google Sheets backend
  *
- * Verkkosivu (Vercel) lähettää jokaisen ilmoittautumisen tänne. Skripti
- * tallentaa sen Vastaukset-välilehdelle, ja Aamu-välilehti kokoaa edellisen
- * illan osoitteet ryhmittäin. Yli 30 päivää vanhat rivit poistuvat yöllä.
+ * The website (Vercel) sends every sign-up here. The script stores it on the
+ * Responses sheet, and the Morning sheet lists last night's emails by group.
+ * Rows older than 30 days are deleted every night.
  *
- * Asennus: ks. revontulikuvat/OHJE.md.
+ * Setup: see revontulikuvat/GUIDE.md.
  */
 
-const ASETUKSET = {
-  sailytysPaivia: 30,     // sähköpostit poistetaan automaattisesti tämän jälkeen
-  paivanVaihtoTunti: 6,   // klo 06 asti tulleet kuuluvat edellisen illan retkeen
-  aamunRiveja: 50,        // montako ryhmää Aamu-välilehti näyttää yhdeltä päivältä
-  taulukonNimi: 'Book Lapland – Revontulikuvat',
+const SETTINGS = {
+  retentionDays: 30,      // emails are deleted automatically after this
+  dayStartsAtHour: 6,     // sign-ups until 06:00 belong to the previous night's tour
+  morningRows: 50,        // how many groups the Morning sheet can show for one day
+  spreadsheetName: 'Book Lapland – Northern Lights Photos',
 };
 
-/** Luo taulukon, aamun koonnin ja yöllisen poiston. Ajetaan kerran. */
-function asenna() {
+/** Creates the spreadsheet, the Morning summary and the nightly clean-up. Run once. */
+function setup() {
   const props = PropertiesService.getScriptProperties();
   if (props.getProperty('SHEET_ID')) {
-    throw new Error('Taustapalvelu on jo asennettu: ' +
-      SpreadsheetApp.openById(props.getProperty('SHEET_ID')).getUrl());
+    throw new Error('Already set up: ' + SpreadsheetApp.openById(props.getProperty('SHEET_ID')).getUrl());
   }
 
-  const taulukko = SpreadsheetApp.create(ASETUKSET.taulukonNimi);
-  taulukko.setSpreadsheetTimeZone('Europe/Helsinki');
-  taulukko.setSpreadsheetLocale('fi_FI');
+  const spreadsheet = SpreadsheetApp.create(SETTINGS.spreadsheetName);
+  spreadsheet.setSpreadsheetTimeZone('Europe/Helsinki');
+  spreadsheet.setSpreadsheetLocale('en_GB');
 
-  const aamu = taulukko.getSheets()[0].setName('Aamu');
-  const vastaukset = taulukko.insertSheet('Vastaukset');
-  vastaukset.getRange('A1:D1').setValues([['Aika', 'Ryhmä', 'Sähköposti', 'Kieli']]).setFontWeight('bold');
-  vastaukset.setFrozenRows(1);
-  vastaukset.getRange('A2:A').setNumberFormat('d.m.yyyy H:mm');
-  vastaukset.setColumnWidth(1, 140);
-  vastaukset.setColumnWidth(3, 280);
+  const morning = spreadsheet.getSheets()[0].setName('Morning');
+  const responses = spreadsheet.insertSheet('Responses');
+  responses.getRange('A1:C1').setValues([['Time', 'Group', 'Email']]).setFontWeight('bold');
+  responses.setFrozenRows(1);
+  responses.getRange('A2:A').setNumberFormat('ddd d mmm yyyy HH:mm');
+  responses.setColumnWidth(1, 170);
+  responses.setColumnWidth(3, 280);
 
-  rakennaAamu(taulukko);
-  taulukko.setActiveSheet(aamu);
+  buildMorningSheet(spreadsheet);
+  spreadsheet.setActiveSheet(morning);
 
-  const salasana = Utilities.getUuid().replace(/-/g, '');
-  props.setProperties({ SHEET_ID: taulukko.getId(), SECRET: salasana });
-  asennaPoistoajastus();
+  const secret = Utilities.getUuid().replace(/-/g, '');
+  props.setProperties({ SHEET_ID: spreadsheet.getId(), SECRET: secret });
+  scheduleCleanup();
 
-  Logger.log('Valmis!\n\nTaulukko: ' + taulukko.getUrl() +
-    '\n\nAPPS_SCRIPT_SECRET (kopioi Verceliin):\n' + salasana +
-    '\n\nSeuraavaksi: Ota käyttöön → Uusi käyttöönotto → Verkkosovellus (ohje OHJE.md:ssä).');
+  Logger.log('Done!\n\nSpreadsheet: ' + spreadsheet.getUrl() +
+    '\n\nAPPS_SCRIPT_SECRET (copy this to Vercel):\n' + secret +
+    '\n\nNext: Deploy → New deployment → Web app (see GUIDE.md).');
 }
 
-/** Näyttää salasanan uudelleen, jos se katosi. */
-function naytaSalasana() {
+/** Shows the secret again if it got lost. */
+function showSecret() {
   Logger.log(PropertiesService.getScriptProperties().getProperty('SECRET'));
 }
 
-/** Verkkosivun ilmoittautumiset tulevat tänne. */
+/** Sign-ups from the website arrive here. */
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     const props = PropertiesService.getScriptProperties();
-    if (!data || data.secret !== props.getProperty('SECRET')) return vastaa({ ok: false, error: 'forbidden' });
+    if (!data || data.secret !== props.getProperty('SECRET')) return reply({ ok: false, error: 'forbidden' });
 
     const email = String(data.email || '').trim().toLowerCase();
-    const ryhma = String(data.group || '').trim().toUpperCase();
-    const kieli = String(data.lang || '').slice(0, 5);
-    // Samat tarkistukset kuin sivulla; = + - alku tulkittaisiin kaavaksi
+    const group = String(data.group || '').trim().toUpperCase();
+    // Same checks as the website; a leading = + - would be read as a formula
     if (!/^[a-z0-9._%+'-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/.test(email) || /^[=+\-]/.test(email)) {
-      return vastaa({ ok: false, error: 'email' });
+      return reply({ ok: false, error: 'email' });
     }
-    if (!/^[A-Z0-9][A-Z0-9-]{0,9}$/.test(ryhma)) return vastaa({ ok: false, error: 'group' });
+    if (!/^[A-Z0-9][A-Z0-9-]{0,9}$/.test(group)) return reply({ ok: false, error: 'group' });
 
-    const lukko = LockService.getScriptLock();
-    lukko.waitLock(15000);
+    const lock = LockService.getScriptLock();
+    lock.waitLock(15000);
     try {
-      const vastaukset = SpreadsheetApp.openById(props.getProperty('SHEET_ID')).getSheetByName('Vastaukset');
-      // Numeroryhmät numeroina, jotta Aamu-välilehti järjestää 2 ennen 10:tä
-      vastaukset.appendRow([new Date(), /^\d+$/.test(ryhma) ? Number(ryhma) : ryhma, email, kieli]);
+      const responses = SpreadsheetApp.openById(props.getProperty('SHEET_ID')).getSheetByName('Responses');
+      // Numeric groups as numbers, so the Morning sheet sorts 2 before 10
+      responses.appendRow([new Date(), /^\d+$/.test(group) ? Number(group) : group, email]);
     } finally {
-      lukko.releaseLock();
+      lock.releaseLock();
     }
-    return vastaa({ ok: true });
+    return reply({ ok: true });
   } catch (err) {
     console.error(err);
-    return vastaa({ ok: false, error: 'server' });
+    return reply({ ok: false, error: 'server' });
   }
 }
 
-/** Selaimella avattuna kertoo, että palvelu on päällä. */
+/** Opened in a browser, shows that the service is running. */
 function doGet() {
-  return vastaa({ ok: true, service: 'revontulikuvat' });
+  return reply({ ok: true, service: 'northern-lights-photos' });
 }
 
-/** Poistaa yli sailytysPaivia vanhat rivit. Ajetaan joka yö. */
-function poistaVanhat() {
-  const raja = new Date(Date.now() - ASETUKSET.sailytysPaivia * 24 * 3600 * 1000);
-  const vanha = (arvo) => arvo instanceof Date && arvo < raja;
+/** Deletes rows older than retentionDays. Runs every night. */
+function deleteOldRows() {
+  const cutoff = new Date(Date.now() - SETTINGS.retentionDays * 24 * 3600 * 1000);
+  const isOld = (value) => value instanceof Date && value < cutoff;
 
-  const vastaukset = SpreadsheetApp
+  const responses = SpreadsheetApp
     .openById(PropertiesService.getScriptProperties().getProperty('SHEET_ID'))
-    .getSheetByName('Vastaukset');
-  const viimeinen = vastaukset.getLastRow();
-  if (viimeinen < 2) return;
-  // Taulukkoon jätetään aina tyhjä rivi, koska kaikkia rivejä ei voi poistaa
-  if (vastaukset.getMaxRows() === viimeinen) vastaukset.insertRowAfter(viimeinen);
+    .getSheetByName('Responses');
+  const lastRow = responses.getLastRow();
+  if (lastRow < 2) return;
+  // Always keep an empty row, because a sheet cannot lose all its rows
+  if (responses.getMaxRows() === lastRow) responses.insertRowAfter(lastRow);
 
-  const ajat = vastaukset.getRange(2, 1, viimeinen - 1, 1).getValues();
-  // Poistetaan alhaalta ylöspäin yhtenäisinä pätkinä
-  let i = ajat.length - 1;
+  const times = responses.getRange(2, 1, lastRow - 1, 1).getValues();
+  // Delete from the bottom up, in contiguous blocks
+  let i = times.length - 1;
   while (i >= 0) {
-    if (!vanha(ajat[i][0])) {
+    if (!isOld(times[i][0])) {
       i--;
       continue;
     }
-    let alku = i;
-    while (alku > 0 && vanha(ajat[alku - 1][0])) alku--;
-    vastaukset.deleteRows(alku + 2, i - alku + 1);
-    i = alku - 1;
+    let start = i;
+    while (start > 0 && isOld(times[start - 1][0])) start--;
+    responses.deleteRows(start + 2, i - start + 1);
+    i = start - 1;
   }
 }
 
-function asennaPoistoajastus() {
+function scheduleCleanup() {
   ScriptApp.getProjectTriggers()
-    .filter((t) => t.getHandlerFunction() === 'poistaVanhat')
+    .filter((t) => t.getHandlerFunction() === 'deleteOldRows')
     .forEach((t) => ScriptApp.deleteTrigger(t));
-  ScriptApp.newTrigger('poistaVanhat').timeBased().everyDays(1).atHour(4).create();
+  ScriptApp.newTrigger('deleteOldRows').timeBased().everyDays(1).atHour(4).create();
 }
 
-function rakennaAamu(taulukko) {
-  const s = taulukko.getSheetByName('Aamu');
-  const aika = 'Vastaukset!$A$2:$A';
-  const ryhma = 'Vastaukset!$B$2:$B';
-  const email = 'Vastaukset!$C$2:$C';
-  const paivalla = `${aika}<>"",INT(${aika}-${ASETUKSET.paivanVaihtoTunti}/24)=$B$2`;
+function buildMorningSheet(spreadsheet) {
+  const s = spreadsheet.getSheetByName('Morning');
+  const time = 'Responses!$A$2:$A';
+  const group = 'Responses!$B$2:$B';
+  const email = 'Responses!$C$2:$C';
+  const onDay = `${time}<>"",INT(${time}-${SETTINGS.dayStartsAtHour}/24)=$B$2`;
 
   s.getRange('A1:A3').setValues([
-    ['Valitse päivä (tyhjä = eilinen):'],
-    ['Näytetään retkipäivä:'],
+    ['Pick a date (empty = last night):'],
+    ['Showing tour night of:'],
     [''],
   ]);
-  s.getRange('B1:B2').setNumberFormat('d.m.yyyy');
+  s.getRange('B1:B2').setNumberFormat('ddd d mmm yyyy');
   s.getRange('B1').setBackground('#fff8c5');
   s.getRange('B2').setFormula('=IF(B1="",TODAY()-1,B1)').setFontWeight('bold');
   s.getRange('A3').setFormula(
-    `="Sähköposteja yhteensä: "&IFERROR(ROWS(FILTER(${email},${paivalla})),0)`);
+    `="Emails in total: "&IFERROR(ROWS(FILTER(${email},${onDay})),0)`);
 
   s.getRange('A5:C5')
-    .setValues([['Ryhmä', 'Osoitteita', 'Sähköpostit – kopioi piilokopio (BCC) -kenttään']])
+    .setValues([['Group', 'Emails', 'Email addresses – paste into the BCC field']])
     .setFontWeight('bold')
     .setBackground('#e8eef7');
-  s.getRange('A6').setFormula(`=IFERROR(SORT(UNIQUE(FILTER(${ryhma},${paivalla}))),"")`);
+  s.getRange('A6').setFormula(`=IFERROR(SORT(UNIQUE(FILTER(${group},${onDay}))),"")`);
 
-  const kaavat = [];
-  for (let r = 6; r < 6 + ASETUKSET.aamunRiveja; r++) {
-    const osoitteet = `UNIQUE(LOWER(TRIM(FILTER(${email},${paivalla},${ryhma}=$A${r}))))`;
-    kaavat.push([
-      `=IF($A${r}="","",ARRAYFORMULA(COUNTA(${osoitteet})))`,
-      `=IF($A${r}="","",ARRAYFORMULA(TEXTJOIN(", ",TRUE,${osoitteet})))`,
+  const formulas = [];
+  for (let r = 6; r < 6 + SETTINGS.morningRows; r++) {
+    const addresses = `UNIQUE(LOWER(TRIM(FILTER(${email},${onDay},${group}=$A${r}))))`;
+    formulas.push([
+      `=IF($A${r}="","",ARRAYFORMULA(COUNTA(${addresses})))`,
+      `=IF($A${r}="","",ARRAYFORMULA(TEXTJOIN(", ",TRUE,${addresses})))`,
     ]);
   }
-  s.getRange(6, 2, ASETUKSET.aamunRiveja, 2).setFormulas(kaavat).setVerticalAlignment('top');
+  s.getRange(6, 2, SETTINGS.morningRows, 2).setFormulas(formulas).setVerticalAlignment('top');
   s.getRange('A6:A').setHorizontalAlignment('left').setVerticalAlignment('top');
   s.getRange('C6:C').setWrap(true);
 
@@ -166,6 +164,6 @@ function rakennaAamu(taulukko) {
   s.setFrozenRows(5);
 }
 
-function vastaa(olio) {
-  return ContentService.createTextOutput(JSON.stringify(olio)).setMimeType(ContentService.MimeType.JSON);
+function reply(object) {
+  return ContentService.createTextOutput(JSON.stringify(object)).setMimeType(ContentService.MimeType.JSON);
 }

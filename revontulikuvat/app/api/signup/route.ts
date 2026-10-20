@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { normalizeEmail, normalizeGroup } from '@/lib/validate';
-import { isLang } from '@/lib/i18n';
 
 // Sign-ups are stored in Google Sheets through the Apps Script web app
 // (apps-script/backend.gs). The secret keeps others from writing to the sheet.
@@ -20,7 +19,6 @@ export async function POST(req: Request) {
   if (!group || !email) {
     return NextResponse.json({ ok: false, error: !group ? 'group' : 'email' }, { status: 400 });
   }
-  const lang = isLang(body.lang) ? body.lang : 'en';
 
   const url = process.env.APPS_SCRIPT_URL;
   const secret = process.env.APPS_SCRIPT_SECRET;
@@ -34,7 +32,7 @@ export async function POST(req: Request) {
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ secret, group, email, lang }),
+      body: JSON.stringify({ secret, group, email }),
       redirect: 'follow',
       cache: 'no-store',
       signal: AbortSignal.timeout(20000),

@@ -1,7 +1,6 @@
-import SignupPage from '@/components/SignupPage';
+import SignupForm from '@/components/SignupForm';
 
 // General link without a group: the customer types the group number.
-export default async function Home({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
-  const { lang } = await searchParams;
-  return <SignupPage group={null} langParam={lang} />;
+export default function Home() {
+  return <SignupForm group={null} />;
 }

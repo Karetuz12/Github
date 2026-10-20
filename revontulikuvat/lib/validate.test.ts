@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { normalizeEmail, normalizeGroup, suggestEmail } from './validate.ts';
-import { detectLang, fill } from './i18n.ts';
+import { fill } from './strings.ts';
 
 test('normalizeEmail', () => {
   assert.equal(normalizeEmail('  Anna.Smith@Gmail.com '), 'anna.smith@gmail.com');
@@ -33,15 +33,6 @@ test('suggestEmail', () => {
   assert.equal(suggestEmail('anna@booklapland.fi'), null);
   assert.equal(suggestEmail('anna@uni-koeln.de'), null);
   assert.equal(suggestEmail('anna@mo.com'), null);
-});
-
-test('detectLang', () => {
-  assert.equal(detectLang('de-DE,de;q=0.9,en;q=0.8'), 'de');
-  assert.equal(detectLang('pt-BR,es;q=0.5'), 'es');
-  assert.equal(detectLang('zh-CN,zh;q=0.9'), 'zh');
-  assert.equal(detectLang('en;q=0.3,fi;q=0.9'), 'fi');
-  assert.equal(detectLang('ja'), 'en');
-  assert.equal(detectLang(null), 'en');
 });
 
 test('fill', () => {

@@ -1,27 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { BRAND } from '@/lib/brand';
-import { LANGS, LANG_NAMES, STRINGS, fill, isLang, type Lang } from '@/lib/i18n';
+import { STRINGS as t, fill } from '@/lib/strings';
 import { normalizeEmail, normalizeGroup, suggestEmail } from '@/lib/validate';
 import Wordmark from './Wordmark';
 
 type Status = 'idle' | 'sending' | 'done';
 
-export default function SignupForm({ group: fixedGroup, initialLang }: { group: string | null; initialLang: Lang }) {
-  const [lang, setLang] = useState<Lang>(initialLang);
+export default function SignupForm({ group: fixedGroup }: { group: string | null }) {
   const [group, setGroup] = useState(fixedGroup ?? '');
   const [email, setEmail] = useState('');
   const [website, setWebsite] = useState(''); // honeypot
   const [status, setStatus] = useState<Status>('idle');
   const [error, setError] = useState<'email' | 'group' | 'server' | null>(null);
   const [sentTo, setSentTo] = useState('');
-  const t = STRINGS[lang];
   const suggestion = email.includes('@') ? suggestEmail(email) : null;
-
-  useEffect(() => {
-    document.documentElement.lang = lang;
-  }, [lang]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,7 +29,7 @@ export default function SignupForm({ group: fixedGroup, initialLang }: { group: 
       const res = await fetch('/api/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ group: cleanGroup, email: cleanEmail, lang, website }),
+        body: JSON.stringify({ group: cleanGroup, email: cleanEmail, website }),
       });
       const data = await res.json().catch(() => null);
       if (!data?.ok) {
@@ -66,16 +60,6 @@ export default function SignupForm({ group: fixedGroup, initialLang }: { group: 
 
       <header className="top">
         <Wordmark />
-        <label className="lang">
-          <span className="visually-hidden">Language</span>
-          <select value={lang} onChange={(e) => isLang(e.target.value) && setLang(e.target.value)}>
-            {LANGS.map((l) => (
-              <option key={l} value={l}>
-                {LANG_NAMES[l]}
-              </option>
-            ))}
-          </select>
-        </label>
       </header>
 
       <section className="card" aria-live="polite">

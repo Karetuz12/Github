@@ -92,12 +92,6 @@ button, input, select { font: inherit; color: inherit; }
 .wordmark.dark .wordmark-accent { color: var(--bl-brand); }
 .logo { height: 32px; width: auto; display: block; }
 
-.lang select {
-  appearance: none; -webkit-appearance: none;
-  background: var(--bl-field) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23a3b3c7' stroke-width='1.6'/%3E%3C/svg%3E") no-repeat right 12px center;
-  border: 1px solid var(--bl-line); border-radius: 999px;
-  padding: 8px 32px 8px 14px; font-size: 14px; color: var(--bl-text);
-}
 
 .card {
   margin-top: auto; margin-bottom: auto;
