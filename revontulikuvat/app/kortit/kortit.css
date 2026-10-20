@@ -1,0 +1,57 @@
+.cards-page {
+  position: relative; z-index: 1;
+  min-height: 100vh; padding: 24px 16px 48px;
+  background: #e9eef4; color: #07111f;
+}
+
+.toolbar {
+  max-width: 794px; margin: 0 auto 20px;
+  display: flex; gap: 16px; align-items: flex-start; justify-content: space-between;
+  font-size: 14px; line-height: 1.5;
+}
+.toolbar .hint { color: #4a5b70; font-size: 13px; }
+.toolbar code { background: #fff; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+
+.print-button {
+  flex: none; padding: 10px 22px; border: 0; border-radius: 10px; cursor: pointer;
+  background: var(--bl-brand); color: #fff; font-weight: 700;
+}
+
+/* A4 = 210 × 297 mm, four cards per page */
+.sheet {
+  max-width: 210mm; margin: 0 auto; background: #fff;
+  display: grid; grid-template-columns: 1fr 1fr;
+}
+
+.qr-card {
+  height: 148.4mm; padding: 9mm 8mm 7mm;
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  border-right: 1px dashed #b9c4d1; border-bottom: 1px dashed #b9c4d1;
+  position: relative; overflow: hidden;
+  break-inside: avoid;
+}
+.qr-card:nth-child(2n) { border-right: 0; }
+.qr-card::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; height: 5mm;
+  background: linear-gradient(90deg, var(--bl-brand), #43e6a5 55%, #8c7bff);
+}
+
+.qr-card-top { margin-top: 3mm; }
+.qr-card .wordmark { font-size: 11pt; }
+.qr-card-title { margin: 4mm 0 0; font-size: 11pt; font-weight: 600; color: #4a5b70; }
+.qr-card-group { margin: 1mm 0 4mm; font-size: 26pt; font-weight: 800; letter-spacing: .02em; }
+.qr { width: 62mm; height: 62mm; }
+.qr svg { width: 100%; height: 100%; display: block; }
+.qr-card-cta { margin: 5mm 0 1mm; font-size: 13pt; font-weight: 700; }
+.qr-card-sub { margin: 0; font-size: 9.5pt; color: #4a5b70; }
+.qr-card-url { margin: auto 0 0; font-size: 8pt; color: #7b8ba1; letter-spacing: .02em; }
+
+@page { size: A4; margin: 0; }
+
+@media print {
+  body { background: #fff; }
+  .sky, .toolbar { display: none !important; }
+  .cards-page { padding: 0; background: #fff; }
+  .sheet { max-width: none; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
