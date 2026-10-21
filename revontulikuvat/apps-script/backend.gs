@@ -15,19 +15,23 @@ const SETTINGS = {
   spreadsheetName: 'Book Lapland – Northern Lights Photos',
 };
 
-/** Creates the spreadsheet, the Morning summary and the nightly clean-up. Run once. */
+/**
+ * Sets up the Morning summary, the Responses sheet and the nightly clean-up. Run once.
+ * Opened from a spreadsheet (Extensions → Apps Script) it uses that spreadsheet,
+ * otherwise it creates a new one in My Drive.
+ */
 function setup() {
   const props = PropertiesService.getScriptProperties();
   if (props.getProperty('SHEET_ID')) {
     throw new Error('Already set up: ' + SpreadsheetApp.openById(props.getProperty('SHEET_ID')).getUrl());
   }
 
-  const spreadsheet = SpreadsheetApp.create(SETTINGS.spreadsheetName);
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet() || SpreadsheetApp.create(SETTINGS.spreadsheetName);
   spreadsheet.setSpreadsheetTimeZone('Europe/Helsinki');
   spreadsheet.setSpreadsheetLocale('en_GB');
 
   const morning = spreadsheet.getSheets()[0].setName('Morning');
-  const responses = spreadsheet.insertSheet('Responses');
+  const responses = spreadsheet.getSheetByName('Responses') || spreadsheet.insertSheet('Responses');
   responses.getRange('A1:C1').setValues([['Time', 'Group', 'Email']]).setFontWeight('bold');
   responses.setFrozenRows(1);
   responses.getRange('A2:A').setNumberFormat('ddd d mmm yyyy HH:mm');

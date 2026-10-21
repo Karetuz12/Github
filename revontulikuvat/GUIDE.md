@@ -27,7 +27,9 @@ Guide's QR card ◄── photos.booklapland.fi/cards (printable A4)            
 
 ### 1. Google Sheets and Apps Script (marketing@booklapland.fi)
 
-1. Open **https://script.new** and name the project, e.g. "Northern Lights Photos".
+1. Open the spreadsheet **Book Lapland – Northern Lights Photos** in the Drive folder "Valokuvien lähetys"
+   and choose **Extensions → Apps Script**. Name the project, e.g. "Northern Lights Photos".
+   (Without a spreadsheet you can also start from **https://script.new**; `setup` then creates one in My Drive.)
 2. Replace the existing code in the editor with all of `apps-script/backend.gs` and save (Ctrl+S).
 3. Select **setup** in the function menu and click **Run**. Allow the permissions. If you see "Google hasn't verified
    this app", click **Advanced → Go to Northern Lights Photos (unsafe) → Allow**. The warning appears because the script
