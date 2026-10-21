@@ -17,7 +17,7 @@ export const STRINGS = {
   errGroup: 'Please enter your group number.',
   errServer: 'Something went wrong. Please try again in a moment.',
   doneTitle: "You're all set!",
-  doneText: "We'll send your photos to {email} tomorrow. If you can't find them, please check your spam folder.",
+  doneText: "We'll send your photos to {email} within 48 hours. If you can't find them, please check your spam folder.",
   again: 'Add another email',
 };
 
