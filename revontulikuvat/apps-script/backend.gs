@@ -3,7 +3,8 @@
  *
  * The website (Vercel) sends every sign-up here. The script stores it on the
  * Responses sheet, and the Morning sheet lists last night's emails by group.
- * Rows older than 30 days are deleted every night.
+ * Every morning a reminder email links to the Morning sheet, and rows older
+ * than 30 days are deleted every night.
  *
  * Setup: see revontulikuvat/GUIDE.md.
  */
@@ -13,6 +14,10 @@ const SETTINGS = {
   dayStartsAtHour: 6,     // sign-ups until 06:00 belong to the previous night's tour
   morningRows: 50,        // how many groups the Morning sheet can show for one day
   spreadsheetName: 'Book Lapland – Northern Lights Photos',
+  reminderTo: 'photos@booklapland.fi', // morning reminder goes here (several: 'a@x.fi, b@x.fi')
+  reminderHour: 8,        // sent between 08:00 and 09:00 Finnish time
+  reminderWhenEmpty: false, // false = no email on nights without sign-ups
+  timeZone: 'Europe/Helsinki',
 };
 
 /**
@@ -44,6 +49,7 @@ function setup() {
   const secret = Utilities.getUuid().replace(/-/g, '');
   props.setProperties({ SHEET_ID: spreadsheet.getId(), SECRET: secret });
   scheduleCleanup();
+  scheduleMorningReminder();
 
   Logger.log('Done!\n\nSpreadsheet: ' + spreadsheet.getUrl() +
     '\n\nAPPS_SCRIPT_SECRET (copy this to Vercel):\n' + secret +
@@ -123,7 +129,95 @@ function scheduleCleanup() {
   ScriptApp.getProjectTriggers()
     .filter((t) => t.getHandlerFunction() === 'deleteOldRows')
     .forEach((t) => ScriptApp.deleteTrigger(t));
-  ScriptApp.newTrigger('deleteOldRows').timeBased().everyDays(1).atHour(4).create();
+  ScriptApp.newTrigger('deleteOldRows').timeBased().everyDays(1).atHour(4).inTimezone(SETTINGS.timeZone).create();
+}
+
+/**
+ * Turns on the morning reminder email. Already done by setup; run this once
+ * if the script was set up before the reminder existed. Safe to run again.
+ */
+function scheduleMorningReminder() {
+  ScriptApp.getProjectTriggers()
+    .filter((t) => t.getHandlerFunction() === 'sendMorningReminder')
+    .forEach((t) => ScriptApp.deleteTrigger(t));
+  ScriptApp.newTrigger('sendMorningReminder')
+    .timeBased().everyDays(1).atHour(SETTINGS.reminderHour).inTimezone(SETTINGS.timeZone).create();
+  Logger.log('Morning reminder is on: every day around ' + SETTINGS.reminderHour + ':00 to ' + SETTINGS.reminderTo);
+}
+
+/** Sends the reminder right now, even if there were no sign-ups. For testing. */
+function sendTestReminder() {
+  sendReminder(true);
+}
+
+/** Runs every morning: tells the photo team how many emails last night's tours collected. */
+function sendMorningReminder() {
+  sendReminder(SETTINGS.reminderWhenEmpty);
+}
+
+function sendReminder(sendWhenEmpty) {
+  const spreadsheet = SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('SHEET_ID'));
+  const responses = spreadsheet.getSheetByName('Responses');
+  const morning = spreadsheet.getSheetByName('Morning');
+  const tz = SETTINGS.timeZone;
+  const shift = SETTINGS.dayStartsAtHour * 3600 * 1000;
+  const lastNight = Utilities.formatDate(new Date(Date.now() - 24 * 3600 * 1000), tz, 'yyyy-MM-dd');
+
+  // Same rule as the Morning sheet: sign-ups before 06:00 belong to the previous night
+  const groups = {};
+  const lastRow = responses.getLastRow();
+  const rows = lastRow < 2 ? [] : responses.getRange(2, 1, lastRow - 1, 3).getValues();
+  rows.forEach(([time, group, email]) => {
+    if (!(time instanceof Date) || !email) return;
+    if (Utilities.formatDate(new Date(time.getTime() - shift), tz, 'yyyy-MM-dd') !== lastNight) return;
+    const key = String(group);
+    groups[key] = groups[key] || {};
+    groups[key][String(email).trim().toLowerCase()] = true;
+  });
+  const list = Object.keys(groups)
+    .sort((a, b) => (isNaN(a) || isNaN(b) ? a.localeCompare(b) : Number(a) - Number(b)))
+    .map((group) => ({ group, count: Object.keys(groups[group]).length }));
+  const total = list.reduce((sum, g) => sum + g.count, 0);
+  if (!total && !sendWhenEmpty) return;
+
+  const nightText = Utilities.formatDate(new Date(Date.now() - 24 * 3600 * 1000), tz, 'EEE d MMM');
+  const link = spreadsheet.getUrl() + '#gid=' + morning.getSheetId();
+  const subject = total
+    ? `Northern lights photos to send – ${total} email${total === 1 ? '' : 's'} from ${nightText}`
+    : `Northern lights photos – no sign-ups on ${nightText}`;
+
+  const rowsHtml = list.map((g) =>
+    `<tr><td style="padding:6px 16px 6px 0">Group ${escapeHtml(g.group)}</td>` +
+    `<td style="padding:6px 0;text-align:right">${g.count} email${g.count === 1 ? '' : 's'}</td></tr>`).join('');
+  const htmlBody = `
+<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#17293f;max-width:560px">
+  <p style="margin:0 0 4px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#0b7a54"><b>Book Lapland · Northern lights photos</b></p>
+  <h2 style="margin:0 0 12px;font-size:22px">${total
+      ? `Good morning! Last night's tours collected ${total} email${total === 1 ? '' : 's'}.`
+      : 'Good morning! No sign-ups last night.'}</h2>
+  ${total ? `<table style="border-collapse:collapse;margin:0 0 18px">${rowsHtml}</table>` : ''}
+  <p style="margin:0 0 20px"><a href="${link}" style="display:inline-block;background:#0b7a54;color:#fff;text-decoration:none;padding:12px 22px;border-radius:8px;font-weight:bold">Open the Morning sheet</a></p>
+  <p style="margin:0 0 6px"><b>How to send the photos</b></p>
+  <ol style="margin:0 0 18px;padding-left:20px">
+    <li>Open the Morning sheet – it shows last night's tours automatically.</li>
+    <li>Copy a group's email addresses into the <b>BCC</b> field of a new email.</li>
+    <li>Add the link to that group's photos and send. Then the next group.</li>
+  </ol>
+  <p style="margin:0;font-size:12px;color:#5d7189">Tour night: ${nightText}. Sign-ups until 06:00 count towards the previous night.
+  Customers were promised their photos within 48 hours.</p>
+</div>`;
+  const body = (total
+      ? `Last night's tours (${nightText}) collected ${total} email(s):\n` +
+        list.map((g) => `- Group ${g.group}: ${g.count}`).join('\n')
+      : `No sign-ups on ${nightText}.`) +
+    `\n\nOpen the Morning sheet: ${link}\n\n` +
+    'Copy each group\'s email addresses into the BCC field and send the link to the group\'s photos.';
+
+  MailApp.sendEmail({ to: SETTINGS.reminderTo, subject, body, htmlBody, name: 'Book Lapland Photos' });
+}
+
+function escapeHtml(text) {
+  return String(text).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 }
 
 function buildMorningSheet(spreadsheet) {

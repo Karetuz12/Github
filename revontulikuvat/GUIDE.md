@@ -84,6 +84,29 @@ addresses, and customers can't get past it. A custom domain skips that protectio
 
 Share the spreadsheet with the colleagues who send the photos (Share button).
 
+## Morning reminder email
+
+Every morning around **08:00** (Finnish time) **photos@booklapland.fi** gets an email:
+"Northern lights photos to send – 12 emails from Thu 29 Oct", with the number of emails per group and a button
+that opens the Morning sheet. Nights without sign-ups send nothing.
+
+The email only contains counts, not the customers' addresses. The addresses stay in the spreadsheet, where they are
+deleted after 30 days as promised to the customers.
+
+**Turning it on in the spreadsheet that is already in use** (new installs get it from `setup` automatically):
+
+1. Open the spreadsheet → **Extensions → Apps Script**.
+2. Replace all the code with the latest `apps-script/backend.gs` and save (Ctrl+S).
+3. Select **scheduleMorningReminder** in the function menu and click **Run**. Google asks for one new permission
+   (sending email as you) – allow it.
+4. To see what the email looks like, run **sendTestReminder**. It sends one right away.
+
+The web app deployment does not need to be updated for this.
+
+Settings at the top of `backend.gs`: `reminderTo` (several addresses: `'a@booklapland.fi, b@booklapland.fi'`),
+`reminderHour`, and `reminderWhenEmpty: true` to get an email also after nights without sign-ups.
+After changing them, run **scheduleMorningReminder** again.
+
 ## Making changes
 
 | What | Where |
