@@ -55,7 +55,8 @@ Liitä rivit Liidit-välilehdelle. Tila (Uusi), Vaihe (0) ja Lisätty täyttyvä
 
 - **Pakolliset:** Sähköposti. Kylmille liideille lisäksi Yritys ja Havainto. Verkkosivu tarvitaan sivustotarkistukseen ja muuttujaan `{{sivusto}}`.
 - **Segmentti** valitsee viestisarjan:
-  - *WordPress*: WordPress-sivujen uudistus. Tyhjän segmentin WordPress-sivusto siirtyy tähän sivustotarkistuksessa itse.
+  - *WordPress*: uusi sivusto koodilla WordPress-sivustojen omistajille. Tyhjän segmentin WordPress-sivusto siirtyy tähän sivustotarkistuksessa itse.
+  - *Groundwork*: markkinoinnin perusta kuntoon (seurannat, mainostilit, nopeus, SEO ja yhteydenottopolut).
   - *Mainonta*: Meta- ja Google-mainonnan kevyt kumppanuus.
   - *Sparraus*: markkinoinnista vastaavan taustatuki.
   - *Matkailu*: matkailun pohjat.

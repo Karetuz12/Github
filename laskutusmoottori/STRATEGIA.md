@@ -100,21 +100,24 @@ Automaatio kannattaa rakentaa näiden ilmoitusten varaan eikä sivuston kaapimis
 Pienet koodaustyöt (Pikatyö, 200–300 €) ovat kannattavia, koska ne vievät tällä järjestelmällä puolesta tunnista tuntiin.
 Hinnoittele ne silti kiinteällä hinnalla eikä tuntihinnalla. Jokainen pikatyöasiakas on myös ehdokas ylläpitosopimukselle.
 
-**Tarjous tuotteena.** Kiinteä sisältö, kiinteä hinta ja 2–3 viikon toimitus. Hinnat ovat lähtöehdotus:
+**Tarjous tuotteena.** Uudet sivustot tehdään koodilla, ja niissä on kevyt hallintapaneeli, jolla asiakas päivittää tekstit ja kuvat itse.
+Uusia WordPress-sivustoja ei tehdä. WordPressin ylläpito ja kehitys myydään pikatyönä. Kiinteä hinta ja noin kahden viikon toimitus. Hinnat ovat lähtöehdotus:
 
 | Paketti | Sisältö | Hinta |
 |---|---|---:|
+| Sivusto S | 1–3 sivua, noin 2 viikkoa, omaa aikaasi 3–4 h | 1 000 € |
+| Sivusto M | Pienemmät yritykset | 1 500–2 500 € |
+| Sivusto L | Isommat yritykset | 3 000–4 000 € |
 | Korjauspaketti | Nopeus, mobiili, varauspolku ja englanninkielinen versio olemassa olevaan sivustoon | 1 500 € |
-| Uusi sivusto | 5–8 sivua, 2 kieltä, varausintegraatio ja hakukoneoptimoinnin perusta | 2 900 € |
 | Ylläpito ja kasvu | Hosting (Nordic Host), päivitykset ja kuukausiraportti | 149–290 €/kk |
-| Pikatyö | Pieni koodaus- tai sivutyö, esim. nerot.fi-pyyntö | 200–300 € |
+| Pikatyö | Pieni koodaus- tai sivutyö, myös WordPressin ylläpito ja kehitys, esim. nerot.fi-pyyntö | 200–300 € |
 
-Tuotteet ovat Laskutusmoottorin Tuotteet-välilehdellä laskutusaikatauluineen. Verkkosivuprojekti laskutetaan 50 % aloituksesta ja 50 % julkaisusta,
+Tuotteet ovat Laskutusmoottorin Tuotteet-välilehdellä laskutusaikatauluineen. Sivustot laskutetaan 50 % aloituksesta ja 50 % julkaisusta,
 iso projekti kolmessa erässä ja pikatyö kerralla.
 
 Toimitusta varten rakennetaan kerran yksi matkailusivun pohja, jota käytetään joka projektissa. Tavoite on enintään 20 tuntia omaa aikaa projektia kohden.
 
-### Tarjoama: kolme kulmaa, jotka sopivat sinun aikaasi
+### Tarjoama: neljä kulmaa, jotka sopivat sinun aikaasi
 
 Lähtökohta: sinä myyt ja vedät suunnittelupalaverit, kaksi verkkosivukaveria toteuttaa. Kuukausiasiakkuuksissa on kevyt rytmi:
 palaveri kerran kuussa tai joka toinen kuukausi, raportti ja noin 15 minuuttia viestejä viikossa. Viikkopalavereita ja ad hoc -työtä ei ole.
@@ -122,9 +125,14 @@ Malli on sama kuin nykyisessä 1 000 €/kk konsultointiasiakkaassa.
 
 | Kulma | Sisääntulo | Jatko | Oma aikasi | Rooli |
 |---|---|---|---|---|
-| **WordPress-sivujen uudistus** | 15 min puhelu, arvio sähköpostilla | Verkkosivu-uudistus 2 900–4 900 €, 50/50 | Myynti + 1–2 suunnittelupalaveria | Volyymi ja tuttu, turvallinen aloitus |
+| **Uusi sivusto koodilla** (WordPress-sivustoille) | 15 min puhelu, arvio sähköpostilla | Sivusto S/M/L 1 000–4 000 €, 50/50 | Myynti + 1–2 suunnittelupalaveria | Volyymi ja tuttu, turvallinen aloitus |
+| **Pure Groundwork** – perusta kuntoon | Groundwork-katselmus 490 € | Groundwork-kunnostus noin 1 900 € → sivusto, mainonta tai sparraus | Katselmus noin 3 h, kunnostus tiimin kanssa | Konsultointi konkreettisena pakettina, ovenavaaja kaikkeen muuhun |
 | **Mainonnan kumppanuus** (Meta, Google) | Maksuton läpikäynti tai 490 € | 490–990 €/kk | Noin 2–3 h/kk asiakasta kohden | Toistuva pohja |
-| **Markkinoinnin sparraus** | Sparrauspalaveri 2 h, 790 € | 600–1 200 €/kk | Noin 2–3 h/kk asiakasta kohden | Toistuva pohja ja paras tuntihinta |
+| **Markkinoinnin sparraus** | Sparrauspalaveri 2 h, 790 € | 600–1 200 €/kk | Noin 2–3 h/kk asiakasta kohden | Jatkotarjous Groundworkin jälkeen ja oman sivuston kautta |
+
+**Miksi Groundwork:** pelkkää konsultointia on vaikea myydä kylmänä. "Perusta kuntoon kiinteällä hinnalla" on konkreettinen, ja sen tuloksen voi tarkistaa:
+seurannat mittaavat, sivu on nopea, lomakkeet toimivat. Katselmus avaa oven, ja jatkoksi sopivat uusi sivusto, mainonnan kumppanuus tai sparraus.
+Päivittäinen 5 + 5 + 5 ajetaan kulmilla Uusi sivusto, Groundwork ja Mainonta. Sparraus myydään asiakkaille, jotka ovat jo ostaneet.
 
 **Mitä tämä tarkoittaa luvuissa:** neljä mainontakumppanuutta à 700 € ja kaksi sparrausta à 1 000 € tuovat noin 4 800 €/kk toistuvaa laskutusta.
 Työtä on noin kuusi palaveria kuussa. Se kattaa rakenteellisen 4 000 € vajeen jo ennen yhtäkään verkkosivuprojektia, ja projektit tulevat päälle.
@@ -135,8 +143,14 @@ Kun rajaus on kirjattu, kevyt malli pysyy kannattavana. Ota enintään 6–8 kuu
 **⚠ Markkinointiboosti.** Mainonta ja sparraus ovat lähellä sitä, mitä omistamasi Markkinointiboosti myy. Sovi Akselin kanssa raja ennen ensimmäistä viestiä.
 Esimerkiksi niin, että alle 1 000 €/kk kevyet asiakkuudet hoidat itse ja isommat ohjataan Markkinointiboostille provisiolla.
 
-Valmiit viestit kaikkiin kolmeen kulmaan: [viestipohjat/VIESTIPOHJAT.md](viestipohjat/VIESTIPOHJAT.md). Päivärytmi on 5 + 5 + 5 avausta, eli 15 täsmäiskua päivässä.
+Valmiit viestit kaikkiin neljään kulmaan: [viestipohjat/VIESTIPOHJAT.md](viestipohjat/VIESTIPOHJAT.md). Päivärytmi on 5 + 5 + 5 avausta, eli 15 täsmäiskua päivässä.
 Kojelauta näyttää kulmittain, mikä tuottaa vastauksia ja palavereita.
+
+### Oma brändi: Pure Groundwork
+
+Oma sivusto omalla nimellä ja kasvoilla, ilman toimistoa: "yhden miehen armeija", joka tekee markkinoinnin perustan kuntoon.
+Sivusto on samalla referenssi koodilla tehdystä, nopeasta sivustosta. Lisäksi sinne voi rakentaa ilmaisen sivustotarkistuksen,
+joka tuo kyselyjä suoraan Laskutusmoottoriin. Suunnitelma, rakenne ja tekstiluonnokset: [../puregroundwork/SUUNNITELMA.md](../puregroundwork/SUUNNITELMA.md).
 
 ### C. Koko ajan: toistuva pohja kasvaa jokaisesta kaupasta
 

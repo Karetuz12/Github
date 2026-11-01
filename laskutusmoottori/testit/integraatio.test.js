@@ -532,19 +532,19 @@ test('päivitys lisää uudet kulmat ja tuotteet olemassa olevaan taulukkoon', (
   y.ctx.asenna();
   // Simuloidaan vanhaa versiota: ei kulmapohjia eikä uusia tuotteita
   const p = y.ss.getSheetByName('Viestipohjat');
-  const vanhat = y.taulu('Viestipohjat').filter((r) => !['WordPress', 'Mainonta', 'Sparraus'].includes(r.Segmentti));
+  const vanhat = y.taulu('Viestipohjat').filter((r) => !['WordPress', 'Groundwork', 'Mainonta', 'Sparraus'].includes(r.Segmentti));
   for (let r = 2; r <= 40; r++) for (let c = 1; c <= 5; c++) p.set(r, c, '');
   vanhat.forEach((r, i) => ['Vaihe', 'Segmentti', 'Odota arkipäivää', 'Aihe', 'Viesti'].forEach((k, j) => p.set(2 + i, j + 1, r[k])));
   const tu = y.ss.getSheetByName('Tuotteet');
-  for (let r = 2; r <= tu.getLastRow(); r++) if (/uudistus|Maino|parraus/.test(tu.get(r, 1))) for (let c = 1; c <= 11; c++) tu.set(r, c, '');
+  for (let r = 2; r <= tu.getLastRow(); r++) if (/Sivusto [SML]|Groundwork|Maino|parraus/.test(tu.get(r, 1))) for (let c = 1; c <= 11; c++) tu.set(r, c, '');
   assert.equal(y.taulu('Viestipohjat').filter((r) => r.Segmentti === 'WordPress').length, 0);
 
   y.ctx.paivitaRakenne();
   const pohjat = y.taulu('Viestipohjat');
-  ['WordPress', 'Mainonta', 'Sparraus'].forEach((seg) => assert.equal(pohjat.filter((r) => r.Segmentti === seg).length, 3, seg));
+  ['WordPress', 'Groundwork', 'Mainonta', 'Sparraus'].forEach((seg) => assert.equal(pohjat.filter((r) => r.Segmentti === seg).length, 3, seg));
   assert.equal(pohjat.filter((r) => r.Segmentti === 'Verkosto').length, 2, 'olemassa olevia ei tuplata');
   assert.ok(y.taulu('Tuotteet').some((r) => r.Tuote === 'Mainonnan kumppanuus'));
-  assert.match(y.taulu('Loki').pop().Tulos, /viestipohjat: WordPress, Mainonta, Sparraus.*tuotteet: Verkkosivu-uudistus/);
+  assert.match(y.taulu('Loki').pop().Tulos, /viestipohjat: WordPress, Groundwork, Mainonta, Sparraus.*tuotteet: Sivusto S, Sivusto M, Sivusto L, Groundwork-katselmus/);
   // Kojelaudan kulmataulukko
   assert.equal(y.solu('Kojelauta', 'A61'), 'KULMAT (SEGMENTIT)');
 });

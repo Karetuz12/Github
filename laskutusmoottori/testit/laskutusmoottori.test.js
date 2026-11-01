@@ -467,7 +467,7 @@ test('kolme kulmaa: enintään 5 avausta segmenttiä kohden päivässä', () => 
 test('kulmien pohjat: kolme viestiä, kaikki muuttujat tunnettuja, ei linkkejä avauksessa', () => {
   const pp = Array.from(g.oletusPohjat()).map(([vaihe, segmentti, odota, aihe, viesti]) => ({ vaihe, segmentti, odota, aihe, viesti }));
   const a = asetukset({ varauslinkki: 'https://cal.example/x', tietosuoja: 'Tietosuoja: x.fi' });
-  ['WordPress', 'Mainonta', 'Sparraus'].forEach((seg) => {
+  ['WordPress', 'Groundwork', 'Mainonta', 'Sparraus'].forEach((seg) => {
     [1, 2, 3].forEach((n) => {
       const p = g.haePohja(pp, n, seg);
       assert.equal(p.segmentti, seg, seg + ' ' + n);
@@ -489,7 +489,7 @@ test('kulmien pohjat: kolme viestiä, kaikki muuttujat tunnettuja, ei linkkejä 
 
 test('viestipohjatiedosto vastaa moottorin pohjia', () => {
   const md = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'viestipohjat', 'VIESTIPOHJAT.md'), 'utf8');
-  Array.from(g.oletusPohjat()).filter((p) => ['WordPress', 'Mainonta', 'Sparraus'].includes(p[1])).forEach((p) => {
+  Array.from(g.oletusPohjat()).filter((p) => ['WordPress', 'Groundwork', 'Mainonta', 'Sparraus'].includes(p[1])).forEach((p) => {
     assert.ok(md.includes('```text\n' + p[4] + '\n```'), 'VIESTIPOHJAT.md ei vastaa pohjaa ' + p[1] + ' ' + p[0] + ' – generoi tiedosto uudelleen');
     if (p[3]) assert.ok(md.includes('`' + p[3] + '`'), p[1] + ' aihe');
   });
@@ -506,9 +506,22 @@ test('sivuston seurantasignaalit ja mainonnan havainnot', () => {
   assert.match(g.analysoiSivu(pohja, { https: true }, 'Mainonta', 2026).signaalit, /ei seurantakoodeja/);
   // GTM voi ladata pikselit → ei päätelmää puuttuvasta seurannasta
   assert.equal(g.analysoiSivu(pohja + '<script src="https://www.googletagmanager.com/gtm.js?id=GTM-ABC12"></script>', { https: true }, 'Mainonta', 2026).havainto, '');
+  assert.equal(g.analysoiSivu(pohja, { https: true }, 'Groundwork', 2026).havainto,
+    'sivuilta ei löydy Google Analyticsia eikä Metan pikseliä, joten mainonnan tulosta on vaikea mitata');
   // Muissa kulmissa seuranta ei ole havainto
   assert.equal(g.analysoiSivu(pohja, { https: true }, 'WordPress', 2026).havainto, '');
   assert.match(g.analysoiSivu(pohja + "gtag('config', 'AW-123456789'); <script src=\"https://www.googletagmanager.com/gtag/js?id=G-ABCDEF12\">", { https: true }, '', 2026).signaalit, /Google Ads, GA4/);
+});
+
+test('uusi sivusto koodilla: WordPress-kulman viestit ja S/M/L-hinnat', () => {
+  const pp = Array.from(g.oletusPohjat());
+  const wp1 = pp.find((p) => p[1] === 'WordPress' && p[0] === 1)[4];
+  assert.match(wp1, /koodilla/);
+  assert.match(wp1, /hallintapaneeli/);
+  assert.doesNotMatch(wp1, /Uudistamme|nykyinen sisältö toimii pohjana/);
+  assert.match(pp.find((p) => p[1] === 'WordPress' && p[0] === 2)[4], /1 000–4 000 €/);
+  const gw1 = pp.find((p) => p[1] === 'Groundwork' && p[0] === 1)[4];
+  assert.doesNotMatch(gw1, /Pure Groundwork/, 'brändiä ei mainita ennen sivuston julkaisua');
 });
 
 test('kulmatilastot segmenteittäin', () => {

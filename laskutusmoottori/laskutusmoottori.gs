@@ -118,7 +118,7 @@ const PALAVERIT = ['Palaveri', 'Kauppa'];
 const ESTAA_DOMAININ = ['Luonnos', 'Sekvenssissä', 'Vastasi', 'Palaveri', 'Kauppa', 'Ei kiinnosta', 'Älä ota yhteyttä'];
 const LI_TILAT = ['Tehtävälistalla', 'Kutsuttu', 'Yhdistetty', 'Viesti lähetetty', 'Ei LinkedInissä'];
 const SOITTOTILAT = ['Soittolistalla', 'Ei vastannut', 'Palaveri sovittu', 'Ei kiinnosta', 'Soita myöhemmin'];
-const SEGMENTIT = ['WordPress', 'Mainonta', 'Sparraus', 'Matkailu', 'Yleinen', 'Verkosto', 'Vanha asiakas'];
+const SEGMENTIT = ['WordPress', 'Groundwork', 'Mainonta', 'Sparraus', 'Matkailu', 'Yleinen', 'Verkosto', 'Vanha asiakas'];
 const TILAT = ['TESTI', 'LUONNOS', 'LÄHETÄ'];
 const YLEISET_DOMAINIT = ['gmail.com', 'googlemail.com', 'outlook.com', 'hotmail.com', 'hotmail.fi', 'live.com',
   'live.fi', 'msn.com', 'yahoo.com', 'icloud.com', 'me.com', 'luukku.com', 'suomi24.fi', 'kolumbus.fi',
@@ -137,10 +137,13 @@ const TUOTTEET_OLETUS = [
   ['Verkkosivuprojekti', 2500, '', 0.5, 7, 0.5, 35, '', '', 14, '50 % aloituksesta, 50 % julkaisusta noin neljän viikon päästä.'],
   ['Iso projekti (3 erää)', 6000, '', 0.3, 7, 0.4, 35, 0.3, 63, 14, '30 / 40 / 30 %: aloitus, välitoimitus, julkaisu.'],
   ['Korjauspaketti', 1500, '', 1, 14, '', '', '', '', 14, 'Kerralla valmistuttua.'],
-  ['Pikatyö', 300, '', 1, 3, '', '', '', '', 14, 'Pienet koodaus- ja sivutyöt (esim. nerot.fi). Kerralla valmistuttua.'],
+  ['Pikatyö', 300, '', 1, 3, '', '', '', '', 14, 'Pienet koodaus- ja sivutyöt, myös WordPress-ylläpito ja -kehitys (esim. nerot.fi). Kerralla valmistuttua.'],
   ['Ylläpito ja hosting', '', 149, '', '', '', '', '', '', 14, 'Pelkkä kuukausimaksu, alkaa tilauskuusta.'],
-  ['Verkkosivu-uudistus', 3900, '', 0.5, 7, 0.5, 35, '', '', 14, 'WordPress-sivuston uudistus kevyempään tekniikkaan. 50/50. Tiimi toteuttaa, sinä myyt ja vedät suunnittelupalaverit.'],
-  ['Mainostilien läpikäynti', 490, '', 1, 7, '', '', '', '', 14, 'Sisääntulo: Meta- ja Google-tilien läpikäynti ja korjauslista. Hyvitetään, jos jatketaan kumppanuuteen.'],
+  ['Sivusto S', 1000, '', 0.5, 0, 0.5, 14, '', '', 14, '1–3 sivua koodilla + kevyt hallintapaneeli. Noin 2 viikkoa, omaa aikaa 3–4 h.'],
+  ['Sivusto M', 2000, '', 0.5, 7, 0.5, 28, '', '', 14, 'Pienemmät yritykset, 1 500–2 500 €. Koodilla + hallintapaneeli.'],
+  ['Sivusto L', 3500, '', 0.5, 7, 0.5, 42, '', '', 14, 'Isommat yritykset, 3 000–4 000 €. Koodilla + hallintapaneeli.'],
+  ['Groundwork-katselmus', 490, '', 1, 7, '', '', '', '', 14, 'Seurannat, mainostilit, nopeus, SEO ja yhteydenottopolut → korjauslista. Hyvitetään, jos korjaukset tehdään.'],
+  ['Groundwork-kunnostus', 1900, '', 0.5, 7, 0.5, 28, '', '', 14, 'Perusta kuntoon: Meta-pikseli, GTM, GA4 ja konversiot, nopeus, SEO-perusta, lomakkeet, chat ja laskurit.'],
   ['Mainonnan kumppanuus', '', 690, '', '', '', '', '', '', 14, '490–990 €/kk: kuukausiraportti, palaveri kerran kuussa tai joka toinen kuukausi, viestit noin 15 min/vk. Ei ad hoc -työtä.'],
   ['Markkinoinnin sparraus', '', 900, '', '', '', '', '', '', 14, '600–1 200 €/kk: markkinoinnista vastaavan taustatuki, palaveri kerran kuussa, katsaus ja kommentit.'],
   ['Sparrauspalaveri', 790, '', 1, 0, '', '', '', '', 14, 'Kertaluonteinen 2 h läpikäynti. Hyvitetään, jos jatketaan sparraukseen.'],
@@ -159,23 +162,48 @@ const POHJAT_OLETUS = [
     'Hei {{etunimi}},\n\n' +
     'kävin läpi sivujanne ({{sivusto}}) ja huomasin, että {{havainto}}.\n\n' +
     'WordPress-sivustoille käy usein niin, että lisäosia kertyy, päivitykset jäävät ja sivu hidastuu vuosi vuodelta. ' +
-    'Jossain vaiheessa korjaaminen maksaa lähes saman kuin uudistus.\n\n' +
-    'Uudistamme sivuja niin, että nykyinen sisältö toimii pohjana ja tekniikka vaihdetaan kevyempään. Lopputulos on nopea ja helppo päivittää, ' +
-    'eikä se vaadi jatkuvaa lisäosien ylläpitoa. Hinta sovitaan etukäteen.\n\n' +
+    'Jossain vaiheessa korjaaminen maksaa lähes saman kuin uusi sivusto.\n\n' +
+    'Teen uudet sivustot koodilla, ilman raskasta julkaisualustaa ja lisäosia. Sivu on nopea, ja mukana on kevyt hallintapaneeli, ' +
+    'jolla päivität tekstit ja kuvat itse. Hinta sovitaan etukäteen, ja tyypillinen projekti valmistuu parissa viikossa.\n\n' +
     'Taustaksi: olen tehnyt verkkosivuja ja markkinointia yli kymmenen vuotta, ja projekteja on takana noin tuhat.\n\n' +
     'Kannattaisiko katsoa 15 minuutissa, mitä teidän sivuillanne kannattaisi tehdä?\n\n' +
     '{{allekirjoitus}}\n\n' + OPTOUT + '\n\n{{tietosuoja}}'],
   [2, 'WordPress', 3, '',
     'Hei {{etunimi}},\n\n' +
-    'nostan tämän vielä esiin. Jos puhelu tuntuu turhan isolta askeleelta, voin lähettää lyhyen arvion sähköpostilla: ' +
-    'mitä uudistus teidän kohdallanne sisältäisi, kauanko se kestäisi ja mitä se maksaisi. Ei sitoumuksia.\n\n' +
-    'Laitanko?\n\n' +
+    'nostan tämän vielä esiin. Suuntaa antavasti: uusi sivusto maksaa koosta riippuen 1 000–4 000 € (alv 0), ' +
+    'ja tarkka hinta sovitaan ennen aloitusta.\n\n' +
+    'Jos puhelu tuntuu turhan isolta askeleelta, voin lähettää lyhyen arvion sähköpostilla: mitä uusi sivusto teidän kohdallanne sisältäisi, ' +
+    'kauanko se kestäisi ja mitä se maksaisi. Laitanko?\n\n' +
     'Voit myös varata ajan suoraan kalenteristani: {{varauslinkki}}\n\n' +
     '{{nimi}}'],
   [3, 'WordPress', 5, '',
     'Hei {{etunimi}},\n\n' +
-    'tämä on viimeinen viestini aiheesta, en halua täyttää postilaatikkoanne. Jos sivujen uudistus tulee ajankohtaiseksi myöhemmin – ' +
+    'tämä on viimeinen viestini aiheesta, en halua täyttää postilaatikkoanne. Jos uusi sivusto tulee ajankohtaiseksi myöhemmin – ' +
     'vaikka ennen seuraavaa kampanjaa tai sesonkia – vastaa tähän viestiin, niin jatketaan siitä.\n\n' +
+    'Hyvää jatkoa!\n{{nimi}}'],
+  // ── Kulma: Pure Groundwork – markkinoinnin perusta kuntoon ──
+  [1, 'Groundwork', '', '{{yritys}} / markkinoinnin perusta',
+    'Hei {{etunimi}},\n\n' +
+    'kävin läpi sivujanne ({{sivusto}}) ja huomasin, että {{havainto}}.\n\n' +
+    'Tämä on yllättävän yleistä: mainontaan käytetään rahaa, mutta perusta sen alla ontuu. Seuranta ei mittaa oikeita asioita, ' +
+    'sivu latautuu hitaasti tai yhteydenotto on tehty vaikeaksi. Silloin mainonta ei voi toimia, vaikka kampanjat olisivat hyviä.\n\n' +
+    'Teen tähän kiinteähintaisen kokonaisuuden: käyn läpi seurannat, mainostilit, sivuston nopeuden, hakukonenäkyvyyden ja yhteydenottopolut, ' +
+    'ja laitan ne kuntoon.\n\n' +
+    'Taustaksi: olen tehnyt markkinointia, myyntiä ja verkkosivuja yli kymmenen vuotta. Tiimini kanssa hallinnoimme asiakkaiden ' +
+    'mainosbudjetteja noin viiden miljoonan euron edestä.\n\n' +
+    'Sopisiko, että kerron 15 minuutissa, mitä teidän perustassanne korjaisin ensimmäisenä?\n\n' +
+    '{{allekirjoitus}}\n\n' + OPTOUT + '\n\n{{tietosuoja}}'],
+  [2, 'Groundwork', 3, '',
+    'Hei {{etunimi}},\n\n' +
+    'nostan tämän vielä esiin. Voimme aloittaa myös pelkällä katselmuksella: käyn läpi seurannat, mainostilit, nopeuden ja yhteydenottopolut ' +
+    'ja annan korjauslistan tärkeysjärjestyksessä. Katselmus maksaa 490 €, ja se hyvitetään, jos korjaukset tehdään.\n\n' +
+    'Kiinnostaisiko?\n\n' +
+    'Voit myös varata ajan suoraan kalenteristani: {{varauslinkki}}\n\n' +
+    '{{nimi}}'],
+  [3, 'Groundwork', 5, '',
+    'Hei {{etunimi}},\n\n' +
+    'tämä on viimeinen viestini aiheesta. Jos mainonnan tulokset tai sivuston toimivuus alkavat mietityttää myöhemmin, ' +
+    'vastaa tähän viestiin, niin katsotaan perusta kuntoon silloin.\n\n' +
     'Hyvää jatkoa!\n{{nimi}}'],
   // ── Kulma 2: Meta- ja Google-mainonta kevyellä mallilla ──
   [1, 'Mainonta', '', '{{yritys}} / mainonnan tulokset',
@@ -2098,7 +2126,7 @@ function analysoiSivu(html, meta, segmentti, vuosi) {
   const seurannat = [['Meta-pikseli', seuranta.meta], ['Google Ads', seuranta.ads], ['GA4', seuranta.ga4], ['GTM', seuranta.gtm]]
     .filter(([, on]) => on).map(([n]) => n);
   s.push(seurannat.length ? seurannat.join(', ') : 'ei seurantakoodeja');
-  const mainonta = /mainon|ads|markkinoin/i.test(segmentti || '');
+  const mainonta = /mainon|ads|markkinoin|groundwork/i.test(segmentti || '');
 
   const taivutus = { 'Booking.com': 'Booking.comiin', Airbnb: 'Airbnb:hen', Expedia: 'Expediaan' };
   let havainto = '';
