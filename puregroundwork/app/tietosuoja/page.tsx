@@ -6,7 +6,7 @@ import { henkilo, yritys } from '@/lib/sisalto';
 export const metadata: Metadata = sivunMeta({
   polku: '/tietosuoja',
   otsikko: 'Tietosuojaseloste',
-  kuvaus: 'Miten Pure Groundwork käsittelee yhteydenottojen, asiakkaiden ja sivuston kävijöiden tietoja, ja miten voit käyttää oikeuksiasi.',
+  kuvaus: 'Miten PureGroundwork käsittelee yhteydenottojen, asiakkaiden ja sivuston kävijöiden tietoja, ja miten voit käyttää oikeuksiasi.',
 });
 
 // Tarkista teksti ennen julkaisua. Täydennä rekisterinpitäjän tiedot lib/sisalto.ts-tiedostoon.

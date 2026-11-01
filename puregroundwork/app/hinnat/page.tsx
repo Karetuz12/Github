@@ -8,7 +8,7 @@ import { hinnasto, hinnatHuomautus, kysymykset, maksuehdot, varausOsoite } from 
 export const metadata: Metadata = sivunMeta({
   polku: '/hinnat',
   otsikko: 'Hinnasto – kiinteät hinnat ilman yllätyksiä',
-  kuvaus: 'Groundwork-katselmus 490 €, verkkosivut 1 000–4 000 €, mainonta 490–990 €/kk ja sparraus 600–1 200 €/kk. Kiinteät hinnat, alv 0 %, ei pitkiä sopimuksia.',
+  kuvaus: 'Groundwork-katselmus 490 €, verkkosivut 1 000–4 000 €, mainonta 490–990 €/kk ja sparraus 600–1 200 €/kk. Kiinteät hinnat, ei pitkiä sopimuksia.',
 });
 
 const hintaKysymykset = kysymykset.filter((k) => /maksa|aloit|alkuun/i.test(k.k));

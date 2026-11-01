@@ -31,10 +31,7 @@ export default function EiLoytynyt() {
                 <span className="mega-kuvake">
                   <Kuvake nimi={m.kuvake} />
                 </span>
-                <span>
-                  <strong>{m.nimi}</strong>
-                  <span className="hiljainen">{m.hinta}</span>
-                </span>
+                <strong>{m.nimi}</strong>
                 <Kuvake nimi="nuoli" koko={18} />
               </Link>
             </li>

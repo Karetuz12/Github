@@ -1,5 +1,4 @@
-// Pure Groundwork -merkki: kolme maakerrosta, joiden päällä kaikki muu rakennetaan.
-// Korvataan oikealla logolla, kun logotiedostot ovat käytössä (public/logo.svg).
+// PureGroundwork-merkki: kolme maakerrosta. Käytetään vain muotokuvan paikkamerkkinä.
 export function Merkki({ koko = 28 }: { koko?: number }) {
   return (
     <svg width={koko} height={koko} viewBox="0 0 32 32" aria-hidden="true" focusable="false">
@@ -10,13 +9,10 @@ export function Merkki({ koko = 28 }: { koko?: number }) {
   );
 }
 
-export function Logo() {
+// Virallinen logo (public/logo-valkoinen.png tummalle, logo-musta.png vaalealle pohjalle).
+export function Logo({ vari = 'valkoinen' }: { vari?: 'valkoinen' | 'musta' }) {
   return (
-    <span className="logo">
-      <Merkki />
-      <span className="logo-teksti">
-        <strong>Pure</strong>Groundwork
-      </span>
-    </span>
+    // eslint-disable-next-line @next/next/no-img-element
+    <img className="logo" src={`/logo-${vari}.png`} alt="PureGroundwork" width={958} height={96} />
   );
 }

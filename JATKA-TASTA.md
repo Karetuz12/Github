@@ -73,7 +73,8 @@ Benchmarkit ovat **nordichost.fi** (käyttäjän oma yritys: brändi-ilme on tä
   - 250 000+ liidiä
   - 25+ autoliikettä ja 30–40 suoramyyntiyritystä
   - oma toimisto 7 vuotta, parhaimmillaan 25 henkeä
-- **Asiakkaat:** iSkates ja X-Beeli. Kirjoitusasu ja nimen käyttölupa pitää tarkistaa.
+- **Asiakkaat:** Ice Cage, xBil ja Punainen Risti (käyttäjän vahvistama kirjoitusasu 1.11.2026).
+- **Nimi ja logo:** yritys kirjoitetaan yhteen, **PureGroundwork**. Logot ovat tiedostoissa `public/logo-valkoinen.png` (tumma pohja) ja `public/logo-musta.png` (vaalea pohja).
 - **Hinnat:**
   - Groundwork-katselmus 490 €
   - kunnostus alkaen 1 900 €

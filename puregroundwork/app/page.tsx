@@ -75,7 +75,7 @@ export default function Etusivu() {
         </p>
       </Osio>
 
-      <Osio id="miksi" ylaotsikko="Miksi Pure Groundwork" otsikko="Kokeneen tekijän ote ilman toimiston raskautta." korostus="ote" luokka="vaalea"
+      <Osio id="miksi" ylaotsikko="Miksi PureGroundwork" otsikko="Kokeneen tekijän ote ilman toimiston raskautta." korostus="ote" luokka="vaalea"
         johdanto="Sama osaaminen kuin isossa toimistossa – mutta asioit suoraan tekijän kanssa ja tiedät hinnan etukäteen.">
         <Vertailu />
       </Osio>

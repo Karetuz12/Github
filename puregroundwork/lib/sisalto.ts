@@ -2,19 +2,18 @@
 // TÄYTÄ-merkityt kohdat odottavat oikeita tietoja.
 
 export const henkilo = {
-  nimi: 'Etunimi Sukunimi', // TÄYTÄ
-  etunimi: 'Etunimi', // TÄYTÄ
+  nimi: 'Karl Pärn',
+  etunimi: 'Karl',
   titteli: 'Markkinoinnin ja verkkosivujen kehittäjä',
   sahkoposti: 'hei@puregroundwork.fi', // TÄYTÄ, kun domain on valittu
   puhelin: '', // valinnainen, esim. '040 123 4567'
   linkedin: '', // TÄYTÄ
   kuva: '', // TÄYTÄ, esim. '/kuvat/muotokuva.jpg'
-  paikka: 'Lappi ja koko Suomi etänä', // TARKISTA
 };
 
 export const yritys = {
-  brandi: 'Pure Groundwork',
-  yhtio: 'Yhtiö Oy', // TÄYTÄ: laskuttava yhtiö
+  brandi: 'PureGroundwork',
+  yhtio: 'Wonderland Group Oy',
   ytunnus: '', // TÄYTÄ
   osoite: 'https://puregroundwork.fi', // TÄYTÄ, kun domain on valittu
   kuvaus: 'Markkinoinnin perusta kuntoon: seurannat, mainostilit, sivuston nopeus ja yhteydenottopolut – kiinteällä hinnalla, yhden kokeneen tekijän kanssa.',
@@ -43,9 +42,9 @@ export const hero = {
     'Ennen kuin mainontaan laitetaan euroakaan lisää, perustan pitää olla kunnossa. Yli kymmenen vuoden ja yli tuhannen projektin kokemus – ' +
     'nyt suoraan tekijältä, kiinteällä hinnalla ja ilman toimiston välikäsiä.',
   luvut: [
-    { luku: '1 000+', selite: 'projektia' },
-    { luku: '5+ M€', selite: 'mediabudjettia' },
-    { luku: '50+ M€', selite: 'mitattua myyntiä' },
+    { luku: '+1 000', selite: 'projektia' },
+    { luku: '+5 M€', selite: 'mediabudjettia' },
+    { luku: '+50 M€', selite: 'mitattua myyntiä' },
   ],
 };
 
@@ -54,11 +53,11 @@ export const vaite =
 
 // Numerot lasketaan näkyviin animaationa: ennen + arvo + jälkeen
 export const numerot = [
-  { arvo: 10, ennen: '', jalkeen: '+', selite: 'vuotta myynnin ja markkinoinnin parissa' },
-  { arvo: 1000, ennen: '', jalkeen: '+', selite: 'projektia' },
-  { arvo: 5, ennen: '', jalkeen: '+ M€', selite: 'asiakkaiden mediabudjettia' },
-  { arvo: 50, ennen: '', jalkeen: '+ M€', selite: 'mitattua myyntiä' },
-  { arvo: 250000, ennen: '', jalkeen: '+', selite: 'liidiä' },
+  { arvo: 10, ennen: '+', jalkeen: '', selite: 'vuotta myynnin ja markkinoinnin parissa' },
+  { arvo: 1000, ennen: '+', jalkeen: '', selite: 'projektia' },
+  { arvo: 5, ennen: '+', jalkeen: ' M€', selite: 'asiakkaiden mediabudjettia' },
+  { arvo: 50, ennen: '+', jalkeen: ' M€', selite: 'mitattua myyntiä' },
+  { arvo: 250000, ennen: '+', jalkeen: '', selite: 'liidiä' },
 ];
 export const numerotHuomautus = 'Luvut kertovat urani ja vetämäni markkinointitoimiston ajalta.';
 
@@ -70,7 +69,7 @@ export const vaiheet = [
 ];
 
 export const vertailu = {
-  sarakkeet: ['Tyypillinen toimisto', 'Pure Groundwork'],
+  sarakkeet: ['Tyypillinen toimisto', 'PureGroundwork'],
   rivit: [
     { asia: 'Kenen kanssa asioit', toimisto: 'Asiakkuuspäällikkö välittää viestin tekijöille', pg: 'Suoraan tekijän kanssa, joka on tehnyt tämän tuhat kertaa' },
     { asia: 'Hinnoittelu', toimisto: 'Tuntilaskutus, lopullinen summa selviää jälkikäteen', pg: 'Kiinteä hinta, sovitaan ennen aloitusta' },
@@ -82,7 +81,7 @@ export const vertailu = {
 
 export const esittely = [
   'Olen tehnyt myyntiä ja markkinointia yli kymmenen vuotta: ensin myynnin ja asiakashankinnan tiimejä vetäen, sitten seitsemän vuotta omaa ' +
-    'markkinointitoimistoa, jossa oli parhaimmillaan 25 ihmistä. Teimme noin tuhat projektia – verkkosivuja, verkkokauppoja ja kampanjoita – ' +
+    'markkinointitoimistoa, jossa oli parhaimmillaan 25 ihmistä. Teimme yli tuhat projektia – verkkosivuja, verkkokauppoja ja kampanjoita – ' +
     'pienille ja isoille yrityksille Suomessa ja kansainvälisesti, paljon myös matkailualalla.',
   'Nyt teen töitä omalla nimelläni. Asioit aina minun kanssani, ja toteutuksessa apuna on kaksi kehittäjää, joiden kanssa olen tehnyt ' +
     'töitä vuosia. Isoa toimistoa ei tarvita siihen, että perusta laitetaan kuntoon.',
@@ -92,7 +91,7 @@ export const lainaus = 'Kun perusta on kunnossa, jokainen mainoseuro tekee töit
 export const saavutukset = [
   'Rakensin ja vedin myynti- ja asiakashankintatiimejä ja koulutin myyjiä sekä kuluttaja- että yritysmyyntiin.',
   'Pyöritin seitsemän vuotta omaa markkinointitoimistoa. Parhaimmillaan meitä oli 25: graafikoita, kuvaajia, koodareita, sisällöntuottajia, markkinoijia ja myyjiä.',
-  'Teimme asiakkaille noin tuhat projektia: verkkosivuja, verkkokauppoja, kampanjoita ja markkinoinnin konsultointia pienille ja isoille yrityksille.',
+  'Teimme asiakkaille yli tuhat projektia: verkkosivuja, verkkokauppoja, kampanjoita ja markkinoinnin konsultointia pienille ja isoille yrityksille.',
   'Tiimini hallinnoi seitsemässä vuodessa asiakkaiden mediabudjetteja yli viiden miljoonan euron edestä, pääosin Metassa ja Googlessa.',
   'Keräsimme asiakkaille noin 250 000–300 000 liidiä eri toimialoille. Suurin osa oli suomalaista kuluttajakauppaa, mukana myös yritysmyyntiä ja kansainvälistä matkailua.',
   'Urani aikana olen ollut tuomassa asiakkaille mitatusti reilut 50 miljoonaa euroa myyntiä.',
@@ -106,7 +105,7 @@ export const ura = [
   { vaihe: 'Myynnin ja projektien johtaminen', teksti: 'Myynnin johtamista, projektinhallintaa ja projektijohtamista.' },
   { vaihe: 'Oma markkinointitoimisto, 7 vuotta', teksti: 'Parhaimmillaan 25 ihmistä, yli tuhat projektia, mediabudjetteja yli 5 M€.' },
   { vaihe: 'Matkailuala', teksti: 'Operatiivinen johto: resortti, ravintola, aktiviteetit ja lyhytvuokraus.' },
-  { vaihe: 'Pure Groundwork', teksti: 'Markkinoinnin perusta kuntoon omalla nimellä.' },
+  { vaihe: 'PureGroundwork', teksti: 'Markkinoinnin perusta kuntoon omalla nimellä.' },
 ];
 
 export const tyotapa = [
@@ -124,19 +123,19 @@ export const kokemusHyodyt = [
 ];
 
 export const toimialat = [
-  { luku: '25+', otsikko: 'autoliikettä', teksti: 'Markkinointia ja liidien hankintaa autokaupalle: kampanjat, laskeutumissivut ja seuranta niin, että myyjä tietää, mistä liidi tuli.', koko: 'iso' },
-  { luku: '30–40', otsikko: 'suoramyyntiyritystä', teksti: 'Asiakashankintaa, jossa liidin hinta ja laatu mitataan joka viikko.', koko: 'iso' },
+  { luku: '+25', otsikko: 'autoliikettä', teksti: 'Markkinointia ja liidien hankintaa autokaupalle: kampanjat, laskeutumissivut ja seuranta niin, että myyjä tietää, mistä liidi tuli.', koko: 'iso' },
+  { luku: '+40', otsikko: 'suoramyyntiyritystä', teksti: 'Asiakashankintaa, jossa liidin hinta ja laatu mitataan joka viikko.', koko: 'iso' },
   { luku: '7 v', otsikko: 'oma markkinointitoimisto', teksti: 'Parhaimmillaan 25 ammattilaista: graafikoita, kuvaajia, koodareita ja myyjiä.', koko: 'normaali' },
   { luku: 'KV', otsikko: 'matkailu ja elämykset', teksti: 'Kansainvälistä markkinointia ja suoria varauksia matkailuun, myös Lapin kohteille.', koko: 'normaali' },
   { luku: 'B2C + B2B', otsikko: 'verkkokaupat ja palvelut', teksti: 'Brändimarkkinointia, verkkokauppamyyntiä ja liidejä kuluttaja- ja yritysmyyntiin.', koko: 'normaali' },
 ];
 
 // Asiakkaita vuosien varrelta. TARKISTA: kirjoitusasu ja lupa nimen käyttöön.
-export const asiakkaat = ['iSkates', 'X-Beeli'];
+export const asiakkaat = ['Ice Cage', 'xBil', 'Punainen Risti'];
 
 // Alustat, joilla olen tehnyt tulosta (simple-icons-kuvakkeet, ks. components/LogoNauha.tsx)
-export const alustat = ['Meta', 'Facebook', 'Instagram', 'Google', 'Google Ads', 'Google Analytics', 'Google Tag Manager', 'Search Console',
-  'WordPress', 'WooCommerce', 'Shopify', 'Elementor', 'Next.js', 'Vercel', 'TikTok', 'YouTube', 'Mailchimp', 'HubSpot', 'Brevo', 'Figma'];
+export const alustat = ['Meta', 'Facebook', 'Instagram', 'Google', 'Google Ads', 'Google Analytics', 'Google Tag Manager', 'Google Search Console',
+  'WordPress', 'WooCommerce', 'Shopify', 'Elementor', 'Next.js', 'Vercel', 'TikTok', 'YouTube', 'Mailchimp', 'Pipedrive', 'Brevo', 'Figma'];
 
 // Referenssit näytetään vasta, kun lista ei ole tyhjä. Lisää vain asiakkaat, joiden nimen saa mainita.
 export const referenssit: { nimi: string; kuvaus: string; tulos?: string }[] = [];
@@ -167,7 +166,7 @@ export type Palvelu = {
 export const palvelut: Palvelu[] = [
   {
     slug: 'groundwork',
-    nimi: 'Pure Groundwork',
+    nimi: 'PureGroundwork',
     lyhyt: 'Groundwork',
     kuvake: 'kerrokset',
     seoOtsikko: 'Groundwork – markkinoinnin perusta kuntoon',
@@ -208,10 +207,15 @@ export const palvelut: Palvelu[] = [
       { nimi: 'Groundwork-kunnostus', hinta: 'alkaen 1 900 €', teksti: 'Perusta kuntoon kiinteällä hinnalla.', kohdat: ['Seurannat ja konversiot', 'Mainostilien rakenne', 'Nopeus ja SEO-perusta', 'Lomakkeet, chat ja laskurit', 'Ohjeet ja dokumentaatio'] },
     ],
     ukk: [
-      { k: 'Tarvitaanko uusi sivusto?', v: 'Ei aina. Usein korjaukset riittävät, ja katselmus kertoo sen.' },
-      { k: 'Mitä tarvitset meiltä?', v: 'Pääsyn mainostileille, analytiikkaan ja sivustoon. Muuta ei tarvita.' },
-      { k: 'Pitääkö meidän vaihtaa mainostoimistoa?', v: 'Ei. Katselmus sopii myös silloin, kun mainonnan hoitaa toimisto tai oma tiimi. Saat puolueettoman näkemyksen siitä, mikä toimii.' },
-      { k: 'Kauanko kestää?', v: 'Katselmus valmistuu viikossa ja kunnostus 2–4 viikossa.' },
+      { k: 'Mitä katselmus sisältää?', v: 'Käyn läpi 25 kohtaa viidestä osa-alueesta: seurannat ja konversiot, mainostilien rakenne, sivuston nopeus, hakukonenäkyvyys ja yhteydenottopolut. Tuloksena on korjauslista tärkeysjärjestyksessä – mitä korjataan, miksi ja mitä se maksaa. Lista käydään läpi palaverissa, ja se jää teille, vaikka korjaukset tekisi joku muu.' },
+      { k: 'Mitä katselmus maksaa?', v: 'Katselmus maksaa 490 €, ja hinta on kiinteä. Jos teemme kunnostuksen yhdessä, katselmuksen hinta hyvitetään kunnostuksen laskusta. Kunnostus maksaa alkaen 1 900 €, ja tarkka hinta selviää korjauslistasta ennen kuin mitään tilataan.' },
+      { k: 'Tarvitaanko uusi sivusto?', v: 'Ei aina. Usein seurannan, nopeuden ja yhteydenottopolkujen korjaaminen riittää, ja nykyinen sivusto palvelee vielä hyvin. Jos sivusto on niin vanha tai raskas, ettei korjaaminen kannata, kerron senkin suoraan ja kerron, mitä uusi sivusto maksaisi.' },
+      { k: 'Mitä tarvitset meiltä?', v: 'Pääsyn mainostileille, analytiikkaan, Tag Manageriin ja sivustoon – annan ohjeet, miten käyttöoikeudet annetaan. Lisäksi lyhyen keskustelun siitä, mitä myytte ja millainen yhteydenotto on teille arvokas. Muuta ei tarvita.' },
+      { k: 'Pitääkö meidän vaihtaa mainostoimistoa?', v: 'Ei. Katselmus sopii myös silloin, kun mainonnan hoitaa toimisto tai oma tiimi. Saat puolueettoman näkemyksen siitä, mikä toimii ja mikä ei, ja korjauslistan voi antaa nykyiselle kumppanille toteutettavaksi.' },
+      { k: 'Kuka tekee korjaukset?', v: 'Minä vastaan kokonaisuudesta ja teen seurannat, mainostilit ja SEO-perustan itse. Sivuston koodimuutoksissa apuna on kaksi kehittäjää, joiden kanssa olen tehnyt töitä vuosia. Asioit koko ajan minun kanssani, eikä työ hajoa usealle toimittajalle.' },
+      { k: 'Sopiiko tämä verkkokaupalle?', v: 'Kyllä. Verkkokaupassa seuranta mitataan ostoihin asti: mikä kampanja toi kaupan ja minkä arvoisen. Katselmus kattaa koko ostopolun mainoksesta tuotesivulle ja kassalle, joten näet, missä vaiheessa ostajat putoavat pois. Kokemusta on WooCommercesta, Shopifysta ja koodilla tehdyistä kaupoista.' },
+      { k: 'Kauanko kestää?', v: 'Katselmus valmistuu viikossa siitä, kun saan pääsyn tileihin. Kunnostus kestää yleensä 2–4 viikkoa laajuuden mukaan. Tärkeimmät korjaukset tehdään ensin, jotta mainonta hyötyy niistä mahdollisimman pian.' },
+      { k: 'Mitä kunnostuksen jälkeen?', v: 'Seurannat mittaavat oikein, tilit ovat järkevässä rakenteessa ja ohjeet ovat tallessa, joten voitte jatkaa itse tai antaa ne nykyiselle kumppanille. Jos haluat, että joku pitää huolta jatkossakin, jatketaan kevyellä kuukausimallilla: mainonnan kumppanuudessa hoidan mainonnan, sparrauksessa tuen teidän tekemistänne.' },
     ],
   },
   {
@@ -256,11 +260,16 @@ export const palvelut: Palvelu[] = [
       { nimi: 'Laaja sivusto', hinta: '3 000–4 000 €', teksti: 'Isommille yrityksille.', kohdat: ['Enemmän sivuja', 'Kieliversiot', 'Integraatiot', 'Seurannat ja SEO-perusta'] },
     ],
     ukk: [
-      { k: 'Voinko päivittää sivua itse?', v: 'Kyllä. Kevyellä hallintapaneelilla päivität tekstit ja kuvat itse. Isommat muutokset teen minä.' },
-      { k: 'Millä tekniikalla sivu tehdään?', v: 'Modernilla, koodilla tehdyllä tekniikalla ilman raskasta julkaisualustaa. Siksi sivu on nopea, turvallinen ja helppo ylläpitää.' },
-      { k: 'Teetkö WordPress-sivuja?', v: 'Uusia en. Olemassa olevia WordPress-sivustoja ylläpidän ja kehitän tarvittaessa.' },
-      { k: 'Kuka hoitaa hostingin?', v: 'Halutessasi Nordic Host. Hosting ja ylläpito alkaen 149 €/kk.' },
-      { k: 'Kauanko projekti kestää?', v: 'Pieni sivusto noin kaksi viikkoa, laajempi 3–6 viikkoa.' },
+      { k: 'Mitä uusi sivusto maksaa?', v: 'Pieni sivusto (1–3 sivua) maksaa 1 000 €, keskikokoinen 1 500–2 500 € ja laaja 3 000–4 000 €. Hinta sovitaan kiinteäksi suunnittelupalaverin pohjalta ennen aloitusta, joten lasku ei yllätä. Kaikissa paketeissa ovat mukana hallintapaneeli, seurannat ja SEO-perusta.' },
+      { k: 'Miten maksu toimii?', v: 'Puolet laskutetaan, kun projekti alkaa, ja puolet, kun sivusto on valmis. Muita maksuja ei ole, ellei lisätöistä sovita erikseen. Hosting ja ylläpito ovat erillinen kuukausipalvelu, jos haluat sen.' },
+      { k: 'Kauanko projekti kestää?', v: 'Pieni sivusto valmistuu noin kahdessa viikossa, laajempi 3–6 viikossa. Rakenne ja sisältö hyväksytään ensimmäisellä viikolla, ja sen jälkeen toteutus etenee nopeasti. Eniten aikatauluun vaikuttavat yleensä tekstit ja kuvat, joten ne sovitaan heti alussa.' },
+      { k: 'Voinko päivittää sivua itse?', v: 'Kyllä. Mukana on kevyt hallintapaneeli, jolla päivität tekstit ja kuvat itse ilman koodia. Se on tehty juuri tälle sivustolle, joten siinä ei ole ylimääräisiä valikoita eikä päivitettäviä lisäosia. Isommat muutokset, kuten uudet sivupohjat, teen minä.' },
+      { k: 'Kuka kirjoittaa tekstit?', v: 'Teemme ne yhdessä. Sinä tunnet asiakkaasi ja palvelusi, minä sparraan viestin, rakenteen ja otsikot niin, että kävijä ymmärtää viidessä sekunnissa, mitä teette ja mitä hänen kannattaa tehdä seuraavaksi. Sivukartta, tekstit ja ilme hyväksytään ennen toteutusta.' },
+      { k: 'Millä tekniikalla sivu tehdään?', v: 'Modernilla, koodilla tehdyllä tekniikalla ilman raskasta julkaisualustaa. Siksi sivu latautuu nopeasti myös puhelimella, eikä siinä ole vanhentuvia lisäosia, joita pitäisi jatkuvasti päivittää. Nopeus näkyy sekä hakutuloksissa että mainonnan hinnassa.' },
+      { k: 'Säilyvätkö hakukonesijoitukset?', v: 'Kun vanha sivusto korvataan, vanhat osoitteet ohjataan uusille, jotta hakukoneiden ja linkkien arvo siirtyy uudelle sivulle. SEO-perusta – otsikot, kuvaukset, rakenne ja sivukartta – on valmiina julkaisupäivänä.' },
+      { k: 'Saako sivulle kieliversiot ja integraatiot?', v: 'Kyllä. Kieliversiot ja integraatiot kuuluvat laajaan sivustoon. Tarkka sisältö ja hinta sovitaan suunnittelupalaverissa ennen aloitusta.' },
+      { k: 'Teetkö WordPress-sivuja?', v: 'Uusia en. Uudet sivustot teen koodilla, koska ne ovat nopeampia ja vaativat vähemmän ylläpitoa. Olemassa olevia WordPress-sivustoja kuitenkin ylläpidän ja kehitän pikatöinä, joten nykyisen sivun ei tarvitse odottaa uudistusta.' },
+      { k: 'Kuka hoitaa hostingin ja ylläpidon?', v: 'Halutessasi hosting hoituu Nordic Hostilla. Hosting ja ylläpito alkaen 149 €/kk sisältää päivitykset ja kuukausiraportin. Pienet muutokset tehdään pikatöinä alkaen 200 €.' },
     ],
   },
   {
@@ -303,10 +312,15 @@ export const palvelut: Palvelu[] = [
       { nimi: 'Mainonnan kumppanuus', hinta: '490–990 €/kk', teksti: 'Hinta kanavien ja mainosbudjetin mukaan.', kohdat: ['Meta- ja Google-mainonta', 'Kuukausiraportti', 'Palaveri kerran kuussa', 'Ei pitkää sopimusta'], suosittu: true },
     ],
     ukk: [
-      { k: 'Sisältyykö mainosbudjetti hintaan?', v: 'Ei. Mediabudjetti maksetaan suoraan Metalle ja Googlelle, joten näet aina, mihin raha menee.' },
-      { k: 'Kuinka pitkä sopimus on?', v: 'Pitkää sitoumusta ei ole. Kumppanuus jatkuu kuukausi kerrallaan.' },
-      { k: 'Entä jos tilit ovat nyt toimistolla?', v: 'Tilit voidaan siirtää, tai käyn ne läpi ja annan näkemyksen nykyisen kumppanin tueksi.' },
-      { k: 'Teetkö myös mainosmateriaalit?', v: 'Perusmainokset kuuluvat työhön. Isommat kuvaukset ja videot sovitaan erikseen.' },
+      { k: 'Mitä kuukausimaksu sisältää?', v: 'Kampanjoiden rakenteen ja jatkuvan optimoinnin, kohdennuksen ja poissulut, mainokset ja budjetin jaon kanavien kesken sekä konversioseurannan tarkistuksen. Kerran kuussa saat raportin siitä, mitä tehtiin, mitä tuli ja mitä seuraavaksi, ja käymme sen läpi palaverissa. Viesteihin vastaan tarpeen mukaan.' },
+      { k: 'Miten hinta määräytyy?', v: 'Hinta on 490–990 €/kk sen mukaan, montako kanavaa hoidetaan ja kuinka suuri mainosbudjetti on. Yksi kanava pienellä budjetilla on haarukan alapäässä, Meta ja Google isommalla budjetilla yläpäässä. Hinta sovitaan kiinteäksi ennen aloitusta.' },
+      { k: 'Sisältyykö mainosbudjetti hintaan?', v: 'Ei. Mediabudjetti maksetaan suoraan Metalle ja Googlelle omalla maksutavallanne, joten näet aina, mihin raha menee, eikä budjetin päälle tule välityskatetta.' },
+      { k: 'Miten tulosta mitataan?', v: 'Kaupoilla ja liideillä, ei klikkauksilla tai näyttökerroilla. Siksi seuranta tarkistetaan ensimmäisenä: jos lomakkeen lähetystä tai ostoa ei mitata oikein, mainonta optimoi väärään suuntaan. Raportista näet, mitä mainonnasta seurasi ja mitä se maksoi.' },
+      { k: 'Entä jos seuranta ei ole kunnossa?', v: 'Se korjataan ensin, tarvittaessa Groundworkilla. Ilman toimivaa seurantaa alustat oppivat vääristä signaaleista, ja budjetti valuu sinne, missä tulosta ei synny.' },
+      { k: 'Kenen nimissä mainostilit ovat?', v: 'Teidän. Mainostilit, pikselit ja analytiikka ovat yrityksenne nimissä, ja minä työskentelen niissä käyttöoikeuksilla. Data pysyy teillä myös silloin, jos yhteistyö päättyy.' },
+      { k: 'Kuinka pitkä sopimus on?', v: 'Pitkää sitoumusta ei ole. Kumppanuus jatkuu kuukausi kerrallaan. Haluan, että jatkatte siksi, että mainonta tuottaa, ei sopimuksen takia.' },
+      { k: 'Entä jos tilit ovat nyt toimistolla?', v: 'Tilit voidaan siirtää hallitusti niin, ettei data katoa. Jos haluat ensin näkemyksen, käyn tilit läpi maksutta ja kerron kolme asiaa, jotka muuttaisin – sen pohjalta voit päättää, jatkatko nykyisen kumppanin kanssa.' },
+      { k: 'Teetkö myös mainosmateriaalit?', v: 'Perusmainokset, kuten kuvamainokset ja mainostekstit, kuuluvat työhön. Isommat kuvaukset, videot ja kampanjakokonaisuudet sovitaan erikseen.' },
     ],
   },
   {
@@ -348,16 +362,21 @@ export const palvelut: Palvelu[] = [
       { nimi: 'Markkinoinnin sparraus', hinta: '600–1 200 €/kk', teksti: 'Kevyt kuukausimalli.', kohdat: ['Palaveri kerran kuussa', 'Kuukausikatsaus ja kommentit', 'Viestit tarpeen mukaan', 'Ei pitkää sopimusta'], suosittu: true },
     ],
     ukk: [
-      { k: 'Mitä eroa on sparrauksella ja mainonnan kumppanuudella?', v: 'Kumppanuudessa hoidan mainonnan. Sparrauksessa te teette, ja minä tuon näkemyksen ja varmistan suunnan.' },
-      { k: 'Voiko aloittaa yhdellä palaverilla?', v: 'Kyllä. Sparrauspalaverin jälkeen tiedät, onko kuukausimallista hyötyä – ja hinta hyvitetään, jos jatketaan.' },
-      { k: 'Toimiiko etänä?', v: 'Kyllä. Palaverit pidetään etänä tai sovitusti paikan päällä.' },
+      { k: 'Kenelle sparraus sopii?', v: 'Markkinointipäällikölle tai -tiimille, joka haluaa kokeneen toisen silmäparin, ja yrittäjälle, joka hoitaa markkinoinnin itse. Se sopii myös yritykselle, joka miettii, mitä kannattaa tehdä itse ja mitä ostaa. Yhteistä on se, että tekeminen on teillä ja minä tuon näkemyksen.' },
+      { k: 'Mitä kuukausi sisältää?', v: 'Palaverin kerran kuussa, jossa käydään läpi luvut, mainostilit ja kampanjat. Ennen palaveria katson tilanteen, ja palaverin jälkeen saat kommentit ja priorisoidut toimenpiteet. Välillä voit laittaa viestiä, kun päätös odottaa toista mielipidettä.' },
+      { k: 'Mitä sparraus maksaa?', v: '600–1 200 €/kk sen mukaan, kuinka paljon tukea tarvitaan. Aloituksena on kahden tunnin sparrauspalaveri 790 €, jonka jälkeen saat kirjallisen yhteenvedon. Palaverin hinta hyvitetään, jos jatketaan kuukausimallilla.' },
+      { k: 'Mitä eroa on sparrauksella ja mainonnan kumppanuudella?', v: 'Kumppanuudessa minä hoidan mainonnan: teen muutokset tileillä ja raportoin. Sparrauksessa te teette itse, ja minä tuon näkemyksen, kyseenalaistan suunnitelmia ja varmistan suunnan. Sparraus sopii, kun osaamista on talossa mutta toinen silmäpari puuttuu.' },
+      { k: 'Voiko aloittaa yhdellä palaverilla?', v: 'Kyllä. Kahden tunnin sparrauspalaverissa käydään läpi, missä ollaan ja mitä kannattaa tehdä ensin, ja saat kirjallisen yhteenvedon tärkeimmistä toimenpiteistä. Sen jälkeen tiedät, onko kuukausimallista hyötyä – ja palaverin hinta hyvitetään, jos jatketaan.' },
+      { k: 'Voitko arvioida toimistomme tai kumppaneidemme työtä?', v: 'Kyllä. Kumppaneiden ja toimistojen töiden arviointi kuuluu sparraukseen: käyn läpi raportit, tilit ja tarjoukset ja kerron, mikä on kunnossa ja mitä kannattaa vaatia. Samalla tavalla sparraan rekrytointeja ja ostoja.' },
+      { k: 'Kuinka pitkä sopimus on?', v: 'Pitkää sitoumusta ei ole. Sparraus jatkuu kuukausi kerrallaan, ja tahtia voi keventää tai tiivistää tarpeen mukaan.' },
+      { k: 'Toimiiko etänä?', v: 'Kyllä. Palaverit pidetään yleensä etänä, joten ne on helppo sovittaa kalenteriin. Paikan päälle voidaan tulla sovitusti, esimerkiksi aloituspalaveriin.' },
     ],
   },
 ];
 
 export const haePalvelu = (slug: string) => palvelut.find((p) => p.slug === slug);
 
-// ── Hinnasto (alv 0 %) ──
+// ── Hinnasto ──
 export const hinnasto = [
   { ryhma: 'Groundwork', kuvaus: 'Markkinoinnin perusta kuntoon.', linkki: '/palvelut/groundwork', rivit: palvelut[0].hinnat },
   { ryhma: 'Verkkosivut', kuvaus: 'Koodilla, hallintapaneelilla, kiinteällä hinnalla.', linkki: '/palvelut/verkkosivut', rivit: palvelut[1].hinnat },
@@ -373,16 +392,21 @@ export const hinnasto = [
     ],
   },
 ];
-export const hinnatHuomautus = 'Hinnat alv 0 %. Tarkka hinta sovitaan aina ennen aloitusta.';
+export const hinnatHuomautus = 'Tarkka hinta sovitaan aina ennen aloitusta.';
 export const maksuehdot = 'Sivustot ja kunnostukset laskutetaan 50 % aloituksesta ja 50 % valmistuttua. Kuukausikumppanuudet jatkuvat kuukausi kerrallaan.';
 
 // ── Yleiset kysymykset (etusivu) ──
 export const kysymykset = [
-  { k: 'Miksi et ole toimisto?', v: 'Koska perustan kuntoon laittamiseen ei tarvita kymmentä ihmistä vaan yksi, joka on tehnyt sen tuhat kertaa. Toteutuksessa apuna on kaksi kehittäjää, joiden kanssa olen tehnyt töitä vuosia.' },
-  { k: 'Mistä kannattaa aloittaa?', v: 'Yleensä Groundwork-katselmuksesta. Se kertoo viikossa, mikä on kunnossa, mikä ei ja missä järjestyksessä asiat kannattaa korjata.' },
-  { k: 'Teetkö töitä koko Suomeen?', v: 'Kyllä. Suurin osa työstä tehdään etänä, ja palaverit pidetään verkossa tai sovitusti paikan päällä.' },
-  { k: 'Mitä palvelut maksavat?', v: 'Katselmus 490 €, kunnostus alkaen 1 900 €, verkkosivut 1 000–4 000 € ja kuukausikumppanuudet 490–1 200 €/kk. Kaikki hinnat ovat hinnastossa.' },
-  { k: 'Kuinka nopeasti pääsemme alkuun?', v: 'Yleensä saman viikon aikana. Ensimmäinen askel on 15 minuutin puhelu.' },
+  { k: 'Miksi et ole toimisto?', v: 'Koska perustan kuntoon laittamiseen ei tarvita kymmentä ihmistä vaan yksi, joka on tehnyt sen yli tuhat kertaa. Asioit suoraan tekijän kanssa: ei projektipäälliköitä, ei viikkopalavereita eikä toimiston katetta laskussa. Toteutuksessa apuna on kaksi kehittäjää, joiden kanssa olen tehnyt töitä vuosia.' },
+  { k: 'Kenelle palvelut sopivat?', v: 'Yrityksille, jotka mainostavat tai haluavat aloittaa mainonnan ja haluavat tietää, mikä oikeasti tuottaa. Tyypillisesti asiakas on markkinoinnista vastaava, yrittäjä tai pieni tiimi, joka haluaa kokeneen tekijän ilman toimiston raskautta. Toimiala ei ratkaise – perusta on sama, myitpä autoja, matkoja tai palveluita.' },
+  { k: 'Mistä kannattaa aloittaa?', v: 'Yleensä Groundwork-katselmuksesta. Se kertoo viikossa, mikä on kunnossa, mikä ei ja missä järjestyksessä asiat kannattaa korjata. Jos tiedät jo tarvitsevasi uuden sivuston tai mainonnan hoitajan, voidaan aloittaa suoraan siitä – 15 minuutin puhelussa selviää järkevin ensimmäinen askel.' },
+  { k: 'Mitä palvelut maksavat?', v: 'Katselmus 490 €, kunnostus alkaen 1 900 €, verkkosivut 1 000–4 000 € ja kuukausikumppanuudet 490–1 200 €/kk. Hinnat ovat kiinteitä ja näkyvät hinnastossa, ja tarkka hinta sovitaan aina ennen aloitusta. Projektit laskutetaan puoliksi aloituksesta ja puoliksi valmistuttua.' },
+  { k: 'Pitääkö sitoutua pitkäksi aikaa?', v: 'Ei. Projektit tehdään kiinteällä hinnalla, ja kuukausikumppanuudet jatkuvat kuukausi kerrallaan ilman pitkiä sopimuksia. Jos yhteistyö päättyy, mainostilit, data ja ohjeet jäävät teille.' },
+  { k: 'Meillä on jo mainostoimisto. Sopiiko tämä silti?', v: 'Sopii. Katselmus ja sparraus toimivat nykyisen kumppanin rinnalla: saat puolueettoman näkemyksen siitä, mikä toimii ja mikä ei, ja korjauslistan voi antaa toimistolle toteutettavaksi. Mainonnan voi myös siirtää minulle hallitusti, jos niin päätätte.' },
+  { k: 'Millä toimialoilla olet tehnyt töitä?', v: 'Autokaupassa yli 25 autoliikkeelle, suoramyynnissä yli 40 yritykselle, matkailussa ja elämyksissä, verkkokaupoissa sekä kuluttaja- ja yrityspalveluissa – Suomessa ja kansainvälisesti. Liidejä on kertynyt eri toimialoille yli 250 000.' },
+  { k: 'Mitä alustoja hallitset?', v: 'Meta- ja Google-mainonnan, Google Analyticsin, Tag Managerin ja Search Consolen, verkkokaupoista WooCommercen ja Shopifyn sekä WordPressin, Elementorin ja koodilla tehdyt sivustot. Lisäksi sähköpostimarkkinoinnin ja asiakkuudenhallinnan työkalut, kuten Mailchimpin, Brevon ja Pipedriven. Koko lista on kokemussivulla.' },
+  { k: 'Teetkö töitä koko Suomeen?', v: 'Kyllä. Suurin osa työstä tehdään etänä, joten sijainnilla ei ole väliä, ja palaverit pidetään verkossa. Paikan päälle voidaan tulla sovitusti, esimerkiksi aloitukseen.' },
+  { k: 'Kuinka nopeasti pääsemme alkuun?', v: 'Yleensä saman viikon aikana. Ensimmäinen askel on maksuton 15 minuutin puhelu, jossa kerrot tilanteen ja minä kerron suoraan, kannattaako jatkaa ja mistä. Katselmus alkaa heti, kun saan pääsyn tileihin.' },
 ];
 
 export const yhteysVaiheet = [
@@ -394,4 +418,4 @@ export const yhteysVaiheet = [
 export const lomakePalvelut = ['Groundwork-katselmus', 'Groundwork-kunnostus', 'Uusi sivusto', 'Mainonta', 'Markkinoinnin sparraus', 'En tiedä vielä'];
 
 // ── Megavalikko ──
-export const megavalikko = palvelut.map((p) => ({ nimi: p.nimi, kuvake: p.kuvake, linkki: `/palvelut/${p.slug}`, teksti: p.kortti, hinta: p.hintaAlkaen }));
+export const megavalikko = palvelut.map((p) => ({ nimi: p.nimi, kuvake: p.kuvake, linkki: `/palvelut/${p.slug}`, teksti: p.kortti }));

@@ -21,7 +21,7 @@ export function Alapalkki() {
       <div className="sisalto">
         <div className="alapalkki-yla">
           <div className="alapalkki-brandi">
-            <Link href="/" aria-label="Pure Groundwork – etusivu" className="ylapalkki-logo">
+            <Link href="/" aria-label="PureGroundwork – etusivu" className="ylapalkki-logo">
               <Logo />
             </Link>
             <p>{yritys.kuvaus}</p>
@@ -77,23 +77,19 @@ export function Alapalkki() {
                     </a>
                   </li>
                 )}
-                <li>
-                  <Kuvake nimi="sijainti" koko={18} />
-                  <span>{henkilo.paikka}</span>
-                </li>
               </ul>
             </div>
           </nav>
         </div>
         <p className="alapalkki-sana" aria-hidden="true">
-          Pure Groundwork
+          PureGroundwork
         </p>
         <div className="alapalkki-ala">
           <span>
             © {vuosi} {yritys.yhtio}
             {yritys.ytunnus ? ` · Y-tunnus ${yritys.ytunnus}` : ''}
           </span>
-          <span>Hinnat alv 0 %. Tuotemerkit kuuluvat omistajilleen.</span>
+          <span>Tuotemerkit kuuluvat omistajilleen.</span>
         </div>
       </div>
     </footer>

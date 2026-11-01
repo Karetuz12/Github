@@ -59,10 +59,6 @@ export default function Yhteys() {
                   </li>
                 )}
                 <li>
-                  <Kuvake nimi="sijainti" />
-                  <span>{henkilo.paikka}</span>
-                </li>
-                <li>
                   <Kuvake nimi="kello" />
                   <span>Vastaan yleensä saman päivän aikana</span>
                 </li>

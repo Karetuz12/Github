@@ -33,7 +33,7 @@ export default function Palvelut() {
         <Prosessi vaiheet={vaiheet} />
       </Osio>
 
-      <Osio id="miksi" ylaotsikko="Miksi Pure Groundwork" otsikko="Toimiston osaaminen ilman toimiston raskautta." korostus="ilman" luokka="vaalea">
+      <Osio id="miksi" ylaotsikko="Miksi PureGroundwork" otsikko="Toimiston osaaminen ilman toimiston raskautta." korostus="ilman" luokka="vaalea">
         <Vertailu />
       </Osio>
 

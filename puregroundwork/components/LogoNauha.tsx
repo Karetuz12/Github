@@ -1,15 +1,18 @@
 import {
-  siBrevo, siElementor, siFacebook, siFigma, siGoogle, siGoogleads, siGoogleanalytics, siGooglesearchconsole, siGoogletagmanager,
-  siHubspot, siInstagram, siMailchimp, siMeta, siNextdotjs, siShopify, siTiktok, siVercel, siWoocommerce, siWordpress, siYoutube,
+  siBrevo, siElementor, siFacebook, siFigma, siGoogle, siGoogleads, siGoogleanalytics, siGoogletagmanager,
+  siInstagram, siMailchimp, siMeta, siNextdotjs, siShopify, siTiktok, siVercel, siWoocommerce, siWordpress, siYoutube,
 } from 'simple-icons';
 
 type Ikoni = { path: string; hex: string };
 
+// Pipedrive puuttuu simple-iconsista: p-kirjain samassa 24 × 24 -ruudukossa
+const pipedrive: Ikoni = { hex: '017737', path: 'M5 3h4v19H5zM12.5 3a7 7 0 1 1 0 14a7 7 0 1 1 0-14zM12.5 6.5a3.5 3.5 0 1 0 0 7a3.5 3.5 0 1 0 0-7z' };
+
 const kuvakkeet: Record<string, Ikoni> = {
   Meta: siMeta, Facebook: siFacebook, Instagram: siInstagram, Google: siGoogle, 'Google Ads': siGoogleads,
-  'Google Analytics': siGoogleanalytics, 'Google Tag Manager': siGoogletagmanager, 'Search Console': siGooglesearchconsole,
+  'Google Analytics': siGoogleanalytics, 'Google Tag Manager': siGoogletagmanager, 'Google Search Console': siGoogle,
   WordPress: siWordpress, WooCommerce: siWoocommerce, Shopify: siShopify, Elementor: siElementor, 'Next.js': siNextdotjs,
-  Vercel: siVercel, TikTok: siTiktok, YouTube: siYoutube, Mailchimp: siMailchimp, HubSpot: siHubspot, Brevo: siBrevo, Figma: siFigma,
+  Vercel: siVercel, TikTok: siTiktok, YouTube: siYoutube, Mailchimp: siMailchimp, Pipedrive: pipedrive, Brevo: siBrevo, Figma: siFigma,
 };
 
 export function BrandiKuvake({ nimi, koko = 22 }: { nimi: string; koko?: number }) {

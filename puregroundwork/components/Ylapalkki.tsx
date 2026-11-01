@@ -52,7 +52,7 @@ export function Ylapalkki() {
     <header className={`ylapalkki${vieritetty || mobiili || mega ? ' vieritetty' : ''}${mobiili ? ' mobiili-auki' : ''}`} ref={juuri}>
       <div className="ylapalkki-kehys">
         <div className="ylapalkki-rivi">
-          <Link href="/" aria-label="Pure Groundwork – etusivu" className="ylapalkki-logo">
+          <Link href="/" aria-label="PureGroundwork – etusivu" className="ylapalkki-logo">
             <Logo />
           </Link>
 
@@ -72,7 +72,6 @@ export function Ylapalkki() {
                       <span className="mega-teksti">
                         <strong>{m.nimi}</strong>
                         <span>{m.teksti}</span>
-                        <em>{m.hinta}</em>
                       </span>
                     </Link>
                   ))}
@@ -81,7 +80,6 @@ export function Ylapalkki() {
                   <Link href="/palvelut/groundwork" className="mega-nosto">
                     <span className="merkki-pieni">Aloita tästä</span>
                     <strong>Groundwork-katselmus</strong>
-                    <span className="mega-hinta">490 €</span>
                     <span>Korjauslista viikossa. Hyvitetään, jos korjaukset tehdään.</span>
                     <span className="mega-linkki">
                       Lue lisää <Kuvake nimi="nuoli" koko={16} />
@@ -121,7 +119,6 @@ export function Ylapalkki() {
                 </span>
                 <span className="mega-teksti">
                   <strong>{m.nimi}</strong>
-                  <em>{m.hinta}</em>
                 </span>
               </Link>
             ))}

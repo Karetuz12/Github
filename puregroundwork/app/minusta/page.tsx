@@ -9,7 +9,7 @@ import { alustat, esittely, henkilo, lainaus, tyotapa, ura, varausOsoite } from 
 export const metadata: Metadata = sivunMeta({
   polku: '/minusta',
   otsikko: `Minusta – ${henkilo.nimi}`,
-  kuvaus: 'Yli kymmenen vuotta myyntiä, markkinointia ja verkkosivuja. Seitsemän vuotta omaa 25 hengen markkinointitoimistoa ja noin tuhat projektia.',
+  kuvaus: 'Yli kymmenen vuotta myyntiä, markkinointia ja verkkosivuja. Seitsemän vuotta omaa 25 hengen markkinointitoimistoa ja yli tuhat projektia.',
 });
 
 export default function Minusta() {

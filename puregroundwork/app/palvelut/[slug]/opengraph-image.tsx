@@ -1,7 +1,7 @@
 import { ogKoko, ogKuva } from '@/lib/og';
 import { haePalvelu, palvelut } from '@/lib/sisalto';
 
-export const alt = 'Pure Groundwork – palvelu';
+export const alt = 'PureGroundwork – palvelu';
 export const size = ogKoko;
 export const contentType = 'image/png';
 

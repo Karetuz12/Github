@@ -256,7 +256,7 @@ export function HintaKortit({ hinnat }: { hinnat: Palvelu['hinnat'] }) {
 
 export function Vertailu() {
   return (
-    <div className="vertailu lasi ilmesty" role="table" aria-label="Vertailu: tyypillinen toimisto ja Pure Groundwork">
+    <div className="vertailu lasi ilmesty" role="table" aria-label="Vertailu: tyypillinen toimisto ja PureGroundwork">
       <div className="vertailu-rivi vertailu-otsikot" role="row">
         <span role="columnheader" />
         {vertailu.sarakkeet.map((s, i) => (
