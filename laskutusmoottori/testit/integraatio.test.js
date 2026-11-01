@@ -336,7 +336,12 @@ test('koko polku: asennus, aamuajo, vastaus, jatkoviesti, luonnos ja kauppa', ()
   y.sivut['https://www.mokki.fi/'] = { html: '<html lang="fi"><meta name="viewport" content="x"><a href="https://www.airbnb.fi/rooms/1">Varaa</a> © 2018</html>' };
   y.sivut['https://revontuli.fi'] = { html: '<html lang="fi"></html>' };
   y.sivut['https://rakennus.fi'] = { koodi: 403 };
+  y.liita([{ Yritys: 'Wordpress Oy', Sähköposti: 'info@wp-yritys.fi', Verkkosivu: 'wp-yritys.fi' }]);
+  y.sivut['https://wp-yritys.fi'] = { html: '<meta name="viewport" content="x"><link href="/wp-content/themes/x.css">' };
   y.ctx.tarkistaSivustot();
+  assert.equal(y.taulu('Liidit')[4].Segmentti, 'WordPress', 'tyhjän segmentin WordPress-sivusto ohjautuu WordPress-kulmaan');
+  const wpRivi = y.ss.getSheetByName('Liidit');
+  for (let c = 1; c <= wpRivi.getLastColumn(); c++) wpRivi.set(6, c, ''); // pois tästä skenaariosta
   liidit = y.taulu('Liidit');
   assert.match(liidit[3]['Sivuston signaalit'], /ohjaa: Airbnb/);
   assert.equal(liidit[3]['Ehdotettu havainto'], 'varaukset ohjautuvat sivuilta Airbnb:hen, jolloin jokaisesta varauksesta lähtee välityspalkkio');
@@ -519,6 +524,29 @@ test('vanhan version taulukko päivittyy: puuttuvat välilehdet, sarakkeet ja as
   assert.equal(y.solu('Kojelauta', 'B6'), 14000);
   assert.equal(y.ss.getSheetByName('Kojelauta').kaaviot.length, 1);
   assert.match(y.taulu('Loki').pop().Tulos, /Tuotteet.*Viikot.*Kaupat: Tuote.*Tilauspvm/);
+});
+
+test('päivitys lisää uudet kulmat ja tuotteet olemassa olevaan taulukkoon', () => {
+  const y = ymparisto();
+  y.aika('2026-11-01T13:00:00Z');
+  y.ctx.asenna();
+  // Simuloidaan vanhaa versiota: ei kulmapohjia eikä uusia tuotteita
+  const p = y.ss.getSheetByName('Viestipohjat');
+  const vanhat = y.taulu('Viestipohjat').filter((r) => !['WordPress', 'Mainonta', 'Sparraus'].includes(r.Segmentti));
+  for (let r = 2; r <= 40; r++) for (let c = 1; c <= 5; c++) p.set(r, c, '');
+  vanhat.forEach((r, i) => ['Vaihe', 'Segmentti', 'Odota arkipäivää', 'Aihe', 'Viesti'].forEach((k, j) => p.set(2 + i, j + 1, r[k])));
+  const tu = y.ss.getSheetByName('Tuotteet');
+  for (let r = 2; r <= tu.getLastRow(); r++) if (/uudistus|Maino|parraus/.test(tu.get(r, 1))) for (let c = 1; c <= 11; c++) tu.set(r, c, '');
+  assert.equal(y.taulu('Viestipohjat').filter((r) => r.Segmentti === 'WordPress').length, 0);
+
+  y.ctx.paivitaRakenne();
+  const pohjat = y.taulu('Viestipohjat');
+  ['WordPress', 'Mainonta', 'Sparraus'].forEach((seg) => assert.equal(pohjat.filter((r) => r.Segmentti === seg).length, 3, seg));
+  assert.equal(pohjat.filter((r) => r.Segmentti === 'Verkosto').length, 2, 'olemassa olevia ei tuplata');
+  assert.ok(y.taulu('Tuotteet').some((r) => r.Tuote === 'Mainonnan kumppanuus'));
+  assert.match(y.taulu('Loki').pop().Tulos, /viestipohjat: WordPress, Mainonta, Sparraus.*tuotteet: Verkkosivu-uudistus/);
+  // Kojelaudan kulmataulukko
+  assert.equal(y.solu('Kojelauta', 'A61'), 'KULMAT (SEGMENTIT)');
 });
 
 test('ilman nimeä ei lähetetä mitään ja virhe näkyy koosteessa', () => {

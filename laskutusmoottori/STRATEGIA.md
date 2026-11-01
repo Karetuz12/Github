@@ -83,7 +83,7 @@ vanha ©-vuosi, hidas lataus). Sinä hyväksyt havainnon, ja vasta sitten viesti
 
 | Kanava | Rooli | Kuka |
 |---|---|---|
-| Sähköposti | Kolmen viestin sarja: avaus → 3 arkipäivän päästä muistutus → 5 arkipäivän päästä lopetus | Kone |
+| Sähköposti | Kolmen viestin sarja kolmella kulmalla (WordPress, Mainonta, Sparraus), 5 + 5 + 5 avausta päivässä: avaus → 3 arkipäivän päästä muistutus → 5 arkipäivän päästä lopetus | Kone |
 | LinkedIn | Kutsu ja viesti, 5 päivässä. Ensin ne, joille on jo lähtenyt sähköposti. | Sinä. Kone antaa listan ja tekstin. |
 | Vanhat asiakkaat | Sähköposti vanhoille projekti- ja markkinointiasiakkaille: historia, havainto ja maksuton kuntotarkastus | Kone, sinä tarkistat luonnokset |
 | nerot.fi | Valmiit tarjouspyynnöt: verkkosivut, koodaus, tuntityöt. Tavoite 1–2 kauppaa kuussa. | Kone poimii ja luonnostelee tarjouksen, sinä lähetät. |
@@ -113,6 +113,30 @@ Tuotteet ovat Laskutusmoottorin Tuotteet-välilehdellä laskutusaikatauluineen. 
 iso projekti kolmessa erässä ja pikatyö kerralla.
 
 Toimitusta varten rakennetaan kerran yksi matkailusivun pohja, jota käytetään joka projektissa. Tavoite on enintään 20 tuntia omaa aikaa projektia kohden.
+
+### Tarjoama: kolme kulmaa, jotka sopivat sinun aikaasi
+
+Lähtökohta: sinä myyt ja vedät suunnittelupalaverit, kaksi verkkosivukaveria toteuttaa. Kuukausiasiakkuuksissa on kevyt rytmi:
+palaveri kerran kuussa tai joka toinen kuukausi, raportti ja noin 15 minuuttia viestejä viikossa. Viikkopalavereita ja ad hoc -työtä ei ole.
+Malli on sama kuin nykyisessä 1 000 €/kk konsultointiasiakkaassa.
+
+| Kulma | Sisääntulo | Jatko | Oma aikasi | Rooli |
+|---|---|---|---|---|
+| **WordPress-sivujen uudistus** | 15 min puhelu, arvio sähköpostilla | Verkkosivu-uudistus 2 900–4 900 €, 50/50 | Myynti + 1–2 suunnittelupalaveria | Volyymi ja tuttu, turvallinen aloitus |
+| **Mainonnan kumppanuus** (Meta, Google) | Maksuton läpikäynti tai 490 € | 490–990 €/kk | Noin 2–3 h/kk asiakasta kohden | Toistuva pohja |
+| **Markkinoinnin sparraus** | Sparrauspalaveri 2 h, 790 € | 600–1 200 €/kk | Noin 2–3 h/kk asiakasta kohden | Toistuva pohja ja paras tuntihinta |
+
+**Mitä tämä tarkoittaa luvuissa:** neljä mainontakumppanuutta à 700 € ja kaksi sparrausta à 1 000 € tuovat noin 4 800 €/kk toistuvaa laskutusta.
+Työtä on noin kuusi palaveria kuussa. Se kattaa rakenteellisen 4 000 € vajeen jo ennen yhtäkään verkkosivuprojektia, ja projektit tulevat päälle.
+
+**Pidä kiinni rajauksesta.** Kirjaa sopimukseen, mitä kuukausimaksuun kuuluu: raportti, palaverit ja muutokset tileille. Kaikki muu laskutetaan erikseen.
+Kun rajaus on kirjattu, kevyt malli pysyy kannattavana. Ota enintään 6–8 kuukausiasiakasta, niin aikaa jää myynnille.
+
+**⚠ Markkinointiboosti.** Mainonta ja sparraus ovat lähellä sitä, mitä omistamasi Markkinointiboosti myy. Sovi Akselin kanssa raja ennen ensimmäistä viestiä.
+Esimerkiksi niin, että alle 1 000 €/kk kevyet asiakkuudet hoidat itse ja isommat ohjataan Markkinointiboostille provisiolla.
+
+Valmiit viestit kaikkiin kolmeen kulmaan: [viestipohjat/VIESTIPOHJAT.md](viestipohjat/VIESTIPOHJAT.md). Päivärytmi on 5 + 5 + 5 avausta, eli 15 täsmäiskua päivässä.
+Kojelauta näyttää kulmittain, mikä tuottaa vastauksia ja palavereita.
 
 ### C. Koko ajan: toistuva pohja kasvaa jokaisesta kaupasta
 

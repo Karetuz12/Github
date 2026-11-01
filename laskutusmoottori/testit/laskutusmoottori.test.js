@@ -39,7 +39,7 @@ const asetukset = (muut) => Object.assign({
   tila: 'LÄHETÄ', nimi: 'Testi Myyjä', allekirjoitus: 'Testi Myyjä\nYritys Oy', referenssi: 'Referenssi.',
   raportti: '', alias: '', keskikauppa: 2500, kp: 0.04, pk: 0.3, kynnys: 60, min: 3, max: 20, yhteensa: 40,
   loppuOdotus: 5, vaadiHavainto: true, autoHavainto: false, li: 5, soitot: 3, arkisin: true, kooste: true, ajo: 7,
-  kauppojaViikossa: 0, myyntisykli: 21, maksuaika: 14, oletusTuote: 'Verkkosivuprojekti', tietosuoja: '',
+  kauppojaViikossa: 0, myyntisykli: 21, maksuaika: 14, oletusTuote: 'Verkkosivuprojekti', tietosuoja: '', segmenttiMax: 0,
 }, muut || {});
 
 const VERKKOSIVU = [{ osuus: 0.5, pv: 7 }, { osuus: 0.5, pv: 35 }];
@@ -447,6 +447,87 @@ test('PageSpeed: purku ja havainto', () => {
   assert.match(t.signaalit, /PageSpeed mobiili 34\/100, LCP 7,8 s/);
   assert.equal(t.havainto, 'sivujen mobiilinopeus on Googlen PageSpeed-mittauksessa vain 34/100 ja etusivu latautuu puhelimella noin 8 sekunnissa');
   assert.equal(g.analysoiSivu(html, { https: true, pagespeed: 82 }, 'Yleinen', 2026).havainto, '');
+});
+
+test('kolme kulmaa: enintään 5 avausta segmenttiä kohden päivässä', () => {
+  const pp = Array.from(g.oletusPohjat()).map(([vaihe, segmentti, odota, aihe, viesti]) => ({ vaihe, segmentti, odota: Number(odota) || 0, aihe, viesti }));
+  const lid = [];
+  for (let i = 0; i < 7; i++) lid.push(liidi({ _rivi: 2 + i, email: 'wp' + i + '@wp' + i + '.fi', segmentti: 'WordPress' }));
+  for (let i = 0; i < 6; i++) lid.push(liidi({ _rivi: 20 + i, email: 'm' + i + '@m' + i + '.fi', segmentti: 'Mainonta' }));
+  for (let i = 0; i < 2; i++) lid.push(liidi({ _rivi: 40 + i, email: 's' + i + '@s' + i + '.fi', segmentti: 'Sparraus' }));
+  const s = g.suunnittele(malli({ pohjat: pp, liidit: lid, asetukset: asetukset({ segmenttiMax: 5 }) }), 15, '2026-11-05', false);
+  const maarat = {};
+  s.uudet.forEach((x) => { maarat[x.liidi.segmentti] = (maarat[x.liidi.segmentti] || 0) + 1; });
+  assert.deepEqual(Object.assign({}, maarat), { WordPress: 5, Mainonta: 5, Sparraus: 2 });
+  assert.equal(s.ohitetut.length, 0);
+  assert.equal(s.uudet[0].aihe, 'Yritys Oy / verkkosivujen uudistus');
+  assert.match(s.uudet[5].viesti, /^Hei Anna,\n\nhuomasin, että sivusto ei skaalaudu puhelimelle\.\n\nAutan pieniä/);
+});
+
+test('kulmien pohjat: kolme viestiä, kaikki muuttujat tunnettuja, ei linkkejä avauksessa', () => {
+  const pp = Array.from(g.oletusPohjat()).map(([vaihe, segmentti, odota, aihe, viesti]) => ({ vaihe, segmentti, odota, aihe, viesti }));
+  const a = asetukset({ varauslinkki: 'https://cal.example/x', tietosuoja: 'Tietosuoja: x.fi' });
+  ['WordPress', 'Mainonta', 'Sparraus'].forEach((seg) => {
+    [1, 2, 3].forEach((n) => {
+      const p = g.haePohja(pp, n, seg);
+      assert.equal(p.segmentti, seg, seg + ' ' + n);
+      const v = g.renderoiViesti(p, liidi({ segmentti: seg }), a, false);
+      assert.equal(v.virhe, '', seg + ' ' + n);
+      assert.doesNotMatch(v.viesti, /\{\{|\[[a-z]+ puuttuu\]/);
+      if (n === 1) {
+        assert.doesNotMatch(v.viesti, /https?:\/\/(?!x\.fi)/, 'avauksessa ei linkkejä');
+        assert.match(v.viesti, /ei kiitos/);
+        assert.match(v.viesti, /Tietosuoja: x\.fi$/);
+        const sanat = v.viesti.split(/\s+/).length;
+        assert.ok(sanat < 140, seg + ' avaus ' + sanat + ' sanaa');
+      }
+      if (n === 2) assert.match(v.viesti, /cal\.example/);
+    });
+    assert.equal(g.haePohja(pp, 4, seg), null);
+  });
+});
+
+test('viestipohjatiedosto vastaa moottorin pohjia', () => {
+  const md = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'viestipohjat', 'VIESTIPOHJAT.md'), 'utf8');
+  Array.from(g.oletusPohjat()).filter((p) => ['WordPress', 'Mainonta', 'Sparraus'].includes(p[1])).forEach((p) => {
+    assert.ok(md.includes('```text\n' + p[4] + '\n```'), 'VIESTIPOHJAT.md ei vastaa pohjaa ' + p[1] + ' ' + p[0] + ' – generoi tiedosto uudelleen');
+    if (p[3]) assert.ok(md.includes('`' + p[3] + '`'), p[1] + ' aihe');
+  });
+});
+
+test('sivuston seurantasignaalit ja mainonnan havainnot', () => {
+  const pohja = '<meta name="viewport" content="x"><meta name="description" content="Hyvä kuvaus yrityksestämme tässä">';
+  const meta = pohja + '<script src="https://connect.facebook.net/en_US/fbevents.js"></script><div class="elementor-section"></div><link href="/wp-content/x.css">';
+  const t = g.analysoiSivu(meta, { https: true }, 'Mainonta', 2026);
+  assert.match(t.signaalit, /WordPress · Elementor · Meta-pikseli/);
+  assert.equal(t.havainto, 'sivuillanne on Metan pikseli, mutta Google Ads -seurantaa ei näytä olevan');
+  assert.equal(g.analysoiSivu(pohja, { https: true }, 'Mainonta', 2026).havainto,
+    'sivuilta ei löydy Google Analyticsia eikä Metan pikseliä, joten mainonnan tulosta on vaikea mitata');
+  assert.match(g.analysoiSivu(pohja, { https: true }, 'Mainonta', 2026).signaalit, /ei seurantakoodeja/);
+  // GTM voi ladata pikselit → ei päätelmää puuttuvasta seurannasta
+  assert.equal(g.analysoiSivu(pohja + '<script src="https://www.googletagmanager.com/gtm.js?id=GTM-ABC12"></script>', { https: true }, 'Mainonta', 2026).havainto, '');
+  // Muissa kulmissa seuranta ei ole havainto
+  assert.equal(g.analysoiSivu(pohja, { https: true }, 'WordPress', 2026).havainto, '');
+  assert.match(g.analysoiSivu(pohja + "gtag('config', 'AW-123456789'); <script src=\"https://www.googletagmanager.com/gtag/js?id=G-ABCDEF12\">", { https: true }, '', 2026).signaalit, /Google Ads, GA4/);
+});
+
+test('kulmatilastot segmenteittäin', () => {
+  const lid = [
+    liidi({ segmentti: 'WordPress', vaihe: 1, tila: 'Vastasi' }), liidi({ segmentti: 'WordPress', vaihe: 2, tila: 'Sekvenssissä' }),
+    liidi({ segmentti: 'WordPress', vaihe: 1, tila: 'Kauppa' }), liidi({ segmentti: 'Mainonta', vaihe: 3, tila: 'Ei vastausta' }),
+    liidi({ segmentti: 'Mainonta' }), liidi({ segmentti: '' }),
+  ];
+  const t = g.laske(malli({ liidit: lid }), '2026-11-05');
+  const wp = t.segmentit.find((x) => x.segmentti === 'WordPress');
+  assert.equal(wp.kontaktoidut, 3);
+  assert.equal(wp.vastanneet, 2);
+  assert.equal(wp.palaverit, 1);
+  assert.ok(Math.abs(wp.vastausPct - 2 / 3) < 1e-9);
+  const ma = t.segmentit.find((x) => x.segmentti === 'Mainonta');
+  assert.equal(ma.jonossa, 1);
+  assert.equal(ma.vastausPct, 0);
+  assert.equal(t.segmentit.find((x) => x.segmentti === 'Yleinen').vastausPct, null);
+  assert.equal(t.segmentit[0].segmentti, 'WordPress');
 });
 
 test('vastausten luokittelu', () => {

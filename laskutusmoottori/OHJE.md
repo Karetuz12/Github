@@ -5,7 +5,7 @@ kuukausitavoitteet, toistuvat tulot, kaupat ja laskut. Kojelauta kertoo joka muo
 kuukaudesta puuttuu. Joka aamu kone lähettää juuri sen verran uusia viestejä kuin vaje vaatii, hoitaa
 jatkoviestit ja merkitsee vastaukset. Kalenteriin varatut palaverit siirtyvät itsestään kauppoihin. Lopuksi saat päivän koosteen.
 
-Strategia, jonka varaan kone on rakennettu: [STRATEGIA.md](STRATEGIA.md).
+Strategia, jonka varaan kone on rakennettu: [STRATEGIA.md](STRATEGIA.md). Valmiit viestit kolmeen kulmaan: [viestipohjat/VIESTIPOHJAT.md](viestipohjat/VIESTIPOHJAT.md).
 
 | Välilehti | Mitä siellä on | Kuka kirjoittaa |
 |---|---|---|
@@ -55,13 +55,17 @@ Liitä rivit Liidit-välilehdelle. Tila (Uusi), Vaihe (0) ja Lisätty täyttyvä
 
 - **Pakolliset:** Sähköposti. Kylmille liideille lisäksi Yritys ja Havainto. Verkkosivu tarvitaan sivustotarkistukseen ja muuttujaan `{{sivusto}}`.
 - **Segmentti** valitsee viestisarjan:
+  - *WordPress*: WordPress-sivujen uudistus. Tyhjän segmentin WordPress-sivusto siirtyy tähän sivustotarkistuksessa itse.
+  - *Mainonta*: Meta- ja Google-mainonnan kevyt kumppanuus.
+  - *Sparraus*: markkinoinnista vastaavan taustatuki.
   - *Matkailu*: matkailun pohjat.
   - *Yleinen* tai tyhjä: yleiset pohjat.
   - *Verkosto*: tutut ihmiset. Kaksi henkilökohtaista viestiä, jotka pyytävät suosittelua. Havaintoa tai yritystä ei tarvita.
   - *Vanha asiakas*: vanhat projekti- ja markkinointiasiakkaat. Kaksi viestiä: yhteinen historia, havainto nykyisestä sivusta ja maksuton kuntotarkastus.
     ⚠ Tarkista ennen lähettämistä mainostoimiston kauppakirjasta, koskeeko kilpailu- tai houkuttelukielto toimiston entisiä asiakkaita.
 
-  Jos segmentillä on omia pohjia, sen liidit käyttävät vain niitä.
+  Jos segmentillä on omia pohjia, sen liidit käyttävät vain niitä. Kustakin segmentistä lähtee enintään viisi avausta päivässä
+  (Asetukset → *Avauksia / segmentti / päivä, enintään*). Kolme kulmaa × 5 = 15 täsmäiskua päivässä.
 - **Havainto** on täsmäiskun ydin: yksi asia yrityksen omalta sivulta. Se jatkaa lausetta *"kävin läpi sivujanne ja huomasin, että …"*,
   joten kirjoita se pienellä alkukirjaimella ja ilman pistettä. Esimerkkejä:
   - *varaukset ohjautuvat sivuilta Booking.comiin, jolloin jokaisesta varauksesta lähtee välityspalkkio*
@@ -78,7 +82,7 @@ Claude voi koota liidit puolestasi: pyydä esim. *"etsi 40 lappilaista ohjelmapa
 1. Kuun ensimmäisenä päivänä se luo kuun laskutuslistan Laskut-välilehdelle: toistuvat tulot ja voitetut kaupat tilalla *Laskuttamatta*.
 2. Se tarkistaa lähetetyt ketjut. Vastanneet merkitään *Vastasi* ja niiden sarja pysähtyy. Pomput merkitään *Pomppasi*. Automaattiset poissaoloviestit eivät pysäytä sarjaa. Lähetetyt luonnokset siirtyvät tilaan *Sekvenssissä*.
 3. Se tarkistaa kalenterin. Jos liidin sähköposti on tapahtuman vieraana tai järjestäjänä seuraavan 60 päivän aikana, liidi siirtyy kauppoihin vaiheeseen *Palaveri sovittu*. Palaverin päivä tulee kaupan seuraavaksi askeleeksi.
-4. Se tarkistaa jonon seuraavien 20 liidin sivustot. Jos PageSpeed-avain on asetettu, se mittaa myös mobiilinopeuden.
+4. Se tarkistaa jonon seuraavien 20 liidin sivustot. Tarkistus kattaa alustan (esim. WordPress), sivunrakentajan (esim. Elementor), seurantakoodit (Meta-pikseli, Google Ads, GA4, GTM), https-yhteyden, mobiilinäkymän ja latausajan. Jos PageSpeed-avain on asetettu, se mittaa myös mobiilinopeuden.
 5. Arkipäivinä se lähettää ensin erääntyneet jatkoviestit samaan ketjuun ja sitten uudet avaukset kiintiön verran. Kiintiö näkyy kojelaudalla.
 6. Se valitsee päivän LinkedIn-listan (5 kpl, valinnainen). Soittolista on oletuksena pois päältä.
 7. Se lähettää koosteen *Raporttien osoite* -asetuksen osoitteeseen. Maanantaisin mukana on viikkoraportti. Vastaukset ja virheet tulevat aina tietoon.

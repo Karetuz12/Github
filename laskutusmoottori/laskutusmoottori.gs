@@ -81,6 +81,7 @@ const ASETUSRIVIT = [
   ['min', 'Uusia kontakteja / päivä, vähintään', 3, 'Kone pitää vähintään tämän tahdin, vaikka kuukausi olisi jo katettu.'],
   ['max', 'Uusia kontakteja / päivä, enintään', 20, 'Katto toimitettavuuden takia. Uudella postilaatikolla aloita 10:llä.'],
   ['yhteensa', 'Viestejä yhteensä / päivä, enintään', 40, 'Uudet viestit ja jatkoviestit yhteensä.'],
+  ['segmenttiMax', 'Avauksia / segmentti / päivä, enintään', 5, 'Esim. kolme kulmaa × 5 = 15 avausta päivässä. 0 = ei rajaa.'],
   ['loppuOdotus', 'Odota viimeisen viestin jälkeen (arkipäivää)', 5, 'Tämän jälkeen liidin tilaksi tulee Ei vastausta.'],
   ['autoHavainto', 'Hyväksy ehdotetut havainnot automaattisesti', false, 'Kyllä = jos Havainto on tyhjä, kone käyttää sivustotarkistuksen ehdotusta.'],
   ['tietosuoja', 'Tietosuojalause', '', '{{tietosuoja}} avausviestin loppuun. Jos lista on kerätty julkisista lähteistä, kerro lähde ja linkki tietosuojaselosteeseen.'],
@@ -117,7 +118,7 @@ const PALAVERIT = ['Palaveri', 'Kauppa'];
 const ESTAA_DOMAININ = ['Luonnos', 'Sekvenssissä', 'Vastasi', 'Palaveri', 'Kauppa', 'Ei kiinnosta', 'Älä ota yhteyttä'];
 const LI_TILAT = ['Tehtävälistalla', 'Kutsuttu', 'Yhdistetty', 'Viesti lähetetty', 'Ei LinkedInissä'];
 const SOITTOTILAT = ['Soittolistalla', 'Ei vastannut', 'Palaveri sovittu', 'Ei kiinnosta', 'Soita myöhemmin'];
-const SEGMENTIT = ['Matkailu', 'Yleinen', 'Verkosto', 'Vanha asiakas'];
+const SEGMENTIT = ['WordPress', 'Mainonta', 'Sparraus', 'Matkailu', 'Yleinen', 'Verkosto', 'Vanha asiakas'];
 const TILAT = ['TESTI', 'LUONNOS', 'LÄHETÄ'];
 const YLEISET_DOMAINIT = ['gmail.com', 'googlemail.com', 'outlook.com', 'hotmail.com', 'hotmail.fi', 'live.com',
   'live.fi', 'msn.com', 'yahoo.com', 'icloud.com', 'me.com', 'luukku.com', 'suomi24.fi', 'kolumbus.fi',
@@ -128,7 +129,8 @@ const KUUKAUDET = ['tammikuu', 'helmikuu', 'maaliskuu', 'huhtikuu', 'toukokuu', 
 const VIIKONPAIVAT = ['su', 'ma', 'ti', 'ke', 'to', 'pe', 'la'];
 
 // Kojelaudan kiinteä asettelu (kaavio lukee kuukausitaulukkoa riveiltä KL.kk..KL.kk+KL.kkRiveja)
-const KL = { kpi: 3, kpiRiveja: 10, huomiot: 14, huomioRiveja: 6, kk: 22, kkRiveja: 24, askeleet: 48, askelRiveja: 10, leveys: 12 };
+const KL = { kpi: 3, kpiRiveja: 10, huomiot: 14, huomioRiveja: 6, kk: 22, kkRiveja: 24, askeleet: 48, askelRiveja: 10,
+  segmentit: 61, segmenttiRiveja: 8, leveys: 12 };
 
 // [tuote, hinta, kk-tulo, 1. erä %, pv, 2. erä %, pv, 3. erä %, pv, maksuaika, selite] – pv = päiviä tilauksesta laskuun
 const TUOTTEET_OLETUS = [
@@ -137,6 +139,11 @@ const TUOTTEET_OLETUS = [
   ['Korjauspaketti', 1500, '', 1, 14, '', '', '', '', 14, 'Kerralla valmistuttua.'],
   ['Pikatyö', 300, '', 1, 3, '', '', '', '', 14, 'Pienet koodaus- ja sivutyöt (esim. nerot.fi). Kerralla valmistuttua.'],
   ['Ylläpito ja hosting', '', 149, '', '', '', '', '', '', 14, 'Pelkkä kuukausimaksu, alkaa tilauskuusta.'],
+  ['Verkkosivu-uudistus', 3900, '', 0.5, 7, 0.5, 35, '', '', 14, 'WordPress-sivuston uudistus kevyempään tekniikkaan. 50/50. Tiimi toteuttaa, sinä myyt ja vedät suunnittelupalaverit.'],
+  ['Mainostilien läpikäynti', 490, '', 1, 7, '', '', '', '', 14, 'Sisääntulo: Meta- ja Google-tilien läpikäynti ja korjauslista. Hyvitetään, jos jatketaan kumppanuuteen.'],
+  ['Mainonnan kumppanuus', '', 690, '', '', '', '', '', '', 14, '490–990 €/kk: kuukausiraportti, palaveri kerran kuussa tai joka toinen kuukausi, viestit noin 15 min/vk. Ei ad hoc -työtä.'],
+  ['Markkinoinnin sparraus', '', 900, '', '', '', '', '', '', 14, '600–1 200 €/kk: markkinoinnista vastaavan taustatuki, palaveri kerran kuussa, katsaus ja kommentit.'],
+  ['Sparrauspalaveri', 790, '', 1, 0, '', '', '', '', 14, 'Kertaluonteinen 2 h läpikäynti. Hyvitetään, jos jatketaan sparraukseen.'],
   ['Booking engine', '', 5000, '', '', '', '', '', '', 14, 'Arvio 5 000–10 000 €/kk asiakasta kohden. Tarkenna, kun hinnoittelu on lukittu.'],
   ['Kertalasku', '', '', 1, 0, '', '', '', '', 14, 'Koko summa laskutetaan tilauspäivänä.'],
 ];
@@ -144,7 +151,78 @@ const TUOTTEET_OLETUS = [
 const VIIKKO_OTSIKOT = ['Viikko', 'Ajalla', 'Kontaktit', 'Vastaukset', 'Uudet kaupat', 'Voitetut kaupat',
   'Voitettu € (kerta)', 'Kk-tulo €', 'Kuun kaupat yht.', 'Tavoite / vk', 'Tila', 'Laskutus osuu kuukausille'];
 
+const OPTOUT = 'P.S. Jos aihe ei ole nyt ajankohtainen, vastaa "ei kiitos", niin en laita enempää viestejä.';
+
 const POHJAT_OLETUS = [
+  // ── Kulma 1: WordPress-sivujen uudistus ──
+  [1, 'WordPress', '', '{{yritys}} / verkkosivujen uudistus',
+    'Hei {{etunimi}},\n\n' +
+    'kävin läpi sivujanne ({{sivusto}}) ja huomasin, että {{havainto}}.\n\n' +
+    'WordPress-sivustoille käy usein niin, että lisäosia kertyy, päivitykset jäävät ja sivu hidastuu vuosi vuodelta. ' +
+    'Jossain vaiheessa korjaaminen maksaa lähes saman kuin uudistus.\n\n' +
+    'Uudistamme sivuja niin, että nykyinen sisältö toimii pohjana ja tekniikka vaihdetaan kevyempään. Lopputulos on nopea ja helppo päivittää, ' +
+    'eikä se vaadi jatkuvaa lisäosien ylläpitoa. Hinta sovitaan etukäteen.\n\n' +
+    'Taustaksi: olen tehnyt verkkosivuja ja markkinointia yli kymmenen vuotta, ja projekteja on takana noin tuhat.\n\n' +
+    'Kannattaisiko katsoa 15 minuutissa, mitä teidän sivuillanne kannattaisi tehdä?\n\n' +
+    '{{allekirjoitus}}\n\n' + OPTOUT + '\n\n{{tietosuoja}}'],
+  [2, 'WordPress', 3, '',
+    'Hei {{etunimi}},\n\n' +
+    'nostan tämän vielä esiin. Jos puhelu tuntuu turhan isolta askeleelta, voin lähettää lyhyen arvion sähköpostilla: ' +
+    'mitä uudistus teidän kohdallanne sisältäisi, kauanko se kestäisi ja mitä se maksaisi. Ei sitoumuksia.\n\n' +
+    'Laitanko?\n\n' +
+    'Voit myös varata ajan suoraan kalenteristani: {{varauslinkki}}\n\n' +
+    '{{nimi}}'],
+  [3, 'WordPress', 5, '',
+    'Hei {{etunimi}},\n\n' +
+    'tämä on viimeinen viestini aiheesta, en halua täyttää postilaatikkoanne. Jos sivujen uudistus tulee ajankohtaiseksi myöhemmin – ' +
+    'vaikka ennen seuraavaa kampanjaa tai sesonkia – vastaa tähän viestiin, niin jatketaan siitä.\n\n' +
+    'Hyvää jatkoa!\n{{nimi}}'],
+  // ── Kulma 2: Meta- ja Google-mainonta kevyellä mallilla ──
+  [1, 'Mainonta', '', '{{yritys}} / mainonnan tulokset',
+    'Hei {{etunimi}},\n\n' +
+    'huomasin, että {{havainto}}.\n\n' +
+    'Autan pieniä ja keskisuuria yrityksiä saamaan Meta- ja Google-mainonnasta enemmän irti kevyellä mallilla: käyn mainostilit läpi kuukausittain, ' +
+    'teen tarvittavat muutokset ja kokoan raportin, jonka pohjalta päätetään seuraava kuukausi. Palaveri kerran kuussa riittää.\n\n' +
+    'Taustaksi: tiimini kanssa hallinnoimme seitsemässä vuodessa asiakkaiden mainosbudjetteja noin viiden miljoonan euron edestä, ' +
+    'suurimmaksi osaksi liidien hankintaan.\n\n' +
+    'Sopisiko, että katson mainontanne läpi ja kerron kolme asiaa, joita muuttaisin? Siitä ei tule kuluja.\n\n' +
+    '{{allekirjoitus}}\n\n' + OPTOUT + '\n\n{{tietosuoja}}'],
+  [2, 'Mainonta', 3, '',
+    'Hei {{etunimi}},\n\n' +
+    'nostan tämän vielä esiin ja kerron samalla suoraan, miten malli toimii: kuukausiraportti, palaveri kerran kuussa ja viestit tarpeen mukaan. ' +
+    'Hinta on 490–990 € kuussa mainosbudjetin koosta riippuen, ilman pitkää sitoumusta.\n\n' +
+    'Ensimmäinen läpikäynti on maksuton. Kiinnostaisiko?\n\n' +
+    'Voit myös varata ajan suoraan kalenteristani: {{varauslinkki}}\n\n' +
+    '{{nimi}}'],
+  [3, 'Mainonta', 5, '',
+    'Hei {{etunimi}},\n\n' +
+    'en laita tästä enempää viestejä. Jos mainonnan tulokset alkavat mietityttää myöhemmin, vastaa tähän viestiin – ' +
+    'katson silloin mielelläni, mitä tileiltä löytyy.\n\n' +
+    'Hyvää jatkoa!\n{{nimi}}'],
+  // ── Kulma 3: markkinoinnista vastaavan sparraus ──
+  [1, 'Sparraus', '', '{{yritys}} / markkinoinnin sparraus',
+    'Hei {{etunimi}},\n\n' +
+    'huomasin, että {{havainto}}.\n\n' +
+    'Markkinoinnista vastaavalla on yleensä enemmän tekemistä kuin aikaa, ja harvoin ketään, jonka kanssa käydä ajatuksia läpi. ' +
+    'Siihen tarjoan taustatukea: käymme kerran kuussa läpi luvut, mainostilit ja tulevat kampanjat, ja tuon ulkopuolisen näkemyksen siitä, ' +
+    'mistä saa enemmän irti.\n\n' +
+    'Taustaksi: olen tehnyt markkinointia ja myyntiä yli kymmenen vuotta, siitä seitsemän omassa toimistossa. ' +
+    'Urani aikana olen ollut tuomassa asiakkaille mitatusti reilut 50 miljoonaa euroa myyntiä.\n\n' +
+    'Olisiko tästä hyötyä teillä? Kerron 15 minuutissa, miten se käytännössä toimii.\n\n' +
+    '{{allekirjoitus}}\n\n' + OPTOUT + '\n\n{{tietosuoja}}'],
+  [2, 'Sparraus', 3, '',
+    'Hei {{etunimi}},\n\n' +
+    'nostan tämän vielä esiin. Käytännössä malli on kevyt: palaveri kerran kuussa, kuukausikatsaus ja viestit väliin tarpeen mukaan. ' +
+    'Hinta on 600–1 200 € kuussa ilman pitkää sitoumusta.\n\n' +
+    'Voimme aloittaa myös yhdellä läpikäyntipalaverilla, jonka jälkeen tiedätte, onko tästä teille hyötyä.\n\n' +
+    'Ajan voit varata suoraan kalenteristani: {{varauslinkki}}\n\n' +
+    '{{nimi}}'],
+  [3, 'Sparraus', 5, '',
+    'Hei {{etunimi}},\n\n' +
+    'tämä on viimeinen viestini aiheesta. Jos ulkopuoliselle näkemykselle tulee tarvetta myöhemmin – vaikka budjettisuunnittelun ' +
+    'tai uuden kampanjan alla – vastaa tähän viestiin, niin jatketaan siitä.\n\n' +
+    'Hyvää jatkoa!\n{{nimi}}'],
+  // ── Matkailu, yleinen, verkosto ja vanhat asiakkaat ──
   [1, 'Matkailu', '', '{{yritys}} / sivut ja varaukset',
     'Hei {{etunimi}},\n\n' +
     'kävin läpi sivujanne ({{sivusto}}) ja huomasin, että {{havainto}}.\n\n' +
@@ -207,6 +285,8 @@ const POHJAT_OLETUS = [
     'Hei {{etunimi}}, kiitos kun hyväksyit kutsun! Kävin läpi sivujanne ja huomasin, että {{havainto}}. ' +
     'Jos aihe kiinnostaa, katsotaan 15 minuutissa, mitä korjaisin ensimmäisenä.'],
 ];
+
+function oletusPohjat() { return POHJAT_OLETUS; }
 
 // ───────────────────────────── Asennus ─────────────────────────────
 
@@ -303,6 +383,35 @@ function paivitaRakenne() {
       }
     }
   }
+
+  // Uudet viestipohjat segmenteille, joilla ei vielä ole yhtään pohjaa, ja uudet tuotteet nimen perusteella
+  const pohjat = ss.getSheetByName(V.pohjat);
+  if (pohjat) {
+    const pt = otsikkoIndeksit(pohjat, V.pohjat);
+    const olevat = new Set(lueTaulu(V.pohjat).rivit.map((r) => teksti(r.segmentti).toLowerCase()));
+    const uudet = POHJAT_OLETUS.filter((p) => p[1] && !olevat.has(String(p[1]).toLowerCase()));
+    if (uudet.length) {
+      const alku = Math.max(pohjat.getLastRow(), 1) + 1;
+      uudet.forEach((p, i) => {
+        const rivi = new Array(pt.leveys).fill('');
+        ['vaihe', 'segmentti', 'odota', 'aihe', 'viesti'].forEach((k, j) => { rivi[pt.idx[k]] = p[j]; });
+        pohjat.getRange(alku + i, 1, 1, pt.leveys).setValues([rivi]);
+      });
+      pohjat.getRange(alku, pt.idx.viesti + 1, uudet.length, 1).setWrap(true);
+      muutokset.push('viestipohjat: ' + Array.from(new Set(uudet.map((p) => p[1]))).join(', '));
+    }
+  }
+  const tuoteSh = ss.getSheetByName(V.tuotteet);
+  if (tuoteSh) {
+    const nimet = new Set(lueTaulu(V.tuotteet).rivit.map((r) => teksti(r.tuote).toLowerCase()));
+    const uudet = TUOTTEET_OLETUS.filter((p) => !nimet.has(String(p[0]).toLowerCase()));
+    if (uudet.length) {
+      tuoteSh.getRange(Math.max(tuoteSh.getLastRow(), 1) + 1, 1, uudet.length, uudet[0].length).setValues(uudet);
+      muutokset.push('tuotteet: ' + uudet.map((p) => p[0]).join(', '));
+    }
+  }
+  const liiditSh = ss.getSheetByName(V.liidit);
+  if (liiditSh) sarakeRange(liiditSh, V.liidit, 'segmentti').setDataValidation(lista(SEGMENTIT, true));
 
   const as = valilehti(V.asetukset);
   const olemassa = as.getRange(1, 1, as.getLastRow(), 1).getValues().map((r) => String(r[0]).trim());
@@ -1107,6 +1216,7 @@ function tarkistaJononSivustot(maara, sekunnit) {
     const tulos = analysoiSivu(sivu.html || '', sivu, teksti(r.segmentti), vuosi);
     const muutos = { signaalit: tulos.signaalit };
     if (!teksti(r.ehdotus)) muutos.ehdotus = tulos.havainto;
+    if (!teksti(r.segmentti) && /(^| · )WordPress( · |$)/.test(tulos.signaalit)) muutos.segmentti = 'WordPress';
     tallenna(t, r._rivi, muutos);
     tarkistettu++;
   }
@@ -1188,7 +1298,7 @@ function paivitaKojelauta() {
 function kirjoitaKojelauta(t) {
   const sh = valilehti(V.kojelauta);
   const leveys = KL.leveys;
-  sh.getRange(1, 1, KL.askeleet + KL.askelRiveja + 2, leveys).clear();
+  sh.getRange(1, 1, KL.segmentit + KL.segmenttiRiveja + 2, leveys).clear();
   const r = t.nyt;
   const a = t.asetukset;
   const vk = t.tamaViikko || { viikko: '', voitetut: 0, tavoite: 0 };
@@ -1294,6 +1404,19 @@ function kirjoitaKojelauta(t) {
     sh.getRange(KL.askeleet + 2, 5, askeleet.length, 1).setNumberFormat('#,##0 "€"');
   } else {
     sh.getRange(KL.askeleet + 2, 1).setValue('Ei avoimia kauppoja.').setFontColor('#6b7280');
+  }
+
+  sh.getRange(KL.segmentit, 1).setValue('KULMAT (SEGMENTIT)').setFontWeight('bold');
+  sh.getRange(KL.segmentit + 1, 1, 1, 7).setValues([['Segmentti', 'Jonossa', 'Kontaktoitu', 'Vastanneet', 'Vastaus-%', 'Palaverit', 'Palaveri-%']])
+    .setFontWeight('bold').setBackground('#e5e7eb');
+  const seg = (t.segmentit || []).slice(0, KL.segmenttiRiveja).map((x) => [x.segmentti, x.jonossa, x.kontaktoidut, x.vastanneet,
+    x.vastausPct === null ? '–' : x.vastausPct, x.palaverit, x.palaveriPct === null ? '–' : x.palaveriPct]);
+  if (seg.length) {
+    sh.getRange(KL.segmentit + 2, 1, seg.length, 7).setValues(seg);
+    sh.getRange(KL.segmentit + 2, 5, seg.length, 1).setNumberFormat('0.0%');
+    sh.getRange(KL.segmentit + 2, 7, seg.length, 1).setNumberFormat('0.0%');
+  } else {
+    sh.getRange(KL.segmentit + 2, 1).setValue('Ei liidejä vielä.').setFontColor('#6b7280');
   }
   kirjoitaViikot(t);
 }
@@ -1416,6 +1539,16 @@ function rakennaKooste(t, r, a, viikko, taulukkoUrl) {
         ['vk ' + v.viikko, v.kontaktit, v.vastaukset, v.uudetKaupat, v.voitetut, eur(v.voitettuEur), v.tila, v.osuu].map((x) =>
           '<td style="padding:4px 10px;border-bottom:1px solid #eee">' + esc(x) + '</td>').join('') + '</tr>').join('') +
       '</table>');
+    if (t.segmentit && t.segmentit.length) {
+      osio('Viikkoraportti: kulmat');
+      h.push('<table style="border-collapse:collapse;font-size:13px"><tr>' +
+        ['Segmentti', 'Jonossa', 'Kontaktoitu', 'Vastanneet', 'Vastaus-%', 'Palaverit', 'Palaveri-%'].map((x) =>
+          '<th style="text-align:left;padding:4px 10px;border-bottom:1px solid #ddd">' + x + '</th>').join('') + '</tr>' +
+        t.segmentit.map((x) => '<tr>' + [x.segmentti, x.jonossa, x.kontaktoidut, x.vastanneet,
+          x.vastausPct === null ? '–' : pct(x.vastausPct), x.palaverit, x.palaveriPct === null ? '–' : pct(x.palaveriPct)].map((y) =>
+          '<td style="padding:4px 10px;border-bottom:1px solid #eee">' + esc(y) + '</td>').join('') + '</tr>').join('') +
+        '</table><p style="color:#4b5563">Vertaa kulmia, kun kullakin on noin 100 kontaktia. Muuta kerrallaan vain yhtä asiaa: aihetta, avausta tai tarjousta.</p>');
+    }
     osio('Viikkoraportti: myyntikone');
     h.push('<p>Tahti: vajeesta ' + t.kone.tahtiVajeesta + ' / pv, viikkotavoitteesta ' + t.kone.tahtiViikosta + ' / pv → kiintiö ' + t.kone.kiintio + ' / pv' +
       (t.kone.rajoitettu ? ' (katto)' : '') + '</p>');
@@ -1507,6 +1640,21 @@ function laske(m, tanaan) {
   const kp = kontaktoidut >= a.kynnys && a.kynnys > 0 ? Math.max(kpTot, 0.005) : a.kp;
   const pk = suljetut >= 5 ? Math.max(pkTot, 0.05) : a.pk;
 
+  // Kulmat: mikä segmentti tuottaa vastauksia ja palavereja
+  const segRyhmat = {};
+  lid.forEach((l) => {
+    const nimiSeg = l.segmentti || 'Yleinen';
+    const r = segRyhmat[nimiSeg] || (segRyhmat[nimiSeg] = { segmentti: nimiSeg, jonossa: 0, kontaktoidut: 0, vastanneet: 0, palaverit: 0 });
+    if ((l.tila === 'Uusi' || l.tila === '') && onEmail(l.email)) r.jonossa++;
+    if (l.vaihe >= 1) r.kontaktoidut++;
+    if (VASTANNEET.includes(l.tila)) r.vastanneet++;
+    if (PALAVERIT.includes(l.tila)) r.palaverit++;
+  });
+  const segmentit = Object.keys(segRyhmat).map((k) => segRyhmat[k]).map((r) => Object.assign(r, {
+    vastausPct: r.kontaktoidut ? r.vastanneet / r.kontaktoidut : null,
+    palaveriPct: r.kontaktoidut ? r.palaverit / r.kontaktoidut : null,
+  })).sort((x, y) => y.kontaktoidut - x.kontaktoidut || y.jonossa - x.jonossa);
+
   // Viikkoseuranta
   const viikot = viikkoseuranta(m, kaupat, tanaan, kauppojaVk);
   const tamaViikko = viikot.find((v) => v.nykyinen);
@@ -1585,7 +1733,7 @@ function laske(m, tanaan) {
   if (keskittyma.osuus > 0.5) huomiot.push('Suurin asiakas (' + keskittyma.nimi + ') on ' + pct(keskittyma.osuus) + ' laskutuksesta. Pitkän aikavälin tavoite alle 50 %: booking engine, Nordic Host ja oma putki.');
 
   return {
-    tanaan, asetukset: a, kuukaudet: rivit, nyt: rNyt, ensi: rEnsi, viikot, tamaViikko, kuunKaupat,
+    tanaan, asetukset: a, kuukaudet: rivit, nyt: rNyt, ensi: rEnsi, viikot, tamaViikko, kuunKaupat, segmentit,
     konv: { kontaktoidut, vastanneet, palaverit, kpTot, pkTot, keskikauppaTot, kp, pk },
     kone: { avoinVaje, kaupat: kauppojaTarve, palaverit: palaveritTarve, kontaktit, kesken, arkipaivat, tahtiVajeesta,
       tahtiViikosta, laskettu, kiintio, rajoitettu, jonossa, odottaaHavaintoa },
@@ -1762,10 +1910,14 @@ function suunnittele(m, kiintio, tanaan, esikatselu) {
     if (d && !YLEISET_DOMAINIT.includes(d) && ESTAA_DOMAININ.includes(l.tila)) varatut.add(d);
   });
 
+  const segmenttiMax = a.segmenttiMax > 0 ? a.segmenttiMax : Infinity;
+  const segmentilla = {};
   for (const l of lid) {
     if (uudet.length >= maara) break;
     if (l.tila !== 'Uusi' && l.tila !== '') continue;
     if (!onEmail(l.email)) continue;
+    const seg = (l.segmentti || 'Yleinen').toLowerCase();
+    if ((segmentilla[seg] || 0) >= segmenttiMax) continue;
     if (kaytetyt.has(l.email)) { tuplat.push(l); continue; }
     const d = domain(l.email);
     const yleinen = !d || YLEISET_DOMAINIT.includes(d);
@@ -1777,6 +1929,7 @@ function suunnittele(m, kiintio, tanaan, esikatselu) {
     const v = renderoiViesti(pohja, Object.assign({}, l, { havainto }), a, esikatselu);
     if (v.virhe) { ohitetut.push({ liidi: l, syy: v.virhe }); continue; }
     uudet.push({ tyyppi: 'uusi', liidi: l, vaihe: 1, aihe: v.aihe, viesti: v.viesti });
+    segmentilla[seg] = (segmentilla[seg] || 0) + 1;
     kaytetyt.add(l.email);
     if (!yleinen) varatut.add(d);
   }
@@ -1881,6 +2034,10 @@ function onOma(lahettaja, omat) {
 
 const MATKAILU_RE = /matka|majoit|ohjelma|elämys|safari|hotel|mökki|mokki|glamp|iglu|igloo|tour|travel|ravintola|kahvila|leirintä|camping|resort|lapland|lappi/i;
 const VARAUSMOOTTORI_RE = /bokun|bókun|fareharbor|rezdy|checkfront|regiondo|bookingkit|bookeo|trekksoft|ventrata|turitop|peek\.com|sirvoy|\bmews\b|nethotelbooking|hotellinx|smoobu|lodgify|beds24|hostaway|guesty|cloudbeds|littlehotelier|simplybook|timma\.fi|vello\.fi|tickettailor|eventbrite|booking-?engine|bookingwidget/i;
+const RAKENTAJAT = [
+  ['Elementor', /elementor/i], ['Divi', /et_pb_|\/themes\/divi/i], ['WPBakery', /vc_row|wpb_wrapper|js_composer/i],
+  ['Avada', /fusion-builder|\/themes\/avada/i], ['Beaver Builder', /fl-builder/i],
+];
 const ALUSTAT = [
   ['WordPress', /wp-content|wp-includes/i], ['Wix', /wixstatic|wix\.com|_wixCIDX/i], ['Squarespace', /squarespace/i],
   ['Webflow', /data-wf-page|webflow\./i], ['Shopify', /cdn\.shopify|myshopify/i], ['Kotisivukone', /kotisivukone/i],
@@ -1930,10 +2087,27 @@ function analysoiSivu(html, meta, segmentti, vuosi) {
   if (ps !== null) s.push('PageSpeed mobiili ' + ps + '/100' + (meta.lcp ? ', LCP ' + meta.lcp.toFixed(1).replace('.', ',') + ' s' : ''));
   const alusta = ALUSTAT.find(([, re2]) => re2.test(h));
   if (alusta) s.push(alusta[0]);
+  const rakentaja = RAKENTAJAT.find(([, re2]) => re2.test(h));
+  if (rakentaja) s.push(rakentaja[0]);
+  const seuranta = {
+    meta: /connect\.facebook\.net\/[^"']*fbevents\.js|fbq\(\s*['"]init/i.test(h),
+    ads: /googleadservices\.com|['"]AW-\d{6,}/i.test(h),
+    ga4: /gtag\/js\?id=G-|['"]G-[A-Z0-9]{6,}['"]/i.test(h),
+    gtm: /googletagmanager\.com\/gtm\.js|GTM-[A-Z0-9]{4,}/i.test(h),
+  };
+  const seurannat = [['Meta-pikseli', seuranta.meta], ['Google Ads', seuranta.ads], ['GA4', seuranta.ga4], ['GTM', seuranta.gtm]]
+    .filter(([, on]) => on).map(([n]) => n);
+  s.push(seurannat.length ? seurannat.join(', ') : 'ei seurantakoodeja');
+  const mainonta = /mainon|ads|markkinoin/i.test(segmentti || '');
 
   const taivutus = { 'Booking.com': 'Booking.comiin', Airbnb: 'Airbnb:hen', Expedia: 'Expediaan' };
   let havainto = '';
-  if (!https) havainto = 'sivuilla ei ole suojattua yhteyttä (https), joten selain näyttää kävijälle "Ei turvallinen" -merkinnän';
+  // GTM voi ladata pikselit, joten puuttuvasta seurannasta päätellään vain, kun GTM:ää ei ole
+  if (mainonta && !seuranta.gtm && !seuranta.meta && !seuranta.ga4 && !seuranta.ads) {
+    havainto = 'sivuilta ei löydy Google Analyticsia eikä Metan pikseliä, joten mainonnan tulosta on vaikea mitata';
+  } else if (mainonta && !seuranta.gtm && seuranta.meta && !seuranta.ads) {
+    havainto = 'sivuillanne on Metan pikseli, mutta Google Ads -seurantaa ei näytä olevan';
+  } else if (!https) havainto = 'sivuilla ei ole suojattua yhteyttä (https), joten selain näyttää kävijälle "Ei turvallinen" -merkinnän';
   else if (!viewport) havainto = 'sivusto ei skaalaudu puhelimen näytölle';
   else if (ps !== null && ps < 50) {
     havainto = 'sivujen mobiilinopeus on Googlen PageSpeed-mittauksessa vain ' + ps + '/100' +
