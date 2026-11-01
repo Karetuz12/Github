@@ -155,6 +155,7 @@ export type Palvelu = {
   ingressi: string;
   hintaAlkaen: string;
   kortti: string;
+  faktat: [string, string][];
   kenelle: string[];
   ongelmat: { otsikko: string; teksti: string }[];
   sisaltaa: { otsikko: string; kohdat: string[] }[];
@@ -177,6 +178,7 @@ export const palvelut: Palvelu[] = [
     ingressi: 'Käyn läpi seurannat, mainostilit, sivuston nopeuden, hakukonenäkyvyyden ja yhteydenottopolut – ja laitan ne kuntoon kiinteällä hinnalla. Sen jälkeen jokainen mainoseuro tekee töitä.',
     hintaAlkaen: 'alkaen 490 €',
     kortti: 'Seurannat, mainostilit, nopeus, SEO ja yhteydenottopolut kuntoon kiinteällä hinnalla.',
+    faktat: [['Ensimmäinen askel', 'Katselmus, 1 viikko'], ['Kunnostus', '2–4 viikkoa'], ['Lopputulos', 'Mittarit, tilit ja liidipolut kunnossa'], ['Sopimus', 'Kertaprojekti']],
     kenelle: [
       'Mainostat, mutta et tiedä, mikä oikeasti tuottaa',
       'Liidejä tulee vähemmän kuin klikkauksista voisi odottaa',
@@ -225,6 +227,7 @@ export const palvelut: Palvelu[] = [
     ingressi: 'Koodilla tehty, nopea sivusto ilman raskasta julkaisualustaa ja lisäosien päivitysrumbaa. Mukana kevyt hallintapaneeli, jolla päivität tekstit ja kuvat itse.',
     hintaAlkaen: 'alkaen 1 000 €',
     kortti: 'Koodilla tehty, nopea sivusto ja kevyt hallintapaneeli. Seurannat ja SEO-perusta valmiina.',
+    faktat: [['Toteutus', 'Koodilla, ilman raskasta alustaa'], ['Kesto', '2–6 viikkoa'], ['Päivitykset', 'Kevyt hallintapaneeli'], ['Valmiina', 'Seurannat ja SEO-perusta']],
     kenelle: [
       'Nykyinen sivu on hidas tai näyttää vanhalta',
       'WordPress ja lisäosat vaativat jatkuvaa päivittämistä',
@@ -273,6 +276,7 @@ export const palvelut: Palvelu[] = [
     ingressi: 'Hoidan Meta- ja Google-mainonnan kevyellä kuukausimallilla: käyn tilit läpi, teen muutokset ja kokoan raportin, jonka pohjalta päätetään seuraava kuukausi.',
     hintaAlkaen: '490–990 €/kk',
     kortti: 'Meta- ja Google-mainonta kevyellä mallilla: kuukausiraportti ja palaveri kerran kuussa.',
+    faktat: [['Kanavat', 'Meta ja Google'], ['Rytmi', 'Raportti ja palaveri kerran kuussa'], ['Mediabudjetti', 'Suoraan alustoille'], ['Sopimus', 'Kuukausi kerrallaan']],
     kenelle: [
       'Mainostat, mutta kenelläkään ei ole aikaa seurata tilejä',
       'Haluat kokeneen tekijän ilman toimiston palaverirumbaa',
@@ -318,6 +322,7 @@ export const palvelut: Palvelu[] = [
     ingressi: 'Markkinoinnista vastaavalla on yleensä enemmän tekemistä kuin aikaa – ja harvoin ketään, jonka kanssa käydä ajatuksia läpi. Tuon ulkopuolisen näkemyksen yli kymmenen vuoden ja noin tuhannen projektin kokemuksella.',
     hintaAlkaen: '600–1 200 €/kk',
     kortti: 'Taustatukea markkinoinnista vastaavalle: palaveri kerran kuussa ja näkemys siihen, mistä saa enemmän irti.',
+    faktat: [['Kenelle', 'Markkinoinnista vastaava'], ['Rytmi', 'Palaveri kerran kuussa'], ['Aloitus', 'Sparrauspalaveri 790 €'], ['Sopimus', 'Kuukausi kerrallaan']],
     kenelle: [
       'Markkinointipäällikkö tai -tiimi, joka haluaa toisen silmäparin',
       'Yrittäjä, joka hoitaa markkinoinnin itse',

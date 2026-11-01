@@ -3,7 +3,6 @@ import { JsonLd } from './JsonLd';
 import { Kuvake } from './Kuvakkeet';
 import { Laskuri } from './Laskuri';
 import { Valojuovat } from './Valojuovat';
-import { BrandiKuvake } from './LogoNauha';
 import { murupolkuJsonLd, ukkJsonLd } from '@/lib/seo';
 import {
   asiakkaat, hinnatHuomautus, numerot, numerotHuomautus, palvelut, toimialat, varausOsoite, vertailu, type Palvelu,
@@ -140,121 +139,45 @@ export function Sanakierto({ alku, sanat, kesto = 2.6 }: { alku: string; sanat: 
   );
 }
 
-export function Numerot() {
+/** Saavutusluvut yhtenä lasipaneelina. Heron luvut näytetään sellaisenaan (ei laskuria), jotta sivu on latautuessa kevyt. */
+export function Numerot({ laskuri = true }: { laskuri?: boolean }) {
+  const muoto = (n: number) => n.toLocaleString('fi-FI');
   return (
     <>
-      <ul className="numerot">
-        {numerot.map((n, i) => (
-          <li key={n.selite} className={`lasi ilmesty viive-${Math.min(i, 4)}`}>
+      <ul className="numerot lasi">
+        {numerot.map((n) => (
+          <li key={n.selite}>
             <strong>
               <span className="luku">
-                <Laskuri arvo={n.arvo} ennen={n.ennen} jalkeen={n.jalkeen} />
+                {laskuri ? <Laskuri arvo={n.arvo} ennen={n.ennen} jalkeen={n.jalkeen} /> : `${n.ennen}${muoto(n.arvo)}${n.jalkeen}`}
               </span>
             </strong>
             <span className="selite">{n.selite}</span>
           </li>
         ))}
       </ul>
-      <p className="hiljainen pieni" style={{ marginTop: 18 }}>
-        {numerotHuomautus}
-      </p>
+      <p className="hiljainen pieni numerot-huom">{numerotHuomautus}</p>
     </>
   );
 }
 
-// ── Palveluiden pienoismallit ──
-function MalliGroundwork() {
-  const rivit = [['GA4 ja konversiot', 'ok'], ['Meta-pikseli ja CAPI', 'ok'], ['Mobiilinopeus', 'korjattu'], ['Yhteydenottopolku', 'korjattu']];
-  return (
-    <div className="malli lasi">
-      <div className="malli-otsikko">Katselmus · 25 kohtaa</div>
-      <ul className="malli-lista">
-        {rivit.map(([t, s]) => (
-          <li key={t} className={`tk-${s}`}>
-            <span className="tk-merkki" />
-            {t}
-            <em>{s === 'ok' ? 'kunnossa' : 'korjattu'}</em>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-function MalliSivusto() {
-  return (
-    <div className="malli malli-selain lasi">
-      <div className="malli-selainpalkki">
-        <i />
-        <i />
-        <i />
-        <span>yritys.fi</span>
-      </div>
-      <div className="malli-sivu">
-        <span className="luuranko levea" />
-        <span className="luuranko" />
-        <span className="luuranko lyhyt" />
-        <span className="malli-nappi">Pyydä tarjous</span>
-        <div className="malli-ruudut">
-          <span />
-          <span />
-          <span />
-        </div>
-      </div>
-      <span className="malli-merkki">PageSpeed 98</span>
-    </div>
-  );
-}
-
-function MalliMainonta() {
-  const palkit = [34, 46, 41, 58, 63, 72, 86];
-  return (
-    <div className="malli lasi">
-      <div className="malli-otsikko">
-        Kuukausiraportti
-        <span className="malli-ikonit">
-          <BrandiKuvake nimi="Meta" koko={16} />
-          <BrandiKuvake nimi="Google Ads" koko={16} />
-        </span>
-      </div>
-      <div className="malli-palkit">
-        {palkit.map((p, i) => (
-          <span key={i} style={{ height: `${p}%`, ['--i' as string]: i }} />
-        ))}
-      </div>
-      <div className="malli-rivi">
-        <span>Liidit</span>
-        <strong>↑ kuukaudesta toiseen</strong>
-      </div>
-    </div>
-  );
-}
-
-function MalliSparraus() {
-  return (
-    <div className="malli lasi">
-      <div className="malli-otsikko">Kuukausirytmi</div>
-      <div className="malli-kalenteri">
-        {Array.from({ length: 28 }, (_, i) => (
-          <span key={i} className={i === 9 ? 'paiva palaveri' : 'paiva'}>
-            {i === 9 ? 'Palaveri' : ''}
-          </span>
-        ))}
-      </div>
-      <div className="malli-kupla">“Mitä jos siirretään budjettia hakuun ja testataan uusi laskeutumissivu?”</div>
-    </div>
-  );
-}
-
-const mallit: Record<string, () => React.ReactElement> = {
-  groundwork: MalliGroundwork, verkkosivut: MalliSivusto, mainonta: MalliMainonta, sparraus: MalliSparraus,
-};
-
+/** Palvelun faktapaneeli: hinta ja tärkeimmät tiedot rauhallisena lasikorttina. */
 export function PalveluMalli({ slug }: { slug: string }) {
-  const M = mallit[slug] ?? MalliGroundwork;
+  const p = palvelut.find((x) => x.slug === slug) ?? palvelut[0];
   return (
-    <div className="malli-alue tumma" aria-hidden="true">
-      <M />
+    <div className="malli-alue tumma">
+      <div className="faktat lasi">
+        <span className="faktat-label">{p.lyhyt}</span>
+        <div className="faktat-hinta">{p.hintaAlkaen}</div>
+        <dl>
+          {p.faktat.map(([k, v]) => (
+            <div key={k}>
+              <dt>{k}</dt>
+              <dd>{v}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
     </div>
   );
 }

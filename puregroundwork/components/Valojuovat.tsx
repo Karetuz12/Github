@@ -1,4 +1,4 @@
-// Nordic Hostin tunnusmerkki: sinisiä valojuovia, jotka kaartuvat taustalla.
+// Nordic Hostin tunnusmerkki hillittynä: vaimeita valojuovia, jotka kaartuvat taustalla.
 // Staattinen SVG, jota liikutetaan vain transformilla (kompositori), joten liike ei kuormita selainta.
 const juovat = [
   'M-120 520 C 220 380, 520 300, 820 330 S 1320 470, 1620 300',
@@ -18,24 +18,24 @@ export function Valojuovat({ pieni = false }: { pieni?: boolean }) {
       <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" focusable="false">
         <defs>
           <linearGradient id={viiva} x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stopColor="#2f5bff" stopOpacity="0" />
-            <stop offset="0.35" stopColor="#3b6cff" stopOpacity="0.9" />
-            <stop offset="0.6" stopColor="#c9d8ff" stopOpacity="1" />
-            <stop offset="0.85" stopColor="#3b6cff" stopOpacity="0.7" />
-            <stop offset="1" stopColor="#2f5bff" stopOpacity="0" />
+            <stop offset="0" stopColor="#5d74b0" stopOpacity="0" />
+            <stop offset="0.35" stopColor="#6f84bd" stopOpacity="0.8" />
+            <stop offset="0.6" stopColor="#e3e8f5" stopOpacity="0.9" />
+            <stop offset="0.85" stopColor="#6f84bd" stopOpacity="0.6" />
+            <stop offset="1" stopColor="#5d74b0" stopOpacity="0" />
           </linearGradient>
           <filter id={hehku} x="-10%" y="-50%" width="120%" height="200%">
             <feGaussianBlur stdDeviation="9" />
           </filter>
         </defs>
-        <g className="vj-hehku" filter={`url(#${hehku})`} stroke={`url(#${viiva})`} fill="none" strokeWidth="10" opacity="0.55">
+        <g className="vj-hehku" filter={`url(#${hehku})`} stroke={`url(#${viiva})`} fill="none" strokeWidth="8" opacity="0.35">
           {juovat.slice(0, 3).map((d) => (
             <path key={d} d={d} />
           ))}
         </g>
         <g stroke={`url(#${viiva})`} fill="none" strokeLinecap="round">
           {juovat.map((d, i) => (
-            <path key={d} d={d} strokeWidth={i < 3 ? 2.2 : 1.2} opacity={i < 3 ? 1 : 0.55} />
+            <path key={d} d={d} strokeWidth={i < 3 ? 1.6 : 1} opacity={i < 3 ? 0.9 : 0.45} />
           ))}
         </g>
       </svg>

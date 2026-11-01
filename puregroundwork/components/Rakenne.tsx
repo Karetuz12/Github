@@ -3,14 +3,13 @@ import { Logo } from './Logo';
 import { Kuvake } from './Kuvakkeet';
 import { henkilo, palvelut, valikko, varausOsoite, yritys } from '@/lib/sisalto';
 
-// Liikkuva "liquid"-tausta: pehmeät väripallot liukuvat hitaasti lasipintojen alla, päällä hienovarainen rae.
+// Liikkuva "liquid"-tausta: pehmeät, vaimeat väripallot liukuvat hitaasti lasipintojen alla, päällä hienovarainen rae.
 export function Tausta() {
   return (
     <div className="tausta" aria-hidden="true">
       <span className="pallo pallo-1" />
       <span className="pallo pallo-2" />
       <span className="pallo pallo-3" />
-      <span className="tausta-ruudukko" />
     </div>
   );
 }

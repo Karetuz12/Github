@@ -9,14 +9,14 @@ export function ogKuva({ ylaotsikko, otsikko, alarivi }: { ylaotsikko: string; o
       <div
         style={{
           width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', padding: '72px 80px',
-          backgroundColor: '#040a1f',
-          backgroundImage: 'radial-gradient(circle at 85% 10%, rgba(59,108,255,0.55), transparent 45%), radial-gradient(circle at 0% 100%, rgba(31,69,230,0.4), transparent 45%)',
-          color: '#f3f6ff', fontFamily: 'sans-serif',
+          backgroundColor: '#0a0e1a',
+          backgroundImage: 'radial-gradient(circle at 85% 10%, rgba(110,132,190,0.45), transparent 45%), radial-gradient(circle at 0% 100%, rgba(70,90,150,0.35), transparent 45%)',
+          color: '#eef1f7', fontFamily: 'sans-serif',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            <div style={{ width: 34, height: 12, borderRadius: 6, background: 'linear-gradient(90deg, #2f5bff, #8fb0ff)' }} />
+            <div style={{ width: 34, height: 12, borderRadius: 6, background: 'linear-gradient(90deg, #5d74b0, #a9b7dc)' }} />
             <div style={{ width: 46, height: 12, borderRadius: 6, background: '#f2f4f8' }} />
             <div style={{ width: 58, height: 12, borderRadius: 6, background: '#f2f4f8' }} />
           </div>
@@ -26,7 +26,7 @@ export function ogKuva({ ylaotsikko, otsikko, alarivi }: { ylaotsikko: string; o
           </div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
-          <div style={{ display: 'flex', fontSize: 26, color: '#9db7ff', textTransform: 'uppercase', letterSpacing: 4 }}>{ylaotsikko}</div>
+          <div style={{ display: 'flex', fontSize: 26, color: '#aebbdc', textTransform: 'uppercase', letterSpacing: 4 }}>{ylaotsikko}</div>
           <div style={{ display: 'flex', fontSize: 74, fontWeight: 700, lineHeight: 1.04, letterSpacing: -2, maxWidth: 1000 }}>{otsikko}</div>
         </div>
         <div style={{ display: 'flex', fontSize: 28, color: '#b9c3dc' }}>{alarivi}</div>

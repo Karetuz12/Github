@@ -17,15 +17,17 @@ Tiedostossa `lib/sisalto.ts` on merkintä `TÄYTÄ` seuraavissa kohdissa:
 
 ## Ilme
 
-- **Nordic Hostin brändi-ilme** (nordichost.fi): Inter-fontti tiiviillä display-otsikoilla, tumma navy ja sähkönsininen korostus,
-  valkoiset pillipainikkeet, siniset valojuovat heron taustalla, lasikortit tummalla ja vaaleat sisältöosiot. Muita tunnusmerkkejä:
+- **Nordic Hostin brändi-ilme hillittynä** (nordichost.fi): Inter-fontti tiiviillä otsikoilla, vaimea muste-navy ja harmaansininen korostus,
+  vaaleat pillipainikkeet, hennot valojuovat heron taustalla, liquid glass -paneelit (taustasumennus ja valoreunus) tummalla
+  ja luonnonvalkoiset sisältöosiot. Ilme on tarkoituksella editoriaalinen eikä SaaS-tyylinen: ei kojelautakuvia, hehkuja eikä
+  liukuvärisiä tekstejä. Muita tunnusmerkkejä:
   - yhdysviiva ympyrällä väitteen ympärillä
   - UKK-haitari jakoviivoin ja pyöreillä +-painikkeilla
   - logo, jossa ensimmäinen sana on lihavoitu (**Pure**Groundwork, kuten **Nordic**Host)
 - **Premium-elementit:**
   - kelluva lasiyläpalkki ja megavalikko
-  - kallistuva havainnekuva, vaihtuva sana ja vierityksen mukana syttyvä väite
-  - pinoutuvat palvelukortit, vertailu, prosessi animoidulla viivalla ja bento-ruudukko
+  - saavutusluvut heron lasipaneelissa, vaihtuva sana ja vierityksen mukana syttyvä väite
+  - pinoutuvat palvelukortit faktapaneeleineen (hinta, kesto, lopputulos), vertailu, prosessi ja bento-ruudukko
   - iso CTA ja alapalkin jättiteksti
 - **Teemat:** sivu on oletuksena tumma. Osio saa vaalean teeman luokalla `vaalea`, ja elementti tumman teeman vaalean osion sisällä luokalla `tumma`.
   Kaikki värit ovat muuttujia tiedoston `app/globals.css` alussa, joten väri vaihdetaan yhdestä paikasta.
@@ -70,8 +72,8 @@ Lighthouse (mobiili, tuotantotila, paikallinen palvelin):
 
 | Sivu | Suorituskyky | Saavutettavuus | Parhaat käytännöt | SEO |
 |---|---|---|---|---|
-| Etusivu | 93 | 100 | 100 | 100 |
-| Palvelusivu (Groundwork) | 95 | 100 | 100 | 100 |
+| Etusivu | 94 | 100 | 100 | 100 |
+| Palvelusivu (Groundwork) | 96 | 100 | 100 | 100 |
 | Hinnasto | 97 | 100 | 100 | 100 |
 | Yhteys | 97 | 100 | 100 | 100 |
 

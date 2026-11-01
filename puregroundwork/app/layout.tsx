@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image' },
 };
 
-export const viewport: Viewport = { themeColor: '#040a1f', width: 'device-width', initialScale: 1, colorScheme: 'dark' };
+export const viewport: Viewport = { themeColor: '#0a0e1a', width: 'device-width', initialScale: 1, colorScheme: 'dark' };
 
 // Seurannat: aseta Vercelissä NEXT_PUBLIC_GTM_ID (esim. GTM-XXXXXXX). Tyhjä = ei seurantaa.
 const gtm = process.env.NEXT_PUBLIC_GTM_ID;

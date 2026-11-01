@@ -4,15 +4,15 @@
 
 /* Brändivärit (samat molemmissa teemoissa) */
 :root {
-  --sininen: #3b6cff;
-  --sininen-2: #6f93ff;
-  --sininen-tumma: #1f45e6;
-  --navy: #040a1f;
-  --navy-2: #081233;
+  --sininen: #5d74b0;
+  --sininen-2: #8ea2d6;
+  --sininen-tumma: #34497f;
+  --navy: #0a0e1a;
+  --navy-2: #10172b;
   --violetti: #6a5cff;
   --turkoosi: #2dd4bf;
   --keltainen: #ffc35a;
-  --gradientti: linear-gradient(120deg, #2f5bff 0%, #8fb0ff 100%);
+  --gradientti: linear-gradient(120deg, #5d74b0 0%, #a9b7dc 100%);
   --sade: 24px;
   --sade-pieni: 14px;
   --leveys: 1240px;
@@ -24,24 +24,26 @@
 /* Tumma teema: koko sivun oletus ja .tumma-elementit vaalean osion sisällä */
 :root, .tumma {
   --tausta: var(--navy);
-  --pohja: #081029;
-  --teksti: #f3f6ff;
-  --teksti-2: #b9c3dc;
-  --hiljainen: #8f9ab8;
+  --pohja: #0e1424;
+  --teksti: #eef1f7;
+  --teksti-2: #b3bccf;
+  --hiljainen: #8a93a8;
   --reuna: rgba(255, 255, 255, 0.1);
   --reuna-vahva: rgba(255, 255, 255, 0.2);
   --tayte: rgba(255, 255, 255, 0.045);
   --tayte-2: rgba(255, 255, 255, 0.08);
-  --lasi-tausta: linear-gradient(180deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.02));
-  --lasi-varjo: 0 24px 64px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  --lasi-valo: rgba(255, 255, 255, 0.11);
-  --korostus: #9db7ff;
-  --korostus-gradientti: linear-gradient(100deg, #7fa2ff 0%, #e2eaff 100%);
-  --painike-tausta: #ffffff;
-  --painike-teksti: #050a1c;
-  --painike-varjo: 0 10px 30px rgba(59, 108, 255, 0.28);
+  --lasi-tausta: linear-gradient(160deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.025));
+  --lasi-varjo: 0 30px 70px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --lasi-sumennus: blur(22px) saturate(140%);
+  --lasi-reunavalo: rgba(255, 255, 255, 0.34);
+  --lasi-valo: rgba(255, 255, 255, 0.08);
+  --korostus: #aebbdc;
+  --korostus-gradientti: linear-gradient(100deg, #b4c1e2 0%, #dde3f2 100%);
+  --painike-tausta: #f4f5f8;
+  --painike-teksti: #0a0e1a;
+  --painike-varjo: 0 8px 24px rgba(0, 0, 0, 0.25);
   --vihrea: #34d399;
-  --kiintea-kortti: linear-gradient(180deg, #0f1a3d, #081029);
+  --kiintea-kortti: linear-gradient(180deg, #151c33, #0e1424);
   --pino-varjo: 0 -20px 60px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   --sana-himmea: 0.42;
   color-scheme: dark;
@@ -50,29 +52,31 @@
 
 /* Vaalea teema: sisältöosiot kuten nordichost.fi:ssä */
 .vaalea {
-  --tausta: #ffffff;
-  --pohja: #ffffff;
-  --teksti: #0a1024;
-  --teksti-2: #475169;
-  --hiljainen: #626c89;
-  --reuna: #e4e8f1;
-  --reuna-vahva: #cfd6e4;
-  --tayte: #f3f5fa;
-  --tayte-2: #e9edf6;
-  --lasi-tausta: #f6f7fb;
-  --lasi-varjo: 0 1px 2px rgba(10, 16, 36, 0.04), 0 14px 34px rgba(10, 16, 36, 0.05);
-  --lasi-valo: rgba(59, 108, 255, 0.07);
-  --korostus: #2346e0;
-  --korostus-gradientti: linear-gradient(100deg, #1f45e6 0%, #5b8cff 100%);
-  --painike-tausta: #0a1024;
-  --painike-teksti: #ffffff;
-  --painike-varjo: 0 10px 24px rgba(10, 16, 36, 0.18);
-  --vihrea: #0e9f6e;
-  --kiintea-kortti: #f6f7fb;
-  --pino-varjo: 0 -16px 40px rgba(10, 16, 36, 0.08), inset 0 1px 0 #ffffff;
+  --tausta: #f5f5f2;
+  --pohja: #fdfdfb;
+  --teksti: #0e1322;
+  --teksti-2: #4b5263;
+  --hiljainen: #686e7e;
+  --reuna: #e4e3dd;
+  --reuna-vahva: #d3d2ca;
+  --tayte: #eeeee9;
+  --tayte-2: #e6e5df;
+  --lasi-tausta: rgba(255, 255, 255, 0.78);
+  --lasi-varjo: 0 1px 2px rgba(14, 19, 34, 0.04), 0 18px 40px rgba(14, 19, 34, 0.05);
+  --lasi-sumennus: none;
+  --lasi-reunavalo: rgba(255, 255, 255, 1);
+  --lasi-valo: rgba(110, 132, 190, 0.06);
+  --korostus: #34497f;
+  --korostus-gradientti: linear-gradient(100deg, #2f4479 0%, #566ba2 100%);
+  --painike-tausta: #0e1322;
+  --painike-teksti: #f5f5f2;
+  --painike-varjo: 0 8px 22px rgba(14, 19, 34, 0.16);
+  --vihrea: #3d7a68;
+  --kiintea-kortti: #fdfdfb;
+  --pino-varjo: 0 -16px 40px rgba(14, 19, 34, 0.07), inset 0 1px 0 #ffffff;
   --sana-himmea: 0.5;
   color-scheme: light;
-  background: #ffffff;
+  background: #f5f5f2;
   color: var(--teksti);
 }
 
@@ -95,10 +99,10 @@ body {
 a { color: inherit; text-underline-offset: 3px; }
 img, svg { max-width: 100%; }
 img { height: auto; display: block; }
-h1, h2, h3 { font-family: var(--fontti-pino); line-height: 1.04; letter-spacing: -0.045em; margin: 0 0 0.5em; font-weight: 600; text-wrap: balance; }
+h1, h2, h3 { font-family: var(--fontti-pino); line-height: 1.06; letter-spacing: -0.042em; margin: 0 0 0.5em; font-weight: 500; text-wrap: balance; }
 h1 { font-size: clamp(2.6rem, 6vw, 4.8rem); }
 h2 { font-size: clamp(2rem, 4.4vw, 3.5rem); }
-h3 { font-size: 1.2rem; line-height: 1.25; letter-spacing: -0.02em; }
+h3 { font-size: 1.2rem; line-height: 1.25; letter-spacing: -0.02em; font-weight: 600; }
 p { margin: 0 0 1em; }
 .korostus { font-style: normal; background: var(--korostus-gradientti); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .sisalto { width: 100%; max-width: var(--leveys); margin: 0 auto; padding: 0 24px; }
@@ -111,27 +115,27 @@ p { margin: 0 0 1em; }
 .ohita { position: absolute; left: -999px; top: 8px; background: #fff; color: var(--navy); padding: 8px 12px; border-radius: 8px; z-index: 60; }
 .ohita:focus { left: 8px; }
 :focus-visible { outline: 2px solid var(--sininen-2); outline-offset: 3px; border-radius: 6px; }
-::selection { background: rgba(59, 108, 255, 0.45); color: #fff; }
+::selection { background: rgba(142, 162, 214, 0.4); color: #fff; }
 
 /* ───────── Tausta ───────── */
-.tausta { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: radial-gradient(1200px 700px at 50% -10%, #0b1d57 0%, var(--navy) 62%); }
+.tausta { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: radial-gradient(1200px 700px at 50% -10%, #18213d 0%, var(--navy) 62%); }
 .tausta::after {
   content: ''; position: absolute; inset: 0; opacity: 0.06;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-.pallo { position: absolute; border-radius: 50%; opacity: 0.5; will-change: transform; }
-.pallo-1 { width: 760px; height: 760px; left: -220px; top: -200px; background: radial-gradient(circle, rgba(47, 91, 255, 0.5), transparent 65%); animation: liuku-1 26s ease-in-out infinite alternate; }
-.pallo-2 { width: 680px; height: 680px; right: -240px; top: 22vh; background: radial-gradient(circle, rgba(31, 69, 230, 0.45), transparent 65%); animation: liuku-2 32s ease-in-out infinite alternate; }
-.pallo-3 { width: 600px; height: 600px; left: 30%; bottom: -300px; background: radial-gradient(circle, rgba(106, 92, 255, 0.35), transparent 65%); animation: liuku-3 38s ease-in-out infinite alternate; }
-.tausta-ruudukko { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 72px 72px; mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 75%); }
+.pallo { position: absolute; border-radius: 50%; opacity: 0.42; will-change: transform; }
+.pallo-1 { width: 760px; height: 760px; left: -220px; top: -200px; background: radial-gradient(circle, rgba(80, 100, 160, 0.5), transparent 65%); animation: liuku-1 26s ease-in-out infinite alternate; }
+.pallo-2 { width: 680px; height: 680px; right: -240px; top: 22vh; background: radial-gradient(circle, rgba(70, 90, 150, 0.45), transparent 65%); animation: liuku-2 32s ease-in-out infinite alternate; }
+.pallo-3 { width: 600px; height: 600px; left: 30%; bottom: -300px; background: radial-gradient(circle, rgba(120, 112, 170, 0.35), transparent 65%); animation: liuku-3 38s ease-in-out infinite alternate; }
 @keyframes liuku-1 { to { transform: translate(160px, 120px) scale(1.15); } }
 @keyframes liuku-2 { to { transform: translate(-180px, 80px) scale(0.9); } }
 @keyframes liuku-3 { to { transform: translate(120px, -140px) scale(1.1); } }
 
 /* Valojuovat (Nordic Hostin tunnusmerkki) */
-.valojuovat { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.valojuovat { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; opacity: 0.5; }
 .valojuovat svg { position: absolute; left: -5%; top: -6%; width: 110%; height: 112%; max-width: none; animation: juovat 18s ease-in-out infinite alternate; will-change: transform; }
-.valojuovat.pieni svg { top: 30%; opacity: 0.5; }
+.valojuovat.pieni { opacity: 0.32; }
+.valojuovat.pieni svg { top: 30%; }
 @keyframes juovat { from { transform: translate3d(-2%, 0, 0) rotate(-1deg); } to { transform: translate3d(2%, -2%, 0) rotate(1deg); } }
 
 /* ───────── Lasi ───────── */
@@ -141,7 +145,15 @@ p { margin: 0 0 1em; }
   border: 1px solid var(--reuna);
   border-radius: var(--sade);
   box-shadow: var(--lasi-varjo);
+  backdrop-filter: var(--lasi-sumennus);
+  -webkit-backdrop-filter: var(--lasi-sumennus);
   isolation: isolate;
+}
+/* Valoreunus: kirkas yläkulma ja hennompi alakulma kuin taittuva lasi */
+.lasi::after {
+  content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: linear-gradient(140deg, var(--lasi-reunavalo), transparent 32%, transparent 70%, rgba(255, 255, 255, 0.12));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
 }
 .lasi::before {
   content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;
@@ -169,15 +181,15 @@ a.lasi:hover { transform: translateY(-4px); border-color: var(--reuna-vahva); }
 .painikkeet.keskella { justify-content: center; }
 .linkki-nuoli { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; text-decoration: none; color: var(--teksti); transition: gap 0.25s var(--pehmea); }
 .linkki-nuoli:hover { gap: 12px; color: var(--korostus); }
-.merkki-pieni { display: inline-block; align-self: flex-start; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; background: rgba(59, 108, 255, 0.14); color: var(--korostus); border: 1px solid rgba(59, 108, 255, 0.3); }
-.hintamerkki { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px; background: rgba(59, 108, 255, 0.12); border: 1px solid rgba(59, 108, 255, 0.28); color: var(--korostus); font-weight: 600; font-size: 0.88rem; white-space: nowrap; }
+.merkki-pieni { display: inline-block; align-self: flex-start; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; background: rgba(110, 132, 190, 0.14); color: var(--korostus); border: 1px solid rgba(110, 132, 190, 0.3); }
+.hintamerkki { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 999px; background: rgba(110, 132, 190, 0.12); border: 1px solid rgba(110, 132, 190, 0.28); color: var(--korostus); font-weight: 600; font-size: 0.88rem; white-space: nowrap; }
 
 /* ───────── Yläpalkki ja megavalikko ───────── */
 .ylapalkki { position: fixed; top: 0; left: 0; right: 0; z-index: 40; padding: 12px 16px 0; pointer-events: none; }
 .ylapalkki-kehys { max-width: var(--leveys); margin: 0 auto; pointer-events: auto; }
 .ylapalkki-rivi { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 64px; padding: 0 10px 0 20px;
   border-radius: 20px; border: 1px solid transparent; transition: background 0.35s, border-color 0.35s, box-shadow 0.35s; }
-.ylapalkki.vieritetty .ylapalkki-rivi { background: linear-gradient(100deg, rgba(4, 10, 31, 0.86) 40%, rgba(16, 38, 110, 0.86)); backdrop-filter: blur(20px) saturate(170%); -webkit-backdrop-filter: blur(20px) saturate(170%); border-color: var(--reuna); box-shadow: 0 14px 44px rgba(0,0,0,0.38); }
+.ylapalkki.vieritetty .ylapalkki-rivi { background: rgba(14, 19, 34, 0.8); backdrop-filter: blur(20px) saturate(170%); -webkit-backdrop-filter: blur(20px) saturate(170%); border-color: var(--reuna); box-shadow: 0 14px 44px rgba(0,0,0,0.38); }
 .ylapalkki-logo { text-decoration: none; display: inline-flex; }
 .logo { display: inline-flex; align-items: center; gap: 10px; color: var(--teksti); }
 .logo-teksti { font-size: 1.2rem; letter-spacing: -0.03em; font-weight: 300; white-space: nowrap; }
@@ -192,7 +204,7 @@ a.lasi:hover { transform: translateY(-4px); border-color: var(--reuna-vahva); }
 .mega-kaari { position: static; }
 .mega {
   position: absolute; top: calc(100% + 10px); left: 0; right: 0; display: grid; grid-template-columns: 1.75fr 1fr; gap: 12px; padding: 12px;
-  border-radius: 22px; border: 1px solid var(--reuna); background: rgba(6, 13, 38, 0.975); backdrop-filter: blur(24px) saturate(170%); -webkit-backdrop-filter: blur(24px) saturate(170%);
+  border-radius: 22px; border: 1px solid var(--reuna); background: rgba(12, 16, 30, 0.975); backdrop-filter: blur(24px) saturate(170%); -webkit-backdrop-filter: blur(24px) saturate(170%);
   box-shadow: 0 30px 80px rgba(0,0,0,0.5); opacity: 0; visibility: hidden; transform: translateY(8px); transition: opacity 0.25s, transform 0.25s var(--pehmea), visibility 0.25s;
 }
 .mega::before { content: ''; position: absolute; top: -14px; left: 0; right: 0; height: 14px; }
@@ -203,16 +215,16 @@ a.lasi:hover { transform: translateY(-4px); border-color: var(--reuna-vahva); }
 .mega-teksti strong { display: block; font-size: 1rem; font-weight: 600; letter-spacing: -0.02em; }
 .mega-teksti span { display: block; color: var(--hiljainen); font-size: 0.87rem; line-height: 1.45; margin-top: 3px; }
 .mega-teksti em { display: inline-block; font-style: normal; color: var(--korostus); font-size: 0.82rem; font-weight: 600; margin-top: 8px; }
-.mega-kuvake { flex: none; width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; color: var(--korostus); background: linear-gradient(135deg, rgba(59,108,255,0.2), rgba(106,92,255,0.12)); border: 1px solid var(--reuna); }
+.mega-kuvake { flex: none; width: 44px; height: 44px; border-radius: 13px; display: grid; place-items: center; color: var(--korostus); background: linear-gradient(135deg, rgba(110, 132, 190,0.2), rgba(120, 112, 170,0.12)); border: 1px solid var(--reuna); }
 .mega-sivu { display: grid; grid-template-rows: 1fr auto; gap: 8px; }
-.mega-nosto { display: flex; flex-direction: column; gap: 6px; padding: 22px; border-radius: 16px; text-decoration: none; color: var(--teksti); background: radial-gradient(130% 100% at 100% 0%, rgba(59,108,255,0.45), transparent 60%), rgba(255,255,255,0.045); border: 1px solid var(--reuna); }
+.mega-nosto { display: flex; flex-direction: column; gap: 6px; padding: 22px; border-radius: 16px; text-decoration: none; color: var(--teksti); background: radial-gradient(130% 100% at 100% 0%, rgba(110, 132, 190,0.45), transparent 60%), rgba(255,255,255,0.045); border: 1px solid var(--reuna); }
 .mega-nosto strong { font-size: 1.12rem; margin-top: 6px; font-weight: 600; letter-spacing: -0.02em; }
 .mega-nosto > span:not(.merkki-pieni):not(.mega-hinta):not(.mega-linkki) { color: var(--teksti-2); font-size: 0.88rem; }
-.mega-hinta { font-size: 2.3rem; font-weight: 600; letter-spacing: -0.05em; line-height: 1.1; }
+.mega-hinta { font-size: 2.3rem; font-weight: 500; letter-spacing: -0.05em; line-height: 1.1; }
 .mega-linkki { margin-top: auto; padding-top: 8px; display: inline-flex; align-items: center; gap: 6px; color: var(--teksti); font-weight: 500; }
 .mega-kaikki { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-radius: 14px; background: rgba(255,255,255,0.04); text-decoration: none; font-weight: 500; font-size: 0.94rem; color: var(--teksti-2); }
 .mega-kaikki:hover { background: rgba(255,255,255,0.08); color: var(--teksti); }
-.mobiilivalikko { margin-top: 10px; padding: 14px; border-radius: 22px; border: 1px solid var(--reuna); background: rgba(6, 13, 38, 0.98); box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+.mobiilivalikko { margin-top: 10px; padding: 14px; border-radius: 22px; border: 1px solid var(--reuna); background: rgba(12, 16, 30, 0.98); box-shadow: 0 30px 80px rgba(0,0,0,0.5);
   max-height: calc(100dvh - 104px); overflow-y: auto; animation: valikko-auki 0.28s var(--pehmea); }
 .mobiili-otsikko { font-size: 0.74rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--hiljainen); margin: 6px 10px 4px; }
 .mobiilivalikko .mega-kohta { padding: 12px 10px; align-items: center; }
@@ -227,27 +239,29 @@ a.lasi:hover { transform: translateY(-4px); border-color: var(--reuna-vahva); }
 .hero-etusivu { text-align: center; padding-top: calc(var(--ylapalkki) + 84px); padding-bottom: 40px; }
 .hero-etusivu::before {
   content: ''; position: absolute; z-index: -2; inset: 0; pointer-events: none;
-  background: radial-gradient(60% 50% at 50% 38%, rgba(31, 69, 230, 0.35), transparent 70%), radial-gradient(40% 30% at 50% 0%, rgba(120, 160, 255, 0.18), transparent 70%);
+  background: radial-gradient(60% 50% at 50% 38%, rgba(70, 90, 150, 0.35), transparent 70%), radial-gradient(40% 30% at 50% 0%, rgba(160, 175, 215, 0.18), transparent 70%);
 }
 .hero-teksti { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
 /* Tumma pehmeä tausta tekstin alle, jotta valojuovat eivät heikennä luettavuutta */
 .hero-teksti { position: relative; }
-.hero-teksti::before { content: ''; position: absolute; z-index: -1; inset: -6% -12% -4%; pointer-events: none; background: radial-gradient(closest-side, rgba(4, 10, 31, 0.72), rgba(4, 10, 31, 0.35) 60%, transparent); }
-.hero-sivu .valojuovat { opacity: 0.55; }
-.hero-etusivu h1 { font-size: clamp(2.9rem, 8.2vw, 7rem); line-height: 0.98; letter-spacing: -0.058em; margin-bottom: 22px; }
-.hero-etusivu .iso { margin: 0 auto; max-width: 38em; color: #dfe6fb; }
+.hero-teksti::before { content: ''; position: absolute; z-index: -1; inset: -6% -12% -4%; pointer-events: none; background: radial-gradient(closest-side, rgba(10, 14, 26, 0.72), rgba(10, 14, 26, 0.35) 60%, transparent); }
+.hero-sivu .valojuovat { opacity: 0.3; }
+.hero-etusivu h1 { font-size: clamp(2.9rem, 8vw, 6.8rem); line-height: 1; letter-spacing: -0.055em; margin-bottom: 22px; }
+.hero-etusivu .iso { margin: 0 auto; max-width: 38em; color: #d4dae6; }
+.hero-numerot { max-width: 1100px; margin: 72px auto 0; text-align: left; }
+.hero-numerot .numerot-huom { text-align: center; }
 .hero-sivu h1 { letter-spacing: -0.052em; }
 .hero-sivu .iso { margin-bottom: 0; }
 .hero-sivu .iso + * { margin-top: 18px; }
 .hero-ruudukko { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 64px; align-items: center; }
-.ylaotsikko { display: inline-flex; align-items: center; gap: 10px; padding: 7px 14px; border-radius: 999px; background: var(--tayte); border: 1px solid var(--reuna); color: var(--teksti-2); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; margin: 0 0 24px; }
-.ylaotsikko::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--gradientti); box-shadow: 0 0 12px var(--sininen); }
+.ylaotsikko { display: inline-flex; align-items: center; gap: 14px; color: var(--teksti-2); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; margin: 0 0 24px; }
+.ylaotsikko::before { content: ''; width: 32px; height: 1px; background: currentColor; opacity: 0.6; }
 .hero-nousu { animation: nousu 1s var(--pehmea) both; }
 .hero-nousu.viive-a { animation-delay: 0.08s; }
 .hero-nousu.viive-b { animation-delay: 0.18s; }
 .hero-nousu.viive-c { animation-delay: 0.28s; }
 @keyframes nousu { from { transform: translateY(22px); } }
-.kierto-rivi { font-size: clamp(1.25rem, 2.5vw, 1.9rem); font-weight: 600; color: var(--teksti); margin: 0 0 20px; letter-spacing: -0.035em; line-height: 1.2; }
+.kierto-rivi { font-size: clamp(1.25rem, 2.5vw, 1.9rem); font-weight: 500; color: var(--teksti); margin: 0 0 20px; letter-spacing: -0.035em; line-height: 1.2; }
 .kierto-ruudukko { display: flex; align-items: baseline; justify-content: center; gap: 0.28em; }
 .kierto-alku { flex: 1 1 0; text-align: right; }
 .kierto-oikea { flex: 1 1 0; text-align: left; }
@@ -260,83 +274,16 @@ a.lasi:hover { transform: translateY(-4px); border-color: var(--reuna-vahva); }
 .hero-luvut strong { color: var(--teksti); font-weight: 600; margin-right: 4px; }
 .hero-sivuosa { position: relative; }
 
-/* ───────── Etusivun havainnekuva ───────── */
-.hn { position: relative; max-width: 1100px; margin: 72px auto 0; perspective: 1800px; text-align: left; }
-.hn::before { content: ''; position: absolute; inset: 8% 4% -12%; z-index: -1; border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(59, 108, 255, 0.4), transparent), radial-gradient(closest-side at 25% 70%, rgba(106, 92, 255, 0.3), transparent); }
-.hn-kehys { overflow: hidden; border-radius: 26px; transform-origin: 50% 0; animation: oikaisu 1.6s 0.15s var(--pehmea) both;
-  background: linear-gradient(180deg, rgba(14, 26, 66, 0.88), rgba(6, 12, 34, 0.9)); box-shadow: 0 40px 120px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.14); }
-@keyframes oikaisu { from { transform: rotateX(24deg) translateY(28px) scale(0.94); } }
-.hn-palkki { display: flex; align-items: center; gap: 14px; padding: 13px 18px; border-bottom: 1px solid var(--reuna); font-size: 0.84rem; color: var(--teksti-2); }
-.hn-osoite { flex: 1; max-width: 300px; margin: 0 auto; text-align: center; padding: 5px 12px; border-radius: 8px; background: rgba(255,255,255,0.05); }
-.hn-live { display: inline-flex; align-items: center; gap: 8px; color: var(--vihrea); font-weight: 500; font-size: 0.78rem; }
-.pulssi { position: relative; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--vihrea); }
-.pulssi::after { content: ''; position: absolute; inset: 0; border-radius: 50%; background: var(--vihrea); animation: pulssi 2s ease-out infinite; }
-@keyframes pulssi { from { transform: scale(1); opacity: 0.6; } 70%, to { transform: scale(3.2); opacity: 0; } }
-.hn-ruudukko { display: grid; grid-template-columns: 0.85fr 1.45fr 1.35fr; gap: 14px; padding: 16px; }
-.hn-kortti { position: relative; overflow: hidden; padding: 18px; border-radius: 18px; background: rgba(255,255,255,0.035); border: 1px solid rgba(255,255,255,0.07); }
-.hn-label { display: block; font-size: 0.76rem; color: var(--hiljainen); font-weight: 500; margin-bottom: 12px; }
-.hn-pieni { font-size: 0.74rem; color: var(--hiljainen); }
-.hn-mittarikortti { display: flex; flex-direction: column; align-items: center; justify-content: space-between; text-align: center; }
-.hn-mittarikortti .tk-mittari { width: 132px; height: 132px; }
-.hn-kaavio-yla { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-.hn-kanavat { display: inline-flex; gap: 8px; color: var(--teksti-2); }
-.hn-palkit { display: flex; align-items: flex-end; gap: 8px; height: 176px; }
-.hn-palkit span { flex: 1; height: var(--h); border-radius: 6px 6px 3px 3px; transform-origin: bottom; animation: palkki 1s var(--pehmea) both; animation-delay: calc(0.9s + var(--i) * 0.07s);
-  background: linear-gradient(180deg, #8fb0ff, rgba(59,108,255,0.25)); }
-.hn-palkit span:nth-child(-n+5) { background: linear-gradient(180deg, rgba(255,255,255,0.26), rgba(255,255,255,0.05)); }
-@keyframes palkki { from { transform: scaleY(0); } }
-.hn-viiva { position: absolute; left: 18px; bottom: 18px; width: calc(100% - 36px); height: 150px; overflow: visible; }
-.hn-viiva path { fill: none; stroke: var(--vihrea); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; animation: viiva 2s 1.5s ease-out forwards; }
-@keyframes viiva { to { stroke-dashoffset: 0; } }
-.hn-listakortti .tk-lista li { font-size: 0.82rem; padding: 8px 10px; }
-.hn-siru { position: absolute; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 14px; font-size: 0.82rem; color: var(--teksti-2); white-space: nowrap;
-  background: rgba(8, 16, 46, 0.8); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); animation: leiju 6s ease-in-out infinite, esiin 0.8s both; }
-.hn-siru b { color: var(--teksti); font-weight: 600; }
-.hn-siru svg { color: var(--teksti); }
-.hn-siru-1 { left: -40px; top: 40%; animation-delay: -1s, 2s; }
-.hn-siru-2 { right: -34px; top: 14%; animation-delay: -3s, 2.3s; }
-.hn-siru-3 { right: 14%; bottom: -24px; animation-delay: -2s, 2.6s; }
-.hn-siru-3 svg { color: var(--keltainen); }
-@keyframes leiju { 50% { transform: translateY(-10px); } }
-@keyframes esiin { from { opacity: 0; } }
-
-/* Tarkistuslista ja mittari (havainnekuva) */
-.tk-pallot { display: inline-flex; gap: 6px; }
-.tk-pallot i { width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.18); }
-.tk-pallot i:first-child { background: #ff6b6b; } .tk-pallot i:nth-child(2) { background: #ffd166; } .tk-pallot i:nth-child(3) { background: #06d6a0; }
-.tk-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
-.tk-lista li { display: grid; grid-template-columns: 20px 1fr auto; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 11px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
-  animation: tk-rivi 0.5s var(--pehmea) both; animation-delay: calc(0.8s + var(--i) * 0.3s); }
-.tk-merkki { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--vihrea); position: relative; flex: none; }
-.tk-merkki::after { content: ''; position: absolute; left: 4px; top: 1px; width: 5px; height: 9px; border: solid var(--vihrea); border-width: 0 2px 2px 0; transform: rotate(45deg); }
-.tk-korjattu .tk-merkki { border-color: var(--keltainen); } .tk-korjattu .tk-merkki::after { border-color: var(--keltainen); }
-.tk-tila { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--vihrea); }
-.tk-korjattu .tk-tila { color: var(--keltainen); }
-@keyframes tk-rivi { from { opacity: 0; transform: translateY(6px); } }
-.tk-mittari { position: relative; width: 104px; height: 104px; flex: none; }
-.tk-mittari svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-.tk-mittari circle { fill: none; stroke-width: 10; stroke-linecap: round; }
-.tk-mittari-pohja { stroke: rgba(255,255,255,0.08); }
-.tk-mittari-arvo { stroke: var(--vihrea); stroke-dasharray: 314; stroke-dashoffset: 195; animation: tk-mittari 2.2s 2.4s var(--pehmea) forwards; filter: drop-shadow(0 0 8px rgba(52, 211, 153, 0.55)); }
-@keyframes tk-mittari { to { stroke-dashoffset: 13; } }
-.tk-mittari-luku { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
-.tk-mittari-luku span { grid-area: 1 / 1; font-size: 2.2rem; font-weight: 600; line-height: 1; letter-spacing: -0.05em; }
-.tk-ennen { color: var(--keltainen); animation: tk-pois 0.4s 3.1s forwards; }
-.tk-jalkeen { color: var(--vihrea); opacity: 0; animation: tk-esiin 0.5s 3.4s forwards; }
-@keyframes tk-pois { to { opacity: 0; transform: scale(0.8); } }
-@keyframes tk-esiin { to { opacity: 1; } }
-
 /* ───────── Luottamuskortti ja logonauha ───────── */
 .nauha-osio { padding: 56px 0 88px; }
-.luottamuskortti { padding: 30px 0 24px; overflow: hidden; background: linear-gradient(180deg, rgba(20, 34, 80, 0.55), rgba(8, 16, 46, 0.55)); }
-.nauha-otsikko { text-align: center; color: var(--teksti); font-size: 1.12rem; letter-spacing: -0.02em; margin: 0 0 20px; padding: 0 24px; }
+.luottamuskortti { padding: 30px 0 24px; overflow: hidden; }
+.nauha-otsikko { text-align: center; color: var(--teksti-2); font-size: 1.02rem; letter-spacing: -0.02em; margin: 0 0 20px; padding: 0 24px; }
 .nauha { overflow: hidden; mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent); }
 .nauha-rata { display: flex; gap: 12px; width: max-content; list-style: none; margin: 0; padding: 6px 0; animation: nauha var(--kesto, 48s) linear infinite; }
 .nauha:hover .nauha-rata { animation-play-state: paused; }
-.nauha-pala { display: inline-flex; align-items: center; gap: 10px; padding: 11px 18px; border-radius: 999px; background: var(--tayte); border: 1px solid var(--reuna); color: var(--teksti-2); font-weight: 500; font-size: 0.95rem; white-space: nowrap; transition: color 0.2s, background 0.2s; }
-.nauha-pala svg { color: var(--teksti); transition: color 0.2s; }
-.nauha-pala:hover { background: var(--tayte-2); color: var(--teksti); }
+.nauha-pala { display: inline-flex; align-items: center; gap: 10px; padding: 10px 22px; color: var(--hiljainen); font-weight: 500; font-size: 0.98rem; white-space: nowrap; transition: color 0.25s; }
+.nauha-pala svg { color: var(--hiljainen); transition: color 0.25s; }
+.nauha-pala:hover { color: var(--teksti); }
 .nauha-pala:hover svg { color: var(--brandi); }
 @keyframes nauha { to { transform: translateX(calc(-50% - 6px)); } }
 .vaalea.nauha-osio { padding: 24px 0 72px; }
@@ -381,53 +328,34 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
 .pino-teksti > p { color: var(--teksti-2); font-size: 1.08rem; }
 .pino-ala { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-top: 26px; }
 .malli-alue { position: relative; height: 100%; min-height: 360px; border-radius: 20px; display: grid; place-items: center; padding: 28px; overflow: hidden; border: 1px solid rgba(255,255,255,0.06);
-  background: radial-gradient(120% 100% at 100% 0%, rgba(59,108,255,0.45), transparent 60%), radial-gradient(120% 100% at 0% 100%, rgba(106,92,255,0.3), transparent 60%), #071233; }
-.pino-kortti:nth-child(2) .malli-alue { background: radial-gradient(120% 100% at 0% 0%, rgba(59,108,255,0.5), transparent 60%), radial-gradient(120% 100% at 100% 100%, rgba(45,212,191,0.22), transparent 60%), #071233; }
-.pino-kortti:nth-child(3) .malli-alue { background: radial-gradient(120% 100% at 100% 100%, rgba(106,92,255,0.45), transparent 60%), radial-gradient(120% 100% at 0% 0%, rgba(59,108,255,0.3), transparent 60%), #071233; }
-.pino-kortti:nth-child(4) .malli-alue { background: radial-gradient(120% 100% at 50% 0%, rgba(111,147,255,0.45), transparent 60%), radial-gradient(120% 100% at 50% 100%, rgba(31,69,230,0.35), transparent 60%), #071233; }
-.malli { width: 100%; max-width: 380px; padding: 20px; background: rgba(8, 16, 44, 0.85); border-radius: 18px; }
-.malli-otsikko { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9rem; margin-bottom: 14px; }
-.malli-ikonit { display: inline-flex; gap: 8px; color: var(--teksti-2); }
-.malli-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.malli-lista li { display: grid; grid-template-columns: 20px 1fr auto; gap: 10px; align-items: center; padding: 10px 12px; border-radius: 12px; background: rgba(255,255,255,0.04); font-size: 0.88rem; }
-.malli-lista em { font-style: normal; font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--vihrea); }
-.malli-lista .tk-korjattu em { color: var(--keltainen); }
-.malli-selain { padding: 0; overflow: hidden; }
-.malli-selainpalkki { display: flex; align-items: center; gap: 6px; padding: 10px 14px; border-bottom: 1px solid var(--reuna); }
-.malli-selainpalkki i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.2); }
-.malli-selainpalkki span { flex: 1; margin-left: 10px; font-size: 0.74rem; color: var(--hiljainen); background: rgba(255,255,255,0.05); padding: 3px 10px; border-radius: 6px; }
-.malli-sivu { padding: 22px; display: grid; gap: 10px; }
-.luuranko { display: block; height: 10px; width: 72%; border-radius: 6px; background: rgba(255,255,255,0.12); }
-.luuranko.levea { height: 18px; width: 92%; background: linear-gradient(90deg, rgba(255,255,255,0.42), rgba(255,255,255,0.14)); }
-.luuranko.lyhyt { width: 46%; }
-.malli-nappi { justify-self: start; margin-top: 4px; font-size: 0.74rem; font-weight: 600; padding: 7px 12px; border-radius: 999px; background: #fff; color: #050a1c; }
-.malli-ruudut { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px; }
-.malli-ruudut span { height: 58px; border-radius: 10px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.06); }
-.malli-merkki { position: absolute; right: 14px; bottom: 14px; padding: 6px 11px; border-radius: 999px; font-size: 0.74rem; font-weight: 600; color: var(--vihrea); background: rgba(52,211,153,0.14); border: 1px solid rgba(52,211,153,0.35); }
-.malli-palkit { display: flex; align-items: flex-end; gap: 8px; height: 150px; margin: 6px 0 14px; }
-.malli-palkit span { flex: 1; border-radius: 6px 6px 3px 3px; background: linear-gradient(180deg, #6f93ff, rgba(59,108,255,0.18)); }
-.malli-palkit span:last-child { background: linear-gradient(180deg, #ffffff, rgba(143,176,255,0.3)); }
-.malli-rivi { display: flex; justify-content: space-between; gap: 10px; font-size: 0.85rem; color: var(--teksti-2); padding-top: 12px; border-top: 1px solid var(--reuna); }
-.malli-rivi strong { color: var(--vihrea); font-weight: 600; }
-.malli-kalenteri { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin-bottom: 14px; }
-.paiva { aspect-ratio: 1; border-radius: 6px; background: rgba(255,255,255,0.05); font-size: 0; }
-.paiva.palaveri { background: var(--gradientti); box-shadow: 0 0 18px rgba(59,108,255,0.6); }
-.malli-kupla { font-size: 0.88rem; line-height: 1.5; padding: 12px 14px; border-radius: 14px 14px 14px 4px; background: rgba(59,108,255,0.16); border: 1px solid rgba(59,108,255,0.35); }
+  background: radial-gradient(120% 100% at 100% 0%, rgba(110, 132, 190,0.45), transparent 60%), radial-gradient(120% 100% at 0% 100%, rgba(120, 112, 170,0.3), transparent 60%), #0f1629; }
+.pino-kortti:nth-child(2) .malli-alue { background: radial-gradient(120% 100% at 0% 0%, rgba(110, 132, 190,0.5), transparent 60%), radial-gradient(120% 100% at 100% 100%, rgba(120, 170, 175,0.22), transparent 60%), #0f1629; }
+.pino-kortti:nth-child(3) .malli-alue { background: radial-gradient(120% 100% at 100% 100%, rgba(120, 112, 170,0.45), transparent 60%), radial-gradient(120% 100% at 0% 0%, rgba(110, 132, 190,0.3), transparent 60%), #0f1629; }
+.pino-kortti:nth-child(4) .malli-alue { background: radial-gradient(120% 100% at 50% 0%, rgba(142, 162, 214,0.45), transparent 60%), radial-gradient(120% 100% at 50% 100%, rgba(70, 90, 150,0.35), transparent 60%), #0f1629; }
+.faktat { width: 100%; max-width: 380px; padding: 30px; }
+.faktat-label { display: block; font-size: 0.74rem; font-weight: 500; letter-spacing: 0.16em; text-transform: uppercase; color: var(--hiljainen); margin-bottom: 10px; }
+.faktat-hinta { font-size: clamp(2rem, 3.4vw, 2.7rem); font-weight: 500; letter-spacing: -0.05em; line-height: 1.05; }
+.faktat dl { margin: 24px 0 0; display: grid; }
+.faktat dl div { display: flex; justify-content: space-between; align-items: baseline; gap: 18px; padding: 14px 0; border-top: 1px solid var(--reuna); }
+.faktat dt { color: var(--hiljainen); font-size: 0.9rem; }
+.faktat dd { margin: 0; text-align: right; font-weight: 500; font-size: 0.95rem; }
 
 /* Tarkistuslista */
 .tarkistus { list-style: none; padding: 0; margin: 0; }
-.tarkistus li { position: relative; padding: 10px 0 10px 32px; border-bottom: 1px solid var(--reuna); color: var(--teksti-2); }
+.tarkistus li { position: relative; padding: 10px 0 10px 28px; border-bottom: 1px solid var(--reuna); color: var(--teksti-2); }
 .tarkistus li:last-child { border-bottom: 0; }
-.tarkistus li::before { content: ''; position: absolute; left: 0; top: 13px; width: 20px; height: 20px; border-radius: 7px; background: rgba(52,211,153,0.13); border: 1.5px solid var(--vihrea); }
-.tarkistus li::after { content: ''; position: absolute; left: 7px; top: 16px; width: 5px; height: 10px; border: solid var(--vihrea); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.tarkistus li::before { content: none; }
+.tarkistus li::after { content: ''; position: absolute; left: 4px; top: 16px; width: 6px; height: 11px; border: solid var(--korostus); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
 .tarkistus strong { color: var(--teksti); font-weight: 600; }
 .pieni-lista li { font-size: 0.95rem; }
 
 /* ───────── Numerot ───────── */
-.numerot { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin: 0; padding: 0; list-style: none; }
-.numerot li { padding: 28px 22px; display: flex; flex-direction: column; justify-content: space-between; min-height: 190px; }
-.numerot strong { display: block; font-size: clamp(2.1rem, 3.4vw, 3rem); line-height: 1; font-weight: 600; letter-spacing: -0.055em; white-space: nowrap; }
-.numerot strong .luku { background: linear-gradient(180deg, #ffffff, #a9b9e6); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.numerot { display: grid; grid-template-columns: repeat(5, 1fr); margin: 0; padding: 10px; list-style: none; }
+.numerot li { padding: 26px 24px; display: flex; flex-direction: column; justify-content: space-between; min-height: 170px; border-left: 1px solid var(--reuna); }
+.numerot li:first-child { border-left: 0; }
+.numerot-huom { margin: 18px 0 0; }
+.numerot strong { display: block; font-size: clamp(2.1rem, 3.4vw, 3rem); line-height: 1; font-weight: 500; letter-spacing: -0.055em; white-space: nowrap; }
+.numerot strong .luku { color: var(--teksti); }
 .numerot .selite { display: block; color: var(--hiljainen); font-size: 0.92rem; margin-top: 16px; line-height: 1.45; }
 
 /* ───────── Vertailu ───────── */
@@ -436,18 +364,18 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
 .vertailu-rivi:last-child { border-bottom: 0; }
 .vertailu-rivi > span { padding: 20px 22px; }
 .vertailu-otsikot > span { font-weight: 600; font-size: 1.04rem; color: var(--teksti-2); letter-spacing: -0.02em; }
-.vertailu-rivi .pg { display: flex; gap: 12px; align-items: flex-start; color: var(--teksti); background: rgba(59, 108, 255, 0.08); }
+.vertailu-rivi .pg { display: flex; gap: 12px; align-items: flex-start; color: var(--teksti); background: rgba(110, 132, 190, 0.08); }
 .vertailu-otsikot .pg { border-radius: 16px 16px 0 0; color: var(--korostus); }
 .vertailu-rivi:last-child .pg { border-radius: 0 0 16px 16px; }
 .vertailu-asia { font-weight: 600; color: var(--teksti); }
 .vertailu-toimisto { color: var(--hiljainen); }
-.vertailu-ok { position: relative; flex: none; width: 22px; height: 22px; margin-top: 2px; border-radius: 50%; background: rgba(52,211,153,0.15); border: 1.5px solid var(--vihrea); }
-.vertailu-ok::after { content: ''; position: absolute; left: 6px; top: 3px; width: 5px; height: 10px; border: solid var(--vihrea); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.vertailu-ok { position: relative; flex: none; width: 18px; height: 22px; margin-top: 2px; }
+.vertailu-ok::after { content: ''; position: absolute; left: 5px; top: 3px; width: 6px; height: 11px; border: solid var(--korostus); border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); }
 
 /* ───────── Prosessi ───────── */
 .prosessi { position: relative; display: grid; grid-template-columns: repeat(var(--maara, 4), 1fr); gap: 24px; list-style: none; margin: 0; padding: 0; }
 .prosessi::before, .prosessi::after { content: ''; position: absolute; top: 24px; left: 24px; right: 24px; height: 2px; background: var(--reuna); }
-.prosessi::after { background: var(--gradientti); transform: scaleX(0); transform-origin: left; transition: transform 1.8s 0.3s var(--pehmea); }
+.prosessi::after { background: var(--korostus); transform: scaleX(0); transform-origin: left; transition: transform 1.8s 0.3s var(--pehmea); }
 .prosessi.nakyvissa::after, html:not(.js) .prosessi::after { transform: scaleX(1); }
 .prosessi-vaihe { position: relative; padding-right: 8px; }
 .prosessi-numero { position: relative; z-index: 1; display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: 24px; border-radius: 50%; background: var(--pohja); border: 2px solid var(--korostus); font-weight: 600; color: var(--korostus); }
@@ -459,13 +387,13 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
 .bento { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
 .bento-pala { grid-column: span 2; padding: 28px; overflow: hidden; min-height: 210px; display: flex; flex-direction: column; justify-content: flex-end; }
 .bento-pala.iso { grid-column: span 3; min-height: 260px; }
-.bento-luku { font-weight: 600; font-size: clamp(2.6rem, 5vw, 3.8rem); line-height: 1; letter-spacing: -0.06em; margin-bottom: 10px; }
+.bento-luku { font-weight: 500; font-size: clamp(2.6rem, 5vw, 3.8rem); line-height: 1; letter-spacing: -0.06em; margin-bottom: 10px; }
 .bento-pala.iso .bento-luku { font-size: clamp(3.4rem, 7vw, 5.6rem); }
 .bento-pala h3 { margin-bottom: 6px; }
 .bento-pala p { color: var(--teksti-2); margin: 0; font-size: 0.96rem; }
-.bento-pala:nth-child(1) { background: radial-gradient(120% 120% at 0% 0%, rgba(59,108,255,0.32), transparent 55%), var(--lasi-tausta); }
-.bento-pala:nth-child(2) { background: radial-gradient(120% 120% at 100% 0%, rgba(106,92,255,0.3), transparent 55%), var(--lasi-tausta); }
-.bento-pala:nth-child(4) { background: radial-gradient(120% 120% at 50% 0%, rgba(45,212,191,0.2), transparent 55%), var(--lasi-tausta); }
+.bento-pala:nth-child(1) { background: radial-gradient(120% 120% at 0% 0%, rgba(110, 132, 190,0.32), transparent 55%), var(--lasi-tausta); }
+.bento-pala:nth-child(2) { background: radial-gradient(120% 120% at 100% 0%, rgba(120, 112, 170,0.3), transparent 55%), var(--lasi-tausta); }
+.bento-pala:nth-child(4) { background: radial-gradient(120% 120% at 50% 0%, rgba(120, 170, 175,0.2), transparent 55%), var(--lasi-tausta); }
 .asiakkaat { grid-column: span 6; padding: 26px 30px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 44px; }
 .asiakkaat h3 { margin: 0; color: var(--hiljainen); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
 .asiakas { font-size: clamp(1.4rem, 2.6vw, 2rem); font-weight: 700; letter-spacing: -0.04em; opacity: 0.88; transition: opacity 0.2s; }
@@ -477,12 +405,12 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
 .lainaus p { font-size: clamp(1.4rem, 2.4vw, 1.9rem); line-height: 1.3; font-weight: 500; letter-spacing: -0.035em; color: var(--teksti); margin: 0; }
 .muotokuva { position: relative; aspect-ratio: 4 / 5; overflow: hidden; display: grid; place-items: center; padding: 0; }
 .muotokuva img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
-.muotokuva.on-tyhja { background: radial-gradient(90% 70% at 80% 10%, rgba(59,108,255,0.45), transparent 60%), radial-gradient(90% 70% at 10% 100%, rgba(106,92,255,0.35), transparent 60%), #071233; }
+.muotokuva.on-tyhja { background: radial-gradient(90% 70% at 80% 10%, rgba(110, 132, 190,0.45), transparent 60%), radial-gradient(90% 70% at 10% 100%, rgba(120, 112, 170,0.35), transparent 60%), #0f1629; }
 .muotokuva-kerrokset { position: absolute; left: 12%; right: 12%; bottom: 12%; height: 30%; background:
   linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02)) 0 0 / 55% 22% no-repeat,
   linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02)) 0 50% / 78% 22% no-repeat,
   linear-gradient(90deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02)) 0 100% / 100% 22% no-repeat; border-radius: 12px; }
-.muotokuva-tyhja { color: var(--teksti); filter: drop-shadow(0 10px 30px rgba(59,108,255,0.5)); }
+.muotokuva-tyhja { color: var(--teksti); filter: drop-shadow(0 10px 30px rgba(110, 132, 190,0.5)); }
 
 /* ───────── Hinnat ───────── */
 .hintanostot { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
@@ -496,10 +424,10 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
 .hintakortit.maara-3 { grid-template-columns: repeat(3, 1fr); }
 .hintakortti { display: flex; flex-direction: column; gap: 6px; padding: 34px; }
 .hintakortti h3 { font-size: 1.15rem; margin: 6px 0 0; }
-.hintakortti .hinta { font-size: clamp(1.9rem, 3vw, 2.5rem); font-weight: 600; letter-spacing: -0.05em; line-height: 1.15; }
+.hintakortti .hinta { font-size: clamp(1.9rem, 3vw, 2.5rem); font-weight: 500; letter-spacing: -0.05em; line-height: 1.15; }
 .hintakortti > p { color: var(--teksti-2); }
 .hintakortti .tarkistus { flex: 1; margin-bottom: 24px; }
-.hintakortti.suosittu { border-color: rgba(111,147,255,0.45); background: radial-gradient(120% 70% at 50% 0%, rgba(59,108,255,0.4), transparent 60%), linear-gradient(180deg, #0f1a3d, #071029); box-shadow: 0 30px 70px rgba(10,16,36,0.25); }
+.hintakortti.suosittu { border-color: rgba(142, 162, 214,0.45); background: radial-gradient(120% 70% at 50% 0%, rgba(110, 132, 190,0.4), transparent 60%), linear-gradient(180deg, #161e36, #0e1424); box-shadow: 0 30px 70px rgba(10,16,36,0.25); }
 .hinnasto { display: grid; gap: 16px; }
 .hinnasto-ryhma { display: grid; grid-template-columns: 300px 1fr; gap: 36px; padding: 34px; }
 .hinnasto-ryhma-otsikko h2 { font-size: 1.8rem; margin-bottom: 8px; }
@@ -535,7 +463,7 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
 .kenelle li { display: flex; gap: 14px; align-items: flex-start; padding: 22px 24px; border-radius: 18px; font-size: 1.04rem; }
 .ongelmat { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
 .ongelma { padding: 32px; }
-.ongelma-numero, .hyoty-numero { display: block; font-size: 2.4rem; font-weight: 600; line-height: 1; letter-spacing: -0.06em; margin-bottom: 22px; background: var(--korostus-gradientti); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.ongelma-numero, .hyoty-numero { display: block; font-size: 2.4rem; font-weight: 400; line-height: 1; letter-spacing: -0.06em; margin-bottom: 22px; background: var(--korostus-gradientti); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .ongelma p, .sisaltaa-kortti p, .hyoty p { color: var(--teksti-2); margin: 0; }
 .sisaltaa { display: grid; gap: 14px; grid-template-columns: repeat(3, 1fr); }
 .sisaltaa.maara-5 { grid-template-columns: repeat(6, 1fr); }
@@ -598,7 +526,7 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
 .lomake label { display: grid; gap: 6px; font-weight: 500; font-size: 0.92rem; color: var(--teksti-2); }
 .lomake input, .lomake select, .lomake textarea { font: inherit; font-weight: 400; padding: 13px 15px; border-radius: 12px; border: 1px solid var(--reuna-vahva); background: var(--pohja); color: var(--teksti); width: 100%; transition: border-color 0.2s, box-shadow 0.2s; }
 .lomake input::placeholder, .lomake textarea::placeholder { color: var(--hiljainen); opacity: 0.8; }
-.lomake input:focus, .lomake select:focus, .lomake textarea:focus { outline: none; border-color: var(--sininen); box-shadow: 0 0 0 4px rgba(59, 108, 255, 0.18); }
+.lomake input:focus, .lomake select:focus, .lomake textarea:focus { outline: none; border-color: var(--sininen); box-shadow: 0 0 0 4px rgba(110, 132, 190, 0.18); }
 .lomake .painike { justify-self: start; }
 .piilo { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
 .virhe { color: #d93a2b; font-weight: 600; margin: 0; }
@@ -622,12 +550,12 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
 /* ───────── CTA ───────── */
 .cta-osio { padding: 40px 0 110px; }
 .cta-kortti { position: relative; text-align: center; padding: clamp(56px, 8vw, 104px) 24px; overflow: hidden; border-radius: 32px; isolation: isolate;
-  background: radial-gradient(70% 90% at 50% 0%, rgba(59,108,255,0.45), transparent 70%), linear-gradient(180deg, #0b1747, #050c26); box-shadow: 0 40px 90px rgba(10, 16, 36, 0.28); }
+  background: radial-gradient(70% 90% at 50% 0%, rgba(110, 132, 190,0.45), transparent 70%), linear-gradient(180deg, #151d37, #0b1020); box-shadow: 0 40px 90px rgba(10, 16, 36, 0.28); }
 .cta-kortti h2 { position: relative; font-size: clamp(2.4rem, 6vw, 4.8rem); max-width: 13em; margin: 0 auto 18px; line-height: 1.02; letter-spacing: -0.055em; }
 .cta-kortti > p { position: relative; color: var(--teksti-2); font-size: 1.15rem; max-width: 34em; margin-left: auto; margin-right: auto; }
 
 /* ───────── Alapalkki ───────── */
-.alapalkki { position: relative; overflow: hidden; padding: 84px 0 28px; background: linear-gradient(180deg, rgba(4,10,31,0.2), rgba(4,10,31,0.94)); }
+.alapalkki { position: relative; overflow: hidden; padding: 84px 0 28px; background: linear-gradient(180deg, rgba(10, 14, 26,0.2), rgba(10, 14, 26,0.94)); }
 .alapalkki-yla { display: grid; grid-template-columns: 1.05fr 2fr; gap: 56px; }
 .alapalkki-brandi p { color: var(--teksti-2); max-width: 26em; margin: 18px 0 22px; }
 .alapalkki-sarakkeet { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
@@ -637,15 +565,11 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
 .alapalkki-sarakkeet a:hover { color: var(--teksti); }
 .alapalkki-yhteys li { display: flex; gap: 10px; align-items: flex-start; color: var(--teksti-2); overflow-wrap: anywhere; }
 .alapalkki-yhteys svg { flex: none; margin-top: 3px; color: var(--korostus); }
-.alapalkki-sana { margin: 72px 0 26px; text-align: center; white-space: nowrap; user-select: none; font-weight: 700; font-size: clamp(2.6rem, 11.6vw, 9.8rem); line-height: 0.9; letter-spacing: -0.07em;
-  background: linear-gradient(180deg, rgba(157,183,255,0.22), rgba(157,183,255,0) 88%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.alapalkki-sana { margin: 72px 0 26px; text-align: center; white-space: nowrap; user-select: none; font-weight: 600; font-size: clamp(2.6rem, 11.6vw, 9.8rem); line-height: 0.9; letter-spacing: -0.07em;
+  background: linear-gradient(180deg, rgba(190, 200, 225,0.22), rgba(190, 200, 225,0) 88%); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .alapalkki-ala { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; padding-top: 22px; border-top: 1px solid var(--reuna); color: var(--hiljainen); font-size: 0.85rem; }
 
 /* ───────── Responsiivisuus ───────── */
-@media (max-width: 1100px) {
-  .hn-siru-1 { left: -10px; }
-  .hn-siru-2 { right: -8px; }
-}
 @media (max-width: 1040px) {
   .valikko { display: none; }
   .valikko-nappi { display: inline-flex; }
@@ -653,9 +577,9 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
   .osio-ukk .osio-otsikko { position: static; }
   .numerot { grid-template-columns: repeat(2, 1fr); }
   .numerot li:last-child { grid-column: span 2; }
-  .numerot li { min-height: 0; }
-  .hn-ruudukko { grid-template-columns: 1fr 1.3fr; }
-  .hn-kaavio { display: none; }
+  .numerot li { min-height: 0; border-left: 0; border-top: 1px solid var(--reuna); }
+  .numerot li:nth-child(-n+2) { border-top: 0; }
+  .numerot li:nth-child(even) { border-left: 1px solid var(--reuna); }
   .pino-kortti { position: relative; top: auto; grid-template-columns: 1fr; gap: 28px; padding: 32px; min-height: 0; }
   .malli-alue { min-height: 300px; }
   .prosessi { grid-template-columns: repeat(2, 1fr); row-gap: 40px; }
@@ -675,11 +599,6 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
   .hero-sivuosa:has(.on-tyhja) { display: none; }
 }
 @media (max-width: 760px) {
-  .hn-siru-1, .hn-siru-2 { display: none; }
-  .hn-ruudukko { grid-template-columns: 1fr; }
-  .hn-mittarikortti { flex-direction: row; justify-content: flex-start; gap: 18px; text-align: left; }
-  .hn-mittarikortti .tk-mittari { width: 96px; height: 96px; order: -1; }
-  .hn-mittarikortti .hn-label { margin: 0; }
   .vertailu { padding: 6px; }
   .vertailu-otsikot { display: none; }
   .vertailu-rivi { grid-template-columns: 1fr; padding: 8px 0; }
@@ -696,12 +615,10 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
   .ylapalkki-rivi { padding: 0 8px 0 14px; min-height: 58px; }
   .hero { padding: calc(var(--ylapalkki) + 40px) 0 64px; }
   .hero-etusivu { padding-top: calc(var(--ylapalkki) + 48px); padding-bottom: 24px; }
-  .hn { margin-top: 48px; }
   .kierto-ruudukko { flex-direction: column; align-items: center; gap: 0; }
   .kierto-alku, .kierto-oikea { flex: none; text-align: center; }
-  .hero-etusivu .ylaotsikko { font-size: 0.7rem; letter-spacing: 0.03em; padding: 6px 12px; }
-  .hn-siru { display: none; }
-  .hn-palkki .hn-live { display: none; }
+  .hero-etusivu .ylaotsikko { font-size: 0.68rem; letter-spacing: 0.1em; gap: 10px; }
+  .hero-etusivu .ylaotsikko::before { width: 18px; }
   .nauha-osio { padding: 40px 0 64px; }
   .osio { padding: 76px 0; }
   .osio-tiivis { padding-top: 8px; }
@@ -712,9 +629,11 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
   .paljastus-osio { padding: 0 0 8px; }
   .yhdysviiva { height: 80px; margin-bottom: 48px; }
   .yhdysviiva.ala { margin-top: 48px; }
-  .numerot, .hintanostot, .lomake-rivi, .bento, .prosessi { grid-template-columns: 1fr; }
-  .numerot li:last-child, .asiakkaat { grid-column: auto; }
-  .numerot li { padding: 22px; }
+  .hintanostot, .lomake-rivi, .bento, .prosessi { grid-template-columns: 1fr; }
+  .asiakkaat { grid-column: auto; }
+  .numerot li { padding: 20px 16px; }
+  .numerot strong { font-size: 1.9rem; }
+  .hero-numerot { margin-top: 48px; }
   .pino-kortti { padding: 24px; }
   .malli-alue { padding: 18px; min-height: 0; }
   .hinnasto-ryhma, .yhteys-kortti, .hintakortti, .ongelma, .hyoty, .sisaltaa-kortti { padding: 24px; }

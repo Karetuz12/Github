@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { HeroNakyma } from '@/components/HeroNakyma';
 import { Kuvake } from '@/components/Kuvakkeet';
 import { LogoNauha } from '@/components/LogoNauha';
 import { Muotokuva } from '@/components/Muotokuva';
@@ -43,15 +42,10 @@ export default function Etusivu() {
                 Katso palvelut
               </Link>
             </div>
-            <ul className="hero-luvut hero-nousu viive-c">
-              {hero.luvut.map((l) => (
-                <li key={l.selite}>
-                  <strong>{l.luku}</strong> {l.selite}
-                </li>
-              ))}
-            </ul>
           </div>
-          <HeroNakyma />
+          <div className="hero-numerot hero-nousu viive-c">
+            <Numerot laskuri={false} />
+          </div>
         </div>
       </section>
 
@@ -71,12 +65,8 @@ export default function Etusivu() {
         <PalveluPino />
       </Osio>
 
-      <Osio id="kokemus" ylaotsikko="Kokemus" otsikko="Kokemus, joka näkyy luvuissa." korostus="luvuissa"
-        johdanto="Seitsemän vuotta oman markkinointitoimiston vetämistä ja yli kymmenen vuotta myyntiä ja markkinointia. Nämä luvut ovat sen ajalta.">
-        <Numerot />
-      </Osio>
-
-      <Osio id="toimialat" ylaotsikko="Toimialat" otsikko="Toimialat, joilla olen tehnyt tulosta." korostus="tulosta">
+      <Osio id="kokemus" ylaotsikko="Kokemus" otsikko="Toimialat, joilla olen tehnyt tulosta." korostus="tulosta"
+        johdanto="Seitsemän vuotta oman markkinointitoimiston vetämistä ja yli kymmenen vuotta myyntiä ja markkinointia.">
         <KokemusBento />
         <p className="osio-linkki ilmesty">
           <Link className="linkki-nuoli" href="/kokemus">
