@@ -55,6 +55,8 @@ const pohjat = () => [
   { vaihe: 2, segmentti: '', odota: 3, aihe: '', viesti: 'Hei {{etunimi}}, nostan.\n{{nimi}}' },
   { vaihe: 3, segmentti: '', odota: 5, aihe: '', viesti: 'Viimeinen.\n{{nimi}}' },
   { vaihe: 'LinkedIn', segmentti: '', odota: 0, aihe: '', viesti: 'Hei {{etunimi}}, {{havainto}}.' },
+  { vaihe: 1, segmentti: 'Verkosto', odota: 0, aihe: 'Pieni kysymys', viesti: 'Moi {{etunimi}}, tiedätkö jonkun?\n{{nimi}}' },
+  { vaihe: 2, segmentti: 'Verkosto', odota: 5, aihe: '', viesti: 'Moi {{etunimi}}, nostan.\n{{nimi}}' },
 ];
 
 const liidi = (muut) => Object.assign({
@@ -174,6 +176,51 @@ test('avoimen kaupan arvioitu tilauspäivä', () => {
   assert.ok(t.huomiot.some((h) => h.includes('arvioitu tilauspäivä on mennyt')));
 });
 
+test('erät käsin: summat, prosentit ja virheet', () => {
+  const e = g.puraErat('2000 € 30.11.2026; 1 000 € 15.12.2026', null);
+  assert.deepEqual(arr(e.erat.map((x) => [x.pvm, x.summa])), [['2026-11-30', 2000], ['2026-12-15', 1000]]);
+  assert.deepEqual(arr(g.puraErat('50 % 15.1.2027\n50% 1.12.2026', 3000).erat.map((x) => [x.pvm, x.summa])),
+    [['2026-12-01', 1500], ['2027-01-15', 1500]]);
+  assert.equal(g.puraErat('', 1000), null);
+  assert.match(g.puraErat('2000 €', 1000).virhe, /päivämäärä/);
+  assert.match(g.puraErat('50 % 1.12.2026', null).virhe, /kertatulon/);
+});
+
+test('käynnissä oleva projekti erät käsin: marraskuu 14 000, loppuerä joulukuulle, ei viikon kauppa', () => {
+  const v = { Voitettu: 1 };
+  const vanha = g.kaupanMalli({ asiakas: 'Vanha', tuote: '', vaihe: 'Voitettu', kerta: 3000, kk: null, tilauspvm: null, luotu: null,
+    eratKasin: '2000 € 30.11.2026; 1000 € 15.12.2026' }, [], v);
+  const m = malli({ asetukset: asetukset({ kauppojaViikossa: 1 }) });
+  m.kaupat.push(vanha);
+  const t = g.laske(m, '2026-11-02');
+  assert.equal(t.nyt.varmistettu, 14000);
+  assert.equal(t.nyt.vaje, 1000);
+  assert.equal(t.ensi.voitetut, 1000);
+  assert.equal(t.ensi.kassa, 11000 + 2000 + 1000); // 30.11. lasku → 14.12. tilillä
+  assert.ok(t.viikot.every((w) => w.voitetut <= 1));
+  assert.ok(!t.huomiot.some((h) => h.includes('ilman tilauspäivää')));
+  const rivit = g.laskutusrivit(malli({ kaupat: [vanha] }), '2026-11', '2026-11-02');
+  const viim = rivit.pop();
+  assert.equal(viim.kuvaus, 'Kauppa – erä 1/2 (67 %)');
+  assert.equal(viim.ajankohta, '2026-11-30');
+  const virhe = g.kaupanMalli({ asiakas: 'X', vaihe: 'Voitettu', kerta: 100, kk: null, eratKasin: '100 €' }, [], v);
+  assert.ok(g.laske(malli({ kaupat: [virhe] }), '2026-11-02').huomiot.some((h) => h.includes('Erät käsin')));
+});
+
+test('kuukauden oma viikkotavoite: marras–joulu 0, tammikuusta 1', () => {
+  const tavoitteet = [{ kk: '2026-11', tavoite: 15000, kauppojaVk: 0 }, { kk: '2026-12', tavoite: 15000, kauppojaVk: 0 },
+    { kk: '2027-01', tavoite: 15000, kauppojaVk: 1 }];
+  const m = malli({ tavoitteet, asetukset: asetukset({ kauppojaViikossa: 1 }) });
+  const marras = g.laske(m, '2026-11-18');
+  assert.equal(marras.kone.tahtiViikosta, 0);
+  assert.ok(marras.viikot.filter((w) => w.alku < '2026-12-28').every((w) => !w.tila.includes('✗')));
+  assert.ok(!marras.huomiot.some((h) => h.startsWith('Viikko ')));
+  const tammi = g.laske(m, '2027-01-13');
+  assert.equal(tammi.kone.tahtiViikosta, 17);
+  assert.equal(tammi.viikot.find((w) => w.viikko === 1).tila, '✗');
+  assert.equal(tammi.tamaViikko.tavoite, 1);
+});
+
 test('kauppa saa hinnan ja aikataulun tuotteelta', () => {
   const tuotteet = [{ tuote: 'Verkkosivuprojekti', hinta: 2500, kk: 0, maksuaika: 14, erat: VERKKOSIVU },
     { tuote: 'Ylläpito ja hosting', hinta: 0, kk: 149, maksuaika: 14, erat: [] }];
@@ -283,12 +330,31 @@ test('viestin muuttujat', () => {
   assert.match(g.renderoiViesti({ aihe: '', viesti: '{{tuntematon}}' }, liidi(), a, false).virhe, /Tuntematon/);
 });
 
-test('segmentin oma pohja ja oletuspohja', () => {
+test('segmentin omat pohjat ja oletuspohjat', () => {
   assert.equal(g.haePohja(pohjat(), 1, 'matkailu').segmentti, 'Matkailu');
   assert.equal(g.haePohja(pohjat(), 1, 'Yleinen').segmentti, '');
-  assert.equal(g.haePohja(pohjat(), 3, 'Matkailu').viesti.startsWith('Viimeinen'), true);
+  assert.equal(g.haePohja(pohjat(), 3, 'Yleinen').viesti.startsWith('Viimeinen'), true);
+  // Segmentillä on omia pohjia → sarja käyttää vain niitä ja loppuu niiden viimeiseen vaiheeseen
+  assert.equal(g.haePohja(pohjat(), 3, 'Matkailu'), null);
+  assert.equal(g.haePohja(pohjat(), 2, 'Verkosto').segmentti, 'Verkosto');
+  assert.equal(g.haePohja(pohjat(), 3, 'Verkosto'), null);
   assert.equal(g.haePohja(pohjat(), 4, ''), null);
   assert.equal(g.haePohja(pohjat(), 'LinkedIn', '').vaihe, 'LinkedIn');
+  assert.equal(g.tarvitseeHavainnon(g.haePohja(pohjat(), 1, 'Verkosto')), false);
+  assert.equal(g.tarvitseeHavainnon(g.haePohja(pohjat(), 1, '')), true);
+});
+
+test('verkostoviesti lähtee ilman havaintoa ja yritystä, sarja loppuu kahteen viestiin', () => {
+  const lid = [liidi({ _rivi: 2, yritys: '', email: 'ville@gmail.com', havainto: '', segmentti: 'Verkosto', etunimi: 'Ville' }),
+    liidi({ _rivi: 3, email: 'kylma@x.fi', havainto: '' }),
+    liidi({ _rivi: 4, email: 'tuttu@y.fi', segmentti: 'Verkosto', tila: 'Sekvenssissä', vaihe: 2, ketju: 't', seuraava: '2026-11-05' })];
+  const s = g.suunnittele(malli({ liidit: lid }), 10, '2026-11-05', false);
+  assert.deepEqual(arr(s.uudet.map((x) => x.liidi._rivi)), [2]);
+  assert.equal(s.uudet[0].aihe, 'Pieni kysymys');
+  assert.equal(s.uudet[0].viesti, 'Moi Ville, tiedätkö jonkun?\nTesti Myyjä');
+  assert.deepEqual(arr(s.loppuneet.map((x) => x._rivi)), [4]);
+  const t = g.laske(malli({ liidit: lid }), '2026-11-05');
+  assert.equal(t.kone.odottaaHavaintoa, 1); // vain kylmä liidi
 });
 
 test('päivän suunnitelma: jatkot, uudet, tuplat ja yksi kontakti per yritys', () => {
@@ -410,8 +476,10 @@ test('laskutuslista: toistuvat, voitettujen kauppojen erät ja kuukausimaksut', 
   m.kaupat.push(kauppa({ asiakas: 'Auki Oy', vaihe: 'Tarjous lähetetty', tod: 0.5, kerta: 3000, tilauspvm: '2026-11-10' }));
   const marras = g.laskutusrivit(m, '2026-11', '2026-11-02');
   assert.deepEqual(arr(marras.map((r) => r.summa)), [8000, 2000, 1000, 1000, 1500]);
-  assert.equal(marras[4].kuvaus, 'Sivusto – erä 1/2 (50 %) · laskuta 17.11.2026');
-  assert.equal(marras[3].kuvaus, 'Verkkosivuprojekti · laskuta 1.11.2026');
+  assert.equal(marras[4].kuvaus, 'Sivusto – erä 1/2 (50 %)');
+  assert.equal(marras[4].ajankohta, '2026-11-17');
+  assert.equal(marras[3].kuvaus, 'Verkkosivuprojekti');
+  assert.equal(marras[0].ajankohta, '2026-11-01');
   assert.equal(new Set(marras.map((r) => r.tunniste)).size, marras.length);
   assert.deepEqual(arr(g.laskutusrivit(m, '2026-12', '2026-11-02').map((r) => r.summa)), [8000, 2000, 1000, 1500]);
   assert.deepEqual(arr(g.laskutusrivit(m, '2027-01', '2026-11-02').map((r) => r.summa)), [8000, 2000, 1000, 150]);
@@ -420,7 +488,8 @@ test('laskutuslista: toistuvat, voitettujen kauppojen erät ja kuukausimaksut', 
 test('laskutettu lasketaan vain lähetetyistä ja maksetuista', () => {
   const m = malli({ laskut: [
     { kk: '2026-10', summa: 9000, tila: 'Maksettu' },
-    { kk: '2026-11', summa: 8000, tila: 'Lähetetty' }, { kk: '2026-11', summa: 2000, tila: 'Laskuttamatta' },
+    { kk: '2026-11', summa: 8000, tila: 'Lähetetty' }, { kk: '2026-11', summa: 2000, tila: 'Laskuttamatta', ajankohta: '2026-11-01' },
+    { kk: '2026-11', summa: 3000, tila: 'Laskuttamatta', ajankohta: '2026-11-30' },
     { kk: '2026-11', summa: 500, tila: 'Peruttu' },
   ], tavoitteet: [{ kk: '2026-10', tavoite: 15000 }, { kk: '2026-11', tavoite: 15000 }] });
   const t = g.laske(m, '2026-11-20');

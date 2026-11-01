@@ -33,8 +33,15 @@ Strategia, jonka varaan kone on rakennettu: [STRATEGIA.md](STRATEGIA.md).
 6. Täytä **Asetukset**-välilehdeltä **Nimesi** ja **Allekirjoitus**. Tarkista myös **Referenssilause**: saatko käyttää Book Laplandin ja SkyView'n nimiä? **Tila** jää arvoon **TESTI**.
 7. Vaihda **Toistuvat**-välilehdellä konsultointiasiakkaan nimi ja **Kaupat**-välilehdellä marraskuun verkkosivuasiakkaan nimi.
 
-Asennus luo kaikki välilehdet ja lisää valmiiksi lähtötilanteen: tavoitteet marraskuusta 2026 joulukuuhun 2027,
-toistuvat tulot, marraskuun verkkosivuprojektin ja marraskuun laskutuslistan. Lisäksi se ajastaa päivittäisen ajon klo 7.
+Asennus luo kaikki välilehdet ja lisää valmiiksi lähtötilanteen. Lisäksi se ajastaa päivittäisen ajon klo 7. Lähtötilanteessa ovat:
+
+- tavoitteet marraskuusta 2026 joulukuuhun 2027 (viikkotavoite marras–joulukuussa 0, tammikuusta 1)
+- toistuvat tulot
+- marraskuun verkkosivuprojekti 1 000 €
+- käynnissä olevan projektin loppulaskutus: 2 000 € marraskuussa ja 1 000 € joulukuussa
+- marraskuun laskutuslista
+
+Marraskuun ennuste on siis 14 000 €. Tarkista summat ja päivät Kaupat-välilehden *Erät käsin* -sarakkeesta.
 
 ## Käyttöönotto kolmessa vaiheessa
 
@@ -46,8 +53,13 @@ toistuvat tulot, marraskuun verkkosivuprojektin ja marraskuun laskutuslistan. Li
 
 Liitä rivit Liidit-välilehdelle. Tila (Uusi), Vaihe (0) ja Lisätty täyttyvät itsestään.
 
-- **Pakolliset:** Yritys, Sähköposti ja Havainto. Verkkosivu tarvitaan sivustotarkistukseen ja muuttujaan `{{sivusto}}`.
-- **Segmentti:** *Matkailu* saa matkailun viestipohjan. Tyhjä tai *Yleinen* saa yleisen pohjan.
+- **Pakolliset:** Sähköposti. Kylmille liideille lisäksi Yritys ja Havainto. Verkkosivu tarvitaan sivustotarkistukseen ja muuttujaan `{{sivusto}}`.
+- **Segmentti** valitsee viestisarjan:
+  - *Matkailu*: matkailun pohjat.
+  - *Yleinen* tai tyhjä: yleiset pohjat.
+  - *Verkosto*: tutut ihmiset. Kaksi henkilökohtaista viestiä, jotka pyytävät suosittelua. Havaintoa tai yritystä ei tarvita.
+
+  Jos segmentillä on omia pohjia, sen liidit käyttävät vain niitä.
 - **Havainto** on täsmäiskun ydin: yksi asia yrityksen omalta sivulta. Se jatkaa lausetta *"kävin läpi sivujanne ja huomasin, että …"*,
   joten kirjoita se pienellä alkukirjaimella ja ilman pistettä. Esimerkkejä:
   - *varaukset ohjautuvat sivuilta Booking.comiin, jolloin jokaisesta varauksesta lähtee välityspalkkio*
@@ -78,7 +90,8 @@ Odotusajat ja tekstit voi muuttaa Viestipohjat-välilehdellä.
 - **Soittolista:** soita ja kirjaa tulos *Soitto*-sarakkeeseen.
 - **Kaupat:** kirjoita asiakas. Tuote (oletus Verkkosivuprojekti), vaihe (Liidi) ja luontipäivä täyttyvät itsestään. Pidä *Vaihe*, *Seuraava askel* ja *Seuraava pvm* ajan tasalla.
   Kun kauppa on voitettu, vaihda vaiheeksi *Voitettu* ja kirjaa **Tilauspvm**. Avoimelle kaupalle Tilauspvm on arvio. Katso tarkemmin kohta *Laskutusaikataulut ja viikkoseuranta*.
-- **Laskut:** kun lasku on lähtenyt, vaihda tilaksi *Lähetetty* ja korjaa summa toteutuneeksi, esim. Markkinointiboostin provisio. Vain *Lähetetty* ja *Maksettu* lasketaan laskutetuksi.
+- **Laskut:** *Laskutetaan*-sarake kertoo, milloin rivi pitää laskuttaa. Kun lasku on lähtenyt, vaihda tilaksi *Lähetetty* ja korjaa summa toteutuneeksi, esim. Markkinointiboostin provisio.
+  Vain *Lähetetty* ja *Maksettu* lasketaan laskutetuksi. Kojelauta muistuttaa riveistä, joiden laskutuspäivä on mennyt.
 
 ## Kojelaudan luvut
 
@@ -124,11 +137,15 @@ Esimerkki: 2 000 € verkkosivuprojekti tilataan 15.11. Puolet laskutetaan 22.11
 ja se on tilillä 3.1. Kun 1.12. tulee toinen samanlainen kauppa, joulukuun laskutukseen kertyy 2 000 € ja joulukuun kassaan 2 000 €.
 Kojelaudan kuukausitaulukko näyttää sekä laskutuksen että kassan. *Kassa kumulatiivinen* kertoo, paljonko rahaa on tulossa yhteensä.
 
+**Erät käsin** on poikkeuksia varten: kolmessa osassa, kerralla tai jo sovittu työ. Kirjoita summat ja päivät, esim.
+`2000 € 30.11.2026; 1000 € 15.12.2026` tai `50 % 1.12.2026; 50 % 15.1.2027`. Erät käsin ohittavat tuotteen aikataulun.
+Jos kyse on jo sovitusta työstä, kuten vanhan projektin loppulaskutuksesta, jätä Tilauspvm tyhjäksi. Silloin sitä ei lasketa viikon uudeksi kaupaksi.
+
 **Viikot-välilehti** vastaa viikko kerrallaan kysymykseen: tuliko kauppa? Siinä näkyvät kahdeksan mennyttä viikkoa, kuluva viikko ja neljä tulevaa:
 
 - kontaktit, vastaukset, uudet kaupat ja voitetut kaupat
 - kuun kaupat yhteensä
-- ✓ tai ✗ viikkotavoitteeseen nähden (Asetukset → *Kauppoja / viikko, tavoite*, oletus 1)
+- ✓ tai ✗ viikkotavoitteeseen nähden. Tavoite on kuukausikohtainen: Tavoitteet → *Kauppoja / vk*, valmiina 0 marras–joulukuussa ja 1 tammikuusta. Tyhjä = Asetukset → *Kauppoja / viikko, tavoite*.
 - mihin kuukausiin voitettujen kauppojen laskutus osuu, esim. *marras 1 000 € · joulu 1 000 €*
 
 Voitettu kauppa lasketaan sille viikolle, jolle sen Tilauspvm osuu. Kooste kertoo joka aamu tämän viikon kaupat.

@@ -12,12 +12,15 @@ Tilanne marraskuussa 2026. Kaikki summat ilman arvonlisäveroa. Luvut ja oletuks
 | Konsultointiasiakas, kuukausisopimus | 1 000 | toistuva, toistaiseksi voimassa |
 | **Pohja** | **11 000** | |
 | Verkkosivuprojekti (marraskuu) | 1 000 | kerta |
-| **Marraskuu varmistettu** | **12 000** | **vaje 3 000** |
+| Käynnissä oleva projekti, loppulaskutus | 2 000 | kerta, loppuerä 1 000 € joulukuussa |
+| **Marraskuu ennuste** | **14 000** | **vaje 1 000 → siirtyy joulukuulle** |
 
-Ilman projekteja vaje on 4 000 €/kk. Kaksi asiaa on tärkeämpiä kuin itse vaje:
+Ilman projekteja vaje on 4 000 €/kk. Marraskuussa ei tarvitse panikoida: tavoite on saada järjestelmä päälle ja kone tuottamaan tammikuusta alkaen.
+Kaksi asiaa on tärkeämpiä kuin itse vaje:
 
-- **Keskittymä.** Book Lapland -kokonaisuus on 8 000 / 11 000 = 73 % pohjasta. Jos se muuttuu, kaksi kolmasosaa laskutuksesta lähtee kerralla.
-  Tavoite vuoden 2027 loppuun on, että yksikään asiakas ei ole yli 50 % laskutuksesta. Kojelauta näyttää osuuden joka päivä.
+- **Keskittymä.** Book Lapland -kokonaisuus on 8 000 / 11 000 = 73 % pohjasta. Se ei ole lähdössä minnekään, mutta tavoite on, ettei se ole enää välttämätön.
+  Siihen vipu on booking engine: yksi asiakas tuo arviolta 5 000–10 000 €/kk, ja kolme asiakasta ensi vuoden alussa ylittää Book Laplandin osuuden.
+  Nordic Host ja oma putki tuovat lisäksi 2–3 verkkosivuprojektia kuussa. Kojelauta näyttää suurimman asiakkaan osuuden joka päivä.
 - **Kapasiteetti.** Toimituksessa on kaksi tekijää, joten pullonkaula ei ole tekeminen. Pullonkaula on laadukkaiden palaverien ja tarjousten määrä.
   Oma aikasi kannattaa käyttää vastauksiin, palavereihin ja tarjouksiin. Toimitus pysyy hallittavana, kun projekti on tuote eikä räätälöinti.
 
@@ -44,24 +47,24 @@ vaatimalla tasolla, vaikka kuukausi olisi jo katettu. Viikot-välilehti näyttä
 
 ## 3. Kolme kerrosta
 
-### A. Marraskuu: 3 000 € neljässä viikossa lämpimästä verkostosta
+### A. Marras–joulukuu: loput lämpimästä verkostosta, järjestelmä päälle
 
-Kylmä sähköposti ei ehdi marraskuun laskutukseen, koska myyntisykli on 3–6 viikkoa. Marraskuun vaje katetaan näin:
+Kylmä sähköposti ei ehdi marraskuun laskutukseen, koska myyntisykli on 3–6 viikkoa. Marraskuun noin 1 000 € vajeen ja joulukuun lisät hoidetaan näin:
 
-1. **Laskutusehto 50/50.** 50 % laskutetaan tilauksesta ja 50 % julkaisusta. Marraskuussa tilattu 3 000 € projekti tuo
-   1 500 € marraskuulle, vaikka työ tehdään joulukuussa. Kaksi tilausta riittää kattamaan vajeen.
-   Kaupat-välilehdellä tämä kirjataan sarakkeisiin *1. lasku kk* ja *Loppulasku kk*.
-2. **25 henkilökohtaista viestiä tällä viikolla** entisille asiakkaille, kumppaneille ja matkailuverkostolle. Pyydä suosittelua:
-   *"Minulla on joulukuulle tilaa kahdelle verkkosivuprojektille. Tiedätkö jonkun, jonka sivut kaipaisivat uudistusta ennen kevättä?"*
+1. **Käynnissä olevan projektin loppulaskutus.** Kaupat-välilehdellä on valmiina 2 000 € marraskuulle ja 1 000 € joulukuulle (*Erät käsin*). Tarkista summat ja päivät.
+2. **Laskutusehto 50/50.** Puolet laskutetaan aloituksesta ja puolet julkaisusta. Kun 2 500 € projekti tilataan marraskuun puolivälissä,
+   1 250 € tulee marraskuun laskutukseen, vaikka työ tehdään joulukuussa. Tuotteet-välilehden Verkkosivuprojekti hoitaa tämän automaattisesti.
+3. **Verkostoviestit seuraavan kahden viikon aikana:** 25 henkilökohtaista viestiä entisille asiakkaille, kumppaneille ja matkailuverkostolle.
+   Liidit-välilehdellä on tätä varten segmentti *Verkosto*. Sen kahden viestin sarja pyytää suosittelua eikä vaadi havaintoa. Lähetä nämä LUONNOS-tilassa, niin luet jokaisen ennen lähetystä.
    Suosittelupyyntö avaa ovia, joita suora myyntiviesti ei avaa.
    ⚠ Tarkista mainostoimiston kauppakirjasta kilpailu- ja asiakkaiden houkuttelukielto ennen kuin otat yhteyttä toimiston asiakkaisiin.
-3. **Olemassa olevat asiakkaat.** Kysy konsultointiasiakkaalta ja Markkinointiboostin asiakkailta, joiden sivusto on vanha (Akseli tietää ketkä).
+4. **Olemassa olevat asiakkaat.** Kysy konsultointiasiakkaalta ja Markkinointiboostin asiakkailta, joiden sivusto on vanha (Akseli tietää ketkä).
    Projekti tulee sinulle, ja Markkinointiboostin markkinointi tehostuu.
-4. **Harkittava: Markkinointiboostin provisio.** Sovittu 20–25 % 15 000 eurosta on 3 000–3 750 €, ja laskutat nyt 2 000–3 000 €.
+5. **Harkittava: Markkinointiboostin provisio.** Sovittu 20–25 % 15 000 eurosta on 3 000–3 750 €, ja laskutat nyt 2 000–3 000 €.
    Markkinointiboostille jää ennen provisiota noin 5 600 €/kk (15 000 − kulut n. 2 400 − Akseli 5 000 − Ilona 2 000).
    Kyse on siis siitä, kummalle yhtiölle raha jää, eikä uudesta myynnistä.
 
-### B. Joulu–helmikuu: kone, joka tuo kaksi kauppaa kuussa
+### B. Tammikuusta: kone, joka tuo kaupan viikossa
 
 **Kohderyhmä: matkailuyritykset.** Ohjelmapalvelut, mökki- ja lomavuokraajat, glamping ja iglut, pienhotellit ja ravintolat. Syyt:
 
@@ -116,7 +119,9 @@ Toimitusta varten rakennetaan kerran yksi matkailusivun pohja, jota käytetään
 - **Jokaiseen projektiin kuukausipalvelu.** Kaksi projektia kuussa × 150 €/kk tuo vuodessa +3 600 €/kk toistuvaa laskutusta ja Nordic Hostille 24 uutta asiakasta.
 - **Markkinointitarpeet Markkinointiboostille.** Siitä tulee 20–25 %:n provisio, ja Akselin tiimi saa kasvua.
 - **Booking engine** julkaistaan joulukuussa. Tammikuussa siitä tehdään kampanja samalle listalle: kaikille, jotka vastasivat, ja kaikille, joiden havainto oli
-  *"ei suoraa varausta"* tai *"ohjautuu Booking.comiin"*. 2–3 asiakasta vie laskutuksen kohti 20 000 €/kk. Kirjaa jokainen Kaupat-välilehdelle kk-tulona, kun hinnoittelu on lukittu.
+  *"ei suoraa varausta"* tai *"ohjautuu Booking.comiin"*. Yksi asiakas tuo arviolta 5 000–10 000 €/kk, joten kolme asiakasta tuo 15 000–30 000 €/kk.
+  Kun tuki- ja asiakaspalvelutyö kasvaa, siihen palkataan yksi henkilö täysipäiväisesti. Tuotteet-välilehdellä Booking engine on 5 000 €/kk (varovainen arvio).
+  Kirjaa jokainen mahdollinen asiakas Kaupat-välilehdelle tuotteella *Booking engine*, niin painotettu vaikutus näkyy ennusteessa.
 
 Yksi asiakas kulkee näin: sivuprojekti → hosting Nordic Hostiin → markkinointi Markkinointiboostiin → booking engine → referenssi seuraavaan kauppaan.
 Jokainen asiakas on siis arvokkaampi kuin yksittäinen projekti.
@@ -148,7 +153,8 @@ Tarjolla on ennustepohjia taulukkolaskentaan ja erikseen kylmän sähköpostin t
 | kesäkuu 2027 | 19 000 | |
 | heinäkuusta 2027 | 20 000 | Pohja + kuukausipalvelut + booking engine + projektit |
 
-Portaat ovat Tavoitteet-välilehdellä, ja niitä voi muuttaa.
+Portaat ovat Tavoitteet-välilehdellä, ja niitä voi muuttaa. Jos booking engine -asiakkaat toteutuvat arvion mukaan, kevään portaat ylittyvät reilusti.
+Viikkotavoite on marras–joulukuussa 0, jolloin seurannassa ei ole ✓/✗-merkintöjä eikä kiirettä. Tammikuusta alkaen tavoite on 1 kauppa viikossa.
 
 ## 5. Säätömekanismi: kun laskutus ei riitä, kone kiihdyttää
 
@@ -175,11 +181,21 @@ Seurattavat luvut: laskutettu vs. tavoite, ennuste, kontakti → palaveri, palav
 | Perjantai | Päivitä Kaupat-vaiheet ja lisää 30–50 liidiä seuraavalle viikolle (Claude voi tutkia ne puolestasi) | 30 min |
 | Kuun 1. päivä | Laskutuslista on valmiina: laskuta kolmen päivän sisällä ja merkitse rivit lähetetyiksi | 15 min |
 
-## 7. Seuraavaksi rakennetaan
+## 7. Käyttöönotto: marraskuusta tammikuuhun
 
-1. **Oman listan tuonti:** listan tarkistus, segmentointi (Matkailu / Yleinen) ja havainnot sivustotarkistuksella. Lisäksi Claude kokoaa matkailuyrityksiä täydennykseksi.
-2. **Lähetysdomain ja sen lämmitys** (2–3 viikkoa) ennen kuin tahti nostetaan yli 10 viestiin päivässä.
-3. **nerot.fi-automaatio:** ilmoitukset → Tarjouspyynnöt-välilehti → Clauden tarjousluonnos → sinä lähetät. Tarvitaan jäsenyys ja yksi esimerkki-ilmoitus.
-4. **Verkkosivupaketin laskeutumissivu** ja kaksi case-sivua (SkyView ja Book Lapland). Myöhemmin avausviestiin voi lisätä linkin.
-5. **Booking engine -kampanja** tammikuussa.
-6. **Laskutusohjelman integraatio:** toteuma siirtyy Laskut-välilehdelle automaattisesti, kun laskutusohjelma tarjoaa rajapinnan.
+| Viikot | Mitä | Tila |
+|---|---|---|
+| vk 45 (nyt) | Asenna moottori (10 min). Täytä nimi, allekirjoitus ja oikeat asiakkaiden nimet. Tarkista käynnissä olevan projektin erät. Laskuta marraskuun toistuvat. | TESTI |
+| vk 45–46 | Verkostoviestit: 25 tuttua Liidit-välilehdelle segmentillä *Verkosto*. Luet ja lähetät luonnokset itse. | LUONNOS |
+| vk 46 | Lähetysdomain ja Google Workspace -laatikko kylmille viesteille. SPF, DKIM ja DMARC kuntoon ja lämmitys käyntiin. | – |
+| vk 47–48 | Oma lista: osoitteiden tarkistus, segmentointi (Matkailu / Yleinen), tuonti, sivustotarkistus ja havainnot. Tietosuojalause asetuksiin. | TESTI |
+| vk 49–50 | Kylmä sarja luonnoksina uudesta laatikosta, 5–10 päivässä: pohjien hionta oikeiden vastausten perusteella. Booking engine julkaistaan. | LUONNOS |
+| vk 51–52 | Joulutauko: kone tarkistaa vain vastaukset. Loppulaskut joulukuulle. | TESTI |
+| vk 1–2 (tammikuu) | Kone käyntiin 10 viestillä päivässä, viikkotavoite 1 kauppa. Booking engine -kampanja verkostolle ja vastanneille. | LÄHETÄ |
+| vk 3 → | Tahti 17–20 viestiin päivässä (noin 100 viikossa). nerot.fi-jäsenyys ja -automaatio. | LÄHETÄ |
+
+Sen jälkeen rakennetaan:
+
+1. **nerot.fi-automaatio:** ilmoitukset → Tarjouspyynnöt-välilehti → Clauden tarjousluonnos → sinä lähetät. Tarvitaan jäsenyys ja yksi esimerkki-ilmoitus.
+2. **Verkkosivupaketin laskeutumissivu** ja kaksi case-sivua (SkyView ja Book Lapland). Myöhemmin avausviestiin voi lisätä linkin.
+3. **Laskutusohjelman integraatio:** toteuma siirtyy Laskut-välilehdelle automaattisesti, kun laskutusohjelma tarjoaa rajapinnan.

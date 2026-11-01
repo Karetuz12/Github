@@ -49,6 +49,8 @@ class Range {
   clear() { for (let i = 0; i < this.nr; i++) for (let j = 0; j < this.nc; j++) this.sh.set(this.r + i, this.c + j, ''); return this; }
   insertCheckboxes() { return this.setValue(false); }
   getRow() { return this.r; }
+  getColumn() { return this.c; }
+  getNumColumns() { return this.nc; }
   getLastRow() { return this.r + this.nr - 1; }
   getSheet() { return this.sh; }
 }
@@ -276,22 +278,30 @@ test('koko polku: asennus, aamuajo, vastaus, jatkoviesti, luonnos ja kauppa', ()
     ['Kojelauta', 'Viikot', 'Kaupat', 'Liidit', 'Laskut', 'Toistuvat', 'Tavoitteet', 'Tuotteet', 'Viestipohjat', 'Asetukset', 'Loki']);
   assert.equal(y.solu('Kojelauta', 'A3'), 'MARRASKUU 2026');
   assert.equal(y.solu('Kojelauta', 'B4'), 15000);
-  assert.equal(y.solu('Kojelauta', 'B6'), 12000);
-  assert.equal(y.solu('Kojelauta', 'B9'), 3000);
-  assert.equal(y.solu('Kojelauta', 'B11'), 12000); // kassaan marraskuussa
-  assert.equal(y.solu('Kojelauta', 'E10'), 17); // kiintiö: viikkotavoite 1 kauppa → 17 / pv
+  // Lähtötilanne: 11 000 pohja + 1 000 verkkosivuprojekti + 2 000 käynnissä olevasta projektista = 14 000
+  assert.equal(y.solu('Kojelauta', 'B6'), 14000);
+  assert.equal(y.solu('Kojelauta', 'B9'), 1000);
+  assert.equal(y.solu('Kojelauta', 'B11'), 12000); // kassaan marraskuussa (2 000 € erä tulee tilille 14.12.)
+  assert.equal(y.solu('Kojelauta', 'E10'), 4); // marraskuun viikkotavoite 0 → tahti vain vajeesta
   assert.equal(y.solu('Kojelauta', 'A23'), 'marraskuu 2026');
-  assert.equal(y.solu('Kojelauta', 'E23'), 12000);
-  assert.equal(y.solu('Kojelauta', 'L24'), 23000); // kassa kumulatiivinen joulukuun lopussa
+  assert.equal(y.solu('Kojelauta', 'E23'), 14000);
+  assert.equal(y.solu('Kojelauta', 'E24'), 12000);
+  assert.equal(y.solu('Kojelauta', 'L24'), 26000); // kassa kumulatiivinen joulukuun lopussa
   assert.equal(y.solu('Kaupat', 'F1'), 'Tod. %');
   assert.match(y.ss.getSheetByName('Kaupat').kaavat['1,6'], /VLOOKUP\(E2:E,VAIHEET,2,FALSE\)/);
   assert.equal(y.taulu('Tuotteet')[0].Tuote, 'Verkkosivuprojekti');
   assert.equal(y.taulu('Viikot').length, 13);
   assert.equal(y.taulu('Viikot')[8].Viikko, 'vk 44');
+  assert.ok(y.taulu('Viikot').every((v) => v['Voitetut kaupat'] === 0), 'olemassa oleva työ ei ole viikon uusi kauppa');
+  assert.equal(y.taulu('Tavoitteet')[0]['Kauppoja / vk'], 0);
+  assert.equal(y.taulu('Tavoitteet')[2]['Kauppoja / vk'], 1);
+  assert.ok(y.taulu('Tuotteet').some((t) => t.Tuote === 'Booking engine' && t['Kk-tulo €'] === 5000));
   assert.ok(y.ss.nimetyt.VAIHEET);
   assert.equal(y.ss.getSheetByName('Kojelauta').kaaviot.length, 1);
-  assert.deepEqual(y.taulu('Laskut').map((r) => r['Summa € (alv 0)']), [8000, 2000, 1000, 1000]);
+  assert.deepEqual(y.taulu('Laskut').map((r) => r['Summa € (alv 0)']), [8000, 2000, 1000, 1000, 2000]);
   assert.ok(y.taulu('Laskut').every((r) => r.Tila === 'Laskuttamatta'));
+  assert.equal(y.ctx.pvAvain(y.taulu('Laskut')[4].Laskutetaan), '2026-11-30');
+  assert.equal(y.solu('Kojelauta', 'B10'), 11000, 'rästeissä vain rivit, joiden laskutuspäivä on ohi');
   assert.equal(y.triggerit.length, 1);
   assert.equal(y.triggerit[0].tunti, 7);
   assert.equal(y.taulu('Asetukset').find((r) => r.Asetus === 'Raporttien osoite').Arvo, 'mina@booklapland.fi');
@@ -400,21 +410,25 @@ test('koko polku: asennus, aamuajo, vastaus, jatkoviesti, luonnos ja kauppa', ()
   sh.setActiveRange(sh.getRange(2, 1));
   y.ctx.siirraKauppoihin();
   const kaupat = y.taulu('Kaupat');
-  assert.equal(kaupat.length, 2);
-  assert.equal(kaupat[1].Asiakas, 'Revontuli Oy');
-  assert.equal(kaupat[1].Vaihe, 'Palaveri sovittu');
-  assert.equal(kaupat[1].Tuote, 'Verkkosivuprojekti');
-  assert.equal(kaupat[1]['Kertatulo €'], '', 'tyhjä = tuotteen hinta');
-  assert.equal(kaupat[1]['Tod. %'], '', 'Tod. % -sarake jää kaavalle');
+  assert.equal(kaupat.length, 3);
+  assert.equal(kaupat[2].Asiakas, 'Revontuli Oy');
+  assert.equal(kaupat[2].Vaihe, 'Palaveri sovittu');
+  assert.equal(kaupat[2].Tuote, 'Verkkosivuprojekti');
+  assert.equal(kaupat[2]['Kertatulo €'], '', 'tyhjä = tuotteen hinta');
+  assert.equal(kaupat[2]['Tod. %'], '', 'Tod. % -sarake jää kaavalle');
   assert.equal(y.taulu('Liidit')[0].Tila, 'Kauppa');
   // Avoin kauppa: luotu 9.11. + 21 pv = tilaus 30.11. → erä 1 (1 250 €) 7.12. → joulukuun putkeen × 25 %
   assert.equal(y.solu('Kojelauta', 'F24'), 312.5);
 
   // Uusi rivi Kaupat-välilehdelle: tuote, vaihe ja luotu täyttyvät itsestään
   const ks = y.ss.getSheetByName('Kaupat');
-  ks.set(4, 1, 'Pikku Oy');
-  y.ctx.onEdit({ range: ks.getRange(4, 1), source: y.ss });
-  const pikku = y.taulu('Kaupat')[2];
+  // Muun sarakkeen muokkaus ei täytä oletuksia (esim. käynnissä olevan projektin rivi)
+  ks.set(3, 13, 'Soita asiakkaalle');
+  y.ctx.onEdit({ range: ks.getRange(3, 13), source: y.ss });
+  assert.equal(y.taulu('Kaupat')[1].Luotu, '');
+  ks.set(5, 1, 'Pikku Oy');
+  y.ctx.onEdit({ range: ks.getRange(5, 1), source: y.ss });
+  const pikku = y.taulu('Kaupat')[3];
   assert.equal(pikku.Tuote, 'Verkkosivuprojekti');
   assert.equal(pikku.Vaihe, 'Liidi');
   assert.ok(pikku.Luotu);
@@ -435,7 +449,7 @@ test('kuun vaihtuessa uusi laskutuslista ja pomppu tunnistetaan', () => {
   y.ctx.paivittainen();
   assert.equal(y.taulu('Liidit')[0].Tila, 'Pomppasi');
   const joulukuu = y.taulu('Laskut').filter((r) => y.ctx.kkAvain(r.Kuukausi) === '2026-12');
-  assert.deepEqual(joulukuu.map((r) => r['Summa € (alv 0)']), [8000, 2000, 1000]);
+  assert.deepEqual(joulukuu.map((r) => r['Summa € (alv 0)']), [8000, 2000, 1000, 1000]);
   assert.equal(y.props.LASKUTUSLISTA_KK, '2026-12');
   assert.equal(y.solu('Kojelauta', 'A3'), 'JOULUKUU 2026');
 });
@@ -449,6 +463,7 @@ test('vanhan version taulukko päivittyy: puuttuvat välilehdet, sarakkeet ja as
   y.ss.deleteSheet(y.ss.getSheetByName('Viikot'));
   const k = y.ss.getSheetByName('Kaupat');
   k.set(1, 3, 'Vanha sarake');
+  k.set(2, 8, y.ctx.pvmSolu('2026-11-01'));
   k.set(1, 8, '1. lasku kk');
   const as = y.ss.getSheetByName('Asetukset');
   for (let r = 2; r <= as.getLastRow(); r++) if (as.get(r, 1) === 'Kauppoja / viikko, tavoite') { as.set(r, 1, ''); as.set(r, 2, ''); as.set(r, 3, ''); }
@@ -461,7 +476,7 @@ test('vanhan version taulukko päivittyy: puuttuvat välilehdet, sarakkeet ja as
   assert.ok('Tuote' in kaupat[0] && 'Tilauspvm' in kaupat[0]);
   assert.equal(y.ctx.pvAvain(kaupat[0].Tilauspvm), '2026-11-01', '1. lasku kk siirtyi Tilauspvm-sarakkeeseen');
   assert.ok(y.taulu('Asetukset').some((r) => r.Asetus === 'Kauppoja / viikko, tavoite' && r.Arvo === 1));
-  assert.equal(y.solu('Kojelauta', 'B6'), 12000);
+  assert.equal(y.solu('Kojelauta', 'B6'), 14000);
   assert.equal(y.ss.getSheetByName('Kojelauta').kaaviot.length, 1);
   assert.match(y.taulu('Loki').pop().Tulos, /Tuotteet.*Viikot.*Kaupat: Tuote.*Tilauspvm/);
 });
