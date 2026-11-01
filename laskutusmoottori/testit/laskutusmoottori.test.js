@@ -488,7 +488,7 @@ test('kulmien pohjat: kolme viestiä, kaikki muuttujat tunnettuja, ei linkkejä 
 });
 
 test('viestipohjatiedosto vastaa moottorin pohjia', () => {
-  const md = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'viestipohjat', 'VIESTIPOHJAT.md'), 'utf8');
+  const md = require('node:fs').readFileSync(require('node:path').join(__dirname, '..', 'viestipohjat', 'VIESTIPOHJAT.md'), 'utf8').replace(/\r\n/g, '\n');
   Array.from(g.oletusPohjat()).filter((p) => ['WordPress', 'Groundwork', 'Mainonta', 'Sparraus'].includes(p[1])).forEach((p) => {
     assert.ok(md.includes('```text\n' + p[4] + '\n```'), 'VIESTIPOHJAT.md ei vastaa pohjaa ' + p[1] + ' ' + p[0] + ' – generoi tiedosto uudelleen');
     if (p[3]) assert.ok(md.includes('`' + p[3] + '`'), p[1] + ' aihe');
