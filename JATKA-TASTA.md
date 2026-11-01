@@ -94,7 +94,7 @@ Benchmarkit ovat **nordichost.fi** (käyttäjän oma yritys: brändi-ilme on tä
    - domain
    - ajanvarauslinkki
    - logot (Google Drivessa)
-2. **Vercel:** Claude-liittimellä ei ollut oikeutta luoda projektia (403). Käyttäjä tekee sen itse: Vercel → **Add New → Project → Import** repo `Karetuz12/Github`. Root Directory on `puregroundwork` ja tuotantohaara `claude/billing-growth-strategy-6qg1up` (tai main yhdistämisen jälkeen).
+2. **Vercel:** sivusto on julkaistu 1.11.2026 osoitteeseen **https://puregroundwork.vercel.app** (projekti `puregroundwork`, tiimi marketing-4208s-projects). Julkaisu tehdään CLI:llä kansiosta `puregroundwork`: `npx vercel deploy --prod`. GitHub-kytkentää ei ole vielä tehty, joten push ei päivitä sivustoa automaattisesti. robots.txt pitää vercel.app-osoitteen poissa hakukoneista, kunnes oma domain on käytössä. Lomake ei toimi ennen kuin `APPS_SCRIPT_URL` ja `APPS_SCRIPT_SECRET` on lisätty Verceliin.
 3. **Nordic Hostin tarkat brändivärit**, jos käyttäjä haluaa ne. Värit vaihtuvat `app/globals.css`:n alusta.
 4. **nerot.fi-automaatio:** odottaa esimerkkiä ilmoitussähköpostista.
 5. **Videot ja mainoskuvat:** suunnitelma on tiedostossa `puregroundwork/MARKKINOINTI.md`.
