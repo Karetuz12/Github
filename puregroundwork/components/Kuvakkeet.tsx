@@ -44,6 +44,38 @@ const polut: Record<string, React.ReactNode> = {
   alas: <path d="M6 9l6 6 6-6" />,
   valikko: <path d="M4 7h16M4 12h16M4 17h16" />,
   sulje: <path d="M6 6l12 12M18 6L6 18" />,
+  tarkistus: <path d="M5 12.5l4.5 4.5L19 7.5" />,
+  posti: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="3" />
+      <path d="M4 7l8 6 8-6" />
+    </>
+  ),
+  puhelin: <path d="M6.6 3h2.6l1.6 4.4-2 1.4a12 12 0 0 0 6.4 6.4l1.4-2L21 14.8v2.6A2.6 2.6 0 0 1 18.4 20 15.4 15.4 0 0 1 4 5.6 2.6 2.6 0 0 1 6.6 3z" />,
+  sijainti: (
+    <>
+      <path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" />
+      <circle cx="12" cy="9.5" r="2.5" />
+    </>
+  ),
+  kalenteri: (
+    <>
+      <rect x="3" y="5" width="18" height="16" rx="3" />
+      <path d="M3 10h18M8 3v4M16 3v4" />
+    </>
+  ),
+  kello: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l3 2" />
+    </>
+  ),
+  linkedin: (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="4" />
+      <path d="M8 10.5V17M8 7.5v.01M12 17v-4a2.5 2.5 0 0 1 5 0v4M12 10.5V17" />
+    </>
+  ),
 };
 
 export function Kuvake({ nimi, koko = 22 }: { nimi: string; koko?: number }) {

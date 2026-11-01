@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import { Logo } from './Logo';
-import { henkilo, varauslinkki, yritys } from '@/lib/sisalto';
+import { Kuvake } from './Kuvakkeet';
+import { henkilo, palvelut, valikko, varausOsoite, yritys } from '@/lib/sisalto';
 
-export const varausOsoite = varauslinkki || '/#yhteys';
-
-// Liikkuva "liquid"-tausta: pehmeät väripallot liukuvat hitaasti lasipintojen alla
+// Liikkuva "liquid"-tausta: pehmeät väripallot liukuvat hitaasti lasipintojen alla, päällä hienovarainen rae.
 export function Tausta() {
   return (
     <div className="tausta" aria-hidden="true">
@@ -17,67 +16,87 @@ export function Tausta() {
 }
 
 export function Alapalkki() {
+  const vuosi = new Date().getFullYear();
   return (
     <footer className="alapalkki">
-      <div className="sisalto alapalkki-rivi">
-        <div>
-          <Logo />
-          <p className="hiljainen">
-            {henkilo.nimi} · {henkilo.titteli}
-          </p>
+      <div className="sisalto">
+        <div className="alapalkki-yla">
+          <div className="alapalkki-brandi">
+            <Link href="/" aria-label="Pure Groundwork – etusivu" className="ylapalkki-logo">
+              <Logo />
+            </Link>
+            <p>{yritys.kuvaus}</p>
+            <a className="painike painike-pieni" href={varausOsoite}>
+              Varaa 15 minuuttia <Kuvake nimi="nuoli" koko={15} />
+            </a>
+          </div>
+          <nav className="alapalkki-sarakkeet" aria-label="Alavalikko">
+            <div>
+              <p className="alapalkki-otsikko">Palvelut</p>
+              <ul>
+                {palvelut.map((p) => (
+                  <li key={p.slug}>
+                    <Link href={`/palvelut/${p.slug}`}>{p.nimi}</Link>
+                  </li>
+                ))}
+                <li>
+                  <Link href="/palvelut">Kaikki palvelut</Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p className="alapalkki-otsikko">{yritys.brandi}</p>
+              <ul>
+                {valikko.map((v) => (
+                  <li key={v.linkki}>
+                    <Link href={v.linkki}>{v.nimi}</Link>
+                  </li>
+                ))}
+                <li>
+                  <Link href="/tietosuoja">Tietosuoja</Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p className="alapalkki-otsikko">Yhteystiedot</p>
+              <ul className="alapalkki-yhteys">
+                <li>
+                  <Kuvake nimi="posti" koko={18} />
+                  <a href={`mailto:${henkilo.sahkoposti}`}>{henkilo.sahkoposti}</a>
+                </li>
+                {henkilo.puhelin && (
+                  <li>
+                    <Kuvake nimi="puhelin" koko={18} />
+                    <a href={`tel:${henkilo.puhelin.replace(/\s/g, '')}`}>{henkilo.puhelin}</a>
+                  </li>
+                )}
+                {henkilo.linkedin && (
+                  <li>
+                    <Kuvake nimi="linkedin" koko={18} />
+                    <a href={henkilo.linkedin} rel="me noopener" target="_blank">
+                      LinkedIn
+                    </a>
+                  </li>
+                )}
+                <li>
+                  <Kuvake nimi="sijainti" koko={18} />
+                  <span>{henkilo.paikka}</span>
+                </li>
+              </ul>
+            </div>
+          </nav>
         </div>
-        <nav className="alapalkki-linkit" aria-label="Alavalikko">
-          <Link href="/groundwork">Groundwork</Link>
-          <Link href="/sivustot">Sivustot</Link>
-          <Link href="/kumppanuus">Kumppanuus</Link>
-          <Link href="/hinnat">Hinnasto</Link>
-          <Link href="/minusta">Minusta</Link>
-          <Link href="/tietosuoja">Tietosuoja</Link>
-        </nav>
-        <div className="alapalkki-linkit">
-          <a href={`mailto:${henkilo.sahkoposti}`}>{henkilo.sahkoposti}</a>
-          {henkilo.puhelin && <a href={`tel:${henkilo.puhelin.replace(/\s/g, '')}`}>{henkilo.puhelin}</a>}
-          {henkilo.linkedin && <a href={henkilo.linkedin}>LinkedIn</a>}
-        </div>
-        <p className="hiljainen pieni">
-          {yritys.brandi} on {yritys.yhtio}:n palvelu{yritys.ytunnus ? ` · Y-tunnus ${yritys.ytunnus}` : ''}. Tuotemerkit kuuluvat
-          omistajilleen.
+        <p className="alapalkki-sana" aria-hidden="true">
+          Pure Groundwork
         </p>
+        <div className="alapalkki-ala">
+          <span>
+            © {vuosi} {yritys.yhtio}
+            {yritys.ytunnus ? ` · Y-tunnus ${yritys.ytunnus}` : ''}
+          </span>
+          <span>Hinnat alv 0 %. Tuotemerkit kuuluvat omistajilleen.</span>
+        </div>
       </div>
     </footer>
-  );
-}
-
-export function Osio({ id, otsikko, ylaotsikko, johdanto, children, keskitetty }: {
-  id?: string; otsikko?: string; ylaotsikko?: string; johdanto?: string; children: React.ReactNode; keskitetty?: boolean;
-}) {
-  return (
-    <section id={id} className="osio">
-      <div className="sisalto">
-        {(otsikko || ylaotsikko || johdanto) && (
-          <div className={keskitetty ? 'osio-otsikko keskella ilmesty' : 'osio-otsikko ilmesty'}>
-            {ylaotsikko && <p className="ylaotsikko">{ylaotsikko}</p>}
-            {otsikko && <h2>{otsikko}</h2>}
-            {johdanto && <p className="johdanto">{johdanto}</p>}
-          </div>
-        )}
-        {children}
-      </div>
-    </section>
-  );
-}
-
-export function SivunHero({ ylaotsikko, otsikko, teksti, children }: {
-  ylaotsikko: string; otsikko: string; teksti: string; children?: React.ReactNode;
-}) {
-  return (
-    <section className="hero hero-sivu">
-      <div className="sisalto ilmesty">
-        <p className="ylaotsikko">{ylaotsikko}</p>
-        <h1>{otsikko}</h1>
-        <p className="iso">{teksti}</p>
-        {children}
-      </div>
-    </section>
   );
 }

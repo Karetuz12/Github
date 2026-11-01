@@ -5,7 +5,8 @@ export default function robots(): MetadataRoute.Robots {
   // Ennen julkaisua omalla domainilla esikatselut pidetään pois hakukoneista
   const julkinen = process.env.VERCEL_ENV === 'production';
   return {
-    rules: julkinen ? { userAgent: '*', allow: '/' } : { userAgent: '*', disallow: '/' },
-    sitemap: `${yritys.osoite}/sitemap.xml`,
+    rules: julkinen ? { userAgent: '*', allow: '/', disallow: '/api/' } : { userAgent: '*', disallow: '/' },
+    sitemap: `${yritys.osoite.replace(/\/$/, '')}/sitemap.xml`,
+    host: yritys.osoite,
   };
 }

@@ -17,16 +17,58 @@ Tiedostossa `lib/sisalto.ts` on merkintä `TÄYTÄ` seuraavissa kohdissa:
 
 ## Ilme
 
-- **Tumma liquid glass -ilme:** lasipinnat, liikkuva väritausta, megavalikko, liikkuva logonauha, laskurit ja näkyviin liukuvat osiot.
-  Animaatiot pysähtyvät, jos kävijä on pyytänyt laitteeltaan vähemmän liikettä.
-- **Värit:** tiedoston `app/globals.css` alussa (`:root`). **Fontit:** tiedostossa `app/layout.tsx` (`next/font`).
+- **Tumma liquid glass -ilme** konsultointialan premium-templatejen malliin:
+  - kelluva lasiyläpalkki ja megavalikko
+  - iso editoriaalinen typografia, korostussanat kursiivilla serif-fontilla (Instrument Serif)
+  - heron havainnekuva, joka kallistuu paikalleen
+  - vaihtuva sana, logonauha ja vierityksen mukana syttyvä väite
+  - päällekkäin pinoutuvat palvelukortit, vertailutaulukko, prosessi animoidulla viivalla, bento-ruudukko
+  - iso CTA ja alapalkin jättiteksti
+- Animaatiot pysähtyvät, jos kävijä on pyytänyt laitteeltaan vähemmän liikettä. Ilman JavaScriptiä kaikki sisältö näkyy.
+- **Värit:** tiedoston `app/globals.css` alussa (`:root`). **Fontit:** tiedostossa `app/layout.tsx` (`next/font`, ladataan omalta palvelimelta).
   Nämä vaihdetaan Nordic Hostin brändin mukaisiksi, kun nordichost.fi on sallittu istunnon verkkoasetuksissa tai fontit ja värit on kerrottu.
 - **Alustojen logot** tulevat `simple-icons`-paketista (`components/LogoNauha.tsx`). Lista on tiedostossa `lib/sisalto.ts` (`alustat`).
 - **Asiakkaat** (`asiakkaat`) näkyvät tekstilogoina. Tarkista kirjoitusasu ja nimen käyttölupa.
+- **Kaikki tekstit** ovat tiedostossa `lib/sisalto.ts`. Palvelusivut syntyvät `palvelut`-listasta: uusi palvelu listaan = uusi sivu, valikkokohta,
+  sivukarttarivi ja jakokuva automaattisesti.
 
 ## Sivut
 
-`/` · `/groundwork` · `/sivustot` · `/kumppanuus` · `/hinnat` · `/minusta` · `/tietosuoja`
+| Polku | Sisältö |
+|---|---|
+| `/` | Hero, logonauha, väite, palvelupino, luvut, vertailu, prosessi, toimialat, esittely, hinnat, UKK, CTA |
+| `/palvelut` | Kaikki palvelut, prosessi ja vertailu |
+| `/palvelut/groundwork` · `/verkkosivut` · `/mainonta` · `/sparraus` | Kenelle, ongelmat, sisältö, prosessi, hinnat, UKK, muut palvelut |
+| `/hinnat` | Koko hinnasto ja maksuehdot |
+| `/kokemus` | Luvut, hyödyt, toimialat, ura ja alustat |
+| `/minusta` | Esittely, lainaus, aikajana ja työtapa |
+| `/yhteys` | Lomake, yhteystiedot ja seuraavat askeleet |
+| `/tietosuoja` | Tietosuojaseloste |
+
+Vanhat osoitteet (`/groundwork`, `/sivustot`, `/kumppanuus`, `/sparraus`, `/hinnasto`) ohjataan pysyvästi (308) uusille sivuille (`next.config.ts`).
+
+## SEO ja nopeus
+
+- **Metatiedot:** jokaisella sivulla oma title (enintään noin 60 merkkiä), meta description (130–155 merkkiä), kanoninen osoite, Open Graph ja Twitter-kortti (`lib/seo.ts`).
+- **Otsikkorakenne:** yksi H1 per sivu, H2 osioille ja H3 korteille ilman tasohyppyjä.
+- **Rakenteinen data (JSON-LD):** ProfessionalService, Person, WebSite (kaikilla sivuilla), Service ja Offer (palvelusivut), FAQPage (UKK-osiot) ja BreadcrumbList (murupolut).
+- **Sivukartta** `/sitemap.xml`, **robots** `/robots.txt` (esikatselut piilossa, tuotanto näkyvissä), **manifest**, **favicon** ja **Apple-ikoni**.
+- **Jakokuvat** (1200 × 630) syntyvät automaattisesti: etusivulle ja jokaiselle palvelusivulle oma (`app/opengraph-image.tsx`, `lib/og.tsx`).
+- **Nopeus:**
+  - kaikki sivut staattisia
+  - CSS upotettu HTML:ään
+  - fontit omalta palvelimelta
+  - animaatiot pelkällä CSS:llä, raskaat taustasumennukset vain yläpalkissa ja valikossa
+  - LCP-teksti näkyy heti ensimmäisessä piirrossa
+  - CLS 0
+- **Tietoturvaotsakkeet:** nosniff, Referrer-Policy, X-Frame-Options, Permissions-Policy ja tuotannossa HSTS.
+
+Lighthouse (mobiili, tuotantotila, paikallinen palvelin):
+
+| Sivu | Suorituskyky | Saavutettavuus | Parhaat käytännöt | SEO |
+|---|---|---|---|---|
+| Etusivu | 92 | 100 | 100 | 100 |
+| Palvelusivu (Groundwork) | 97 | 100 | 100 | 100 |
 
 ## Yhteydenottolomake → Laskutusmoottori
 

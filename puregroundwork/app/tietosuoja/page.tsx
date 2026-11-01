@@ -1,18 +1,21 @@
 import type { Metadata } from 'next';
-import { Osio } from '@/components/Rakenne';
+import { Murupolku } from '@/components/Osat';
+import { sivunMeta } from '@/lib/seo';
 import { henkilo, yritys } from '@/lib/sisalto';
 
-export const metadata: Metadata = {
-  title: 'Tietosuoja',
-  description: 'Miten Pure Groundwork käsittelee yhteydenottojen ja asiakkaiden tietoja.',
-  alternates: { canonical: '/tietosuoja' },
-};
+export const metadata: Metadata = sivunMeta({
+  polku: '/tietosuoja',
+  otsikko: 'Tietosuojaseloste',
+  kuvaus: 'Miten Pure Groundwork käsittelee yhteydenottojen, asiakkaiden ja sivuston kävijöiden tietoja, ja miten voit käyttää oikeuksiasi.',
+});
 
 // Tarkista teksti ennen julkaisua. Täydennä rekisterinpitäjän tiedot lib/sisalto.ts-tiedostoon.
 export default function Tietosuoja() {
   return (
-    <Osio>
+    <section className="hero hero-sivu">
+      <div className="sisalto">
       <div className="tekstisivu lasi">
+        <Murupolku polut={[{ nimi: 'Tietosuoja', polku: '/tietosuoja' }]} />
         <h1>Tietosuojaseloste</h1>
         <p className="hiljainen">Päivitetty marraskuussa 2026.</p>
 
@@ -69,6 +72,7 @@ export default function Tietosuoja() {
           evästeet eivät tallenna henkilötietoja.
         </p>
       </div>
-    </Osio>
+      </div>
+    </section>
   );
 }

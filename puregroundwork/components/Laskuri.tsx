@@ -34,7 +34,8 @@ export function Laskuri({ arvo, ennen = '', jalkeen = '' }: { arvo: number; enne
   }, [arvo]);
 
   return (
-    <span ref={viite} aria-label={`${ennen}${muoto(arvo)}${jalkeen}`}>
+    <span ref={viite}>
+      <span className="vain-ruudunlukija">{`${ennen}${muoto(arvo)}${jalkeen}`}</span>
       <span aria-hidden="true">
         {ennen}
         {muoto(naytetty)}
