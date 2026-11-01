@@ -15,7 +15,7 @@ import {
 const meta = sivunMeta({
   polku: '/',
   otsikko: `${yritys.brandi} – markkinoinnin perusta ja verkkosivut`,
-  kuvaus: 'Seurannat, Meta- ja Google-mainonta, nopeat verkkosivut ja yhteydenottopolut kuntoon kiinteällä hinnalla. Yli 10 vuoden ja noin 1000 projektin kokemus.',
+  kuvaus: 'Seurannat, Meta- ja Google-mainonta, nopeat verkkosivut ja yhteydenottopolut kuntoon kiinteällä hinnalla. Yli 10 vuoden ja yli 1000 projektin kokemus.',
 });
 export const metadata: Metadata = { ...meta, title: { absolute: `${yritys.brandi} – markkinoinnin perusta ja verkkosivut` } };
 

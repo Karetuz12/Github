@@ -40,11 +40,11 @@ export const hero = {
   kiertoAlku: 'Laitan kuntoon',
   kiertavat: ['seurannat', 'mainostilit', 'sivuston nopeuden', 'yhteydenottopolut', 'hakukonenäkyvyyden'],
   teksti:
-    'Ennen kuin mainontaan laitetaan euroakaan lisää, perustan pitää olla kunnossa. Yli kymmenen vuoden ja noin tuhannen projektin kokemus – ' +
+    'Ennen kuin mainontaan laitetaan euroakaan lisää, perustan pitää olla kunnossa. Yli kymmenen vuoden ja yli tuhannen projektin kokemus – ' +
     'nyt suoraan tekijältä, kiinteällä hinnalla ja ilman toimiston välikäsiä.',
   luvut: [
-    { luku: '~1000', selite: 'projektia' },
-    { luku: '~5 M€', selite: 'mainosbudjetteja' },
+    { luku: '1 000+', selite: 'projektia' },
+    { luku: '5+ M€', selite: 'mediabudjettia' },
     { luku: '50+ M€', selite: 'mitattua myyntiä' },
   ],
 };
@@ -54,11 +54,11 @@ export const vaite =
 
 // Numerot lasketaan näkyviin animaationa: ennen + arvo + jälkeen
 export const numerot = [
-  { arvo: 10, ennen: '', jalkeen: '+', selite: 'vuotta myyntiä, markkinointia ja verkkosivuja' },
-  { arvo: 1000, ennen: '~', jalkeen: '', selite: 'projektia: verkkosivuja, verkkokauppoja ja kampanjoita' },
-  { arvo: 5, ennen: '~', jalkeen: ' M€', selite: 'asiakkaiden mainosbudjetteja Metassa ja Googlessa' },
-  { arvo: 50, ennen: '', jalkeen: '+ M€', selite: 'mitattua myyntiä asiakkaille' },
-  { arvo: 250000, ennen: '', jalkeen: '+', selite: 'liidiä eri toimialoille' },
+  { arvo: 10, ennen: '', jalkeen: '+', selite: 'vuotta myynnin ja markkinoinnin parissa' },
+  { arvo: 1000, ennen: '', jalkeen: '+', selite: 'projektia' },
+  { arvo: 5, ennen: '', jalkeen: '+ M€', selite: 'asiakkaiden mediabudjettia' },
+  { arvo: 50, ennen: '', jalkeen: '+ M€', selite: 'mitattua myyntiä' },
+  { arvo: 250000, ennen: '', jalkeen: '+', selite: 'liidiä' },
 ];
 export const numerotHuomautus = 'Luvut kertovat urani ja vetämäni markkinointitoimiston ajalta.';
 
@@ -93,7 +93,7 @@ export const saavutukset = [
   'Rakensin ja vedin myynti- ja asiakashankintatiimejä ja koulutin myyjiä sekä kuluttaja- että yritysmyyntiin.',
   'Pyöritin seitsemän vuotta omaa markkinointitoimistoa. Parhaimmillaan meitä oli 25: graafikoita, kuvaajia, koodareita, sisällöntuottajia, markkinoijia ja myyjiä.',
   'Teimme asiakkaille noin tuhat projektia: verkkosivuja, verkkokauppoja, kampanjoita ja markkinoinnin konsultointia pienille ja isoille yrityksille.',
-  'Tiimini hallinnoi seitsemässä vuodessa asiakkaiden mainosbudjetteja noin viiden miljoonan euron edestä, pääosin Metassa ja Googlessa.',
+  'Tiimini hallinnoi seitsemässä vuodessa asiakkaiden mediabudjetteja yli viiden miljoonan euron edestä, pääosin Metassa ja Googlessa.',
   'Keräsimme asiakkaille noin 250 000–300 000 liidiä eri toimialoille. Suurin osa oli suomalaista kuluttajakauppaa, mukana myös yritysmyyntiä ja kansainvälistä matkailua.',
   'Urani aikana olen ollut tuomassa asiakkaille mitatusti reilut 50 miljoonaa euroa myyntiä.',
   'Matkailualalla olen toiminut operatiivisena johtajana: resortti, ravintola, aktiviteetit ja lyhytvuokraus.',
@@ -104,7 +104,7 @@ export const ura = [
   { vaihe: 'Koodaus', teksti: 'Koodaamista 15-vuotiaasta, koodarikoulu.' },
   { vaihe: 'Asiakashankinta ja myynti', teksti: 'Kuluttaja- ja yritysmyyntiä, tiimien rakentamista ja myyjien kouluttamista.' },
   { vaihe: 'Myynnin ja projektien johtaminen', teksti: 'Myynnin johtamista, projektinhallintaa ja projektijohtamista.' },
-  { vaihe: 'Oma markkinointitoimisto, 7 vuotta', teksti: 'Parhaimmillaan 25 ihmistä, noin tuhat projektia, mainosbudjetteja noin 5 M€.' },
+  { vaihe: 'Oma markkinointitoimisto, 7 vuotta', teksti: 'Parhaimmillaan 25 ihmistä, yli tuhat projektia, mediabudjetteja yli 5 M€.' },
   { vaihe: 'Matkailuala', teksti: 'Operatiivinen johto: resortti, ravintola, aktiviteetit ja lyhytvuokraus.' },
   { vaihe: 'Pure Groundwork', teksti: 'Markkinoinnin perusta kuntoon omalla nimellä.' },
 ];
@@ -319,7 +319,7 @@ export const palvelut: Palvelu[] = [
     ylaotsikko: 'Sparraus',
     otsikko: 'Kokenut sparraaja markkinoinnin tueksi.',
     korostus: 'sparraaja',
-    ingressi: 'Markkinoinnista vastaavalla on yleensä enemmän tekemistä kuin aikaa – ja harvoin ketään, jonka kanssa käydä ajatuksia läpi. Tuon ulkopuolisen näkemyksen yli kymmenen vuoden ja noin tuhannen projektin kokemuksella.',
+    ingressi: 'Markkinoinnista vastaavalla on yleensä enemmän tekemistä kuin aikaa – ja harvoin ketään, jonka kanssa käydä ajatuksia läpi. Tuon ulkopuolisen näkemyksen yli kymmenen vuoden ja yli tuhannen projektin kokemuksella.',
     hintaAlkaen: '600–1 200 €/kk',
     kortti: 'Taustatukea markkinoinnista vastaavalle: palaveri kerran kuussa ja näkemys siihen, mistä saa enemmän irti.',
     faktat: [['Kenelle', 'Markkinoinnista vastaava'], ['Rytmi', 'Palaveri kerran kuussa'], ['Aloitus', 'Sparrauspalaveri 790 €'], ['Sopimus', 'Kuukausi kerrallaan']],

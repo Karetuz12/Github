@@ -8,6 +8,6 @@ export default function Kuva() {
   return ogKuva({
     ylaotsikko: 'Markkinointi · Verkkosivut · Meta & Google',
     otsikko: 'Puhdasta pohjatyötä markkinoinnille.',
-    alarivi: '~1000 projektia · ~5 M€ mainosbudjetteja · 50+ M€ mitattua myyntiä',
+    alarivi: '1000+ projektia · 5+ M€ mediabudjettia · 50+ M€ mitattua myyntiä',
   });
 }

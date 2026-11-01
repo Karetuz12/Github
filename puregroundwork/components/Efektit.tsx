@@ -38,7 +38,11 @@ export function Efektit() {
         const edistys = Math.min(1, Math.max(0, (korkeus * 0.85 - r.top) / (r.height + korkeus * 0.35)));
         const sanat = p.querySelectorAll('.sana');
         const raja = Math.round(edistys * sanat.length);
-        sanat.forEach((s, i) => s.classList.toggle('paalla', i < raja));
+        sanat.forEach((s, i) => {
+          s.classList.toggle('paalla', i < raja);
+          s.classList.toggle('karki', i < raja && i >= raja - 3 && edistys < 1);
+        });
+        p.closest<HTMLElement>('.paljastus-osio')?.style.setProperty('--edistys', edistys.toFixed(3));
       });
     };
     const vieritys = () => {

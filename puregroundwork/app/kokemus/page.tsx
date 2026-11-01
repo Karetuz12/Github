@@ -7,8 +7,8 @@ import { alustat, kokemusHyodyt, saavutukset, varausOsoite } from '@/lib/sisalto
 
 export const metadata: Metadata = sivunMeta({
   polku: '/kokemus',
-  otsikko: 'Kokemus – noin 1000 projektia',
-  kuvaus: 'Seitsemän vuotta omaa markkinointitoimistoa, noin 1000 projektia, 5 M€ mainosbudjetteja, 250 000+ liidiä ja 50+ M€ mitattua myyntiä asiakkaille.',
+  otsikko: 'Kokemus – yli 1000 projektia',
+  kuvaus: 'Seitsemän vuotta omaa markkinointitoimistoa, yli 1000 projektia, yli 5 M€ mediabudjetteja, 250 000+ liidiä ja 50+ M€ mitattua myyntiä asiakkaille.',
 });
 
 export default function Kokemus() {

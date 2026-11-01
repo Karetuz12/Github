@@ -312,8 +312,14 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
 /* Väite ja Nordic Hostin yhdysviivat */
 .paljastus-osio { padding: 0 0 20px; }
 .paljastus { font-size: clamp(1.75rem, 4vw, 3.2rem); line-height: 1.22; letter-spacing: -0.04em; font-weight: 500; max-width: 23em; margin: 0 auto; text-align: center; text-wrap: balance; }
-.paljastus-kaytossa .paljastus .sana { opacity: var(--sana-himmea); transition: opacity 0.35s; }
-.paljastus-kaytossa .paljastus .sana.paalla { opacity: 1; }
+/* Sanat nousevat sumusta yksi kerrallaan; juuri syttyneet sanat hehkuvat hetken korostusvärissä */
+.paljastus-kaytossa .paljastus .sana { display: inline-block; white-space: pre; opacity: 0.1; filter: blur(8px); transform: translateY(0.35em);
+  transition: opacity 0.7s var(--pehmea), filter 0.7s var(--pehmea), transform 0.7s var(--pehmea), color 0.9s var(--pehmea); }
+.paljastus-kaytossa .paljastus .sana.paalla { opacity: 1; filter: none; transform: none; }
+.paljastus-kaytossa .paljastus .sana.karki { color: var(--korostus); }
+/* Yhdysviivat piirtyvät vierityksen mukana: ylempi osion tullessa näkyviin, alempi tekstin valmistuessa */
+.paljastus-kaytossa .paljastus-osio .yhdysviiva { background-repeat: no-repeat; background-size: 100% calc(min(1, var(--edistys, 0) * 3) * 100%); }
+.paljastus-kaytossa .paljastus-osio .yhdysviiva.ala { background-size: 100% calc(max(0, var(--edistys, 0) * 4 - 3) * 100%); }
 .yhdysviiva { position: relative; display: block; width: 2px; height: 120px; margin: 0 auto 64px; background: linear-gradient(180deg, transparent, var(--teksti)); }
 .yhdysviiva::after { content: ''; position: absolute; left: 50%; bottom: -12px; width: 14px; height: 14px; transform: translateX(-50%); border-radius: 50%; border: 2px solid var(--teksti); background: var(--pohja); }
 .yhdysviiva.ala { margin: 64px auto 0; background: linear-gradient(180deg, var(--teksti), transparent); }
@@ -351,7 +357,7 @@ section.vaalea:has(+ section:not(.vaalea)), section.vaalea:last-of-type { border
 
 /* ───────── Numerot ───────── */
 .numerot { display: grid; grid-template-columns: repeat(5, 1fr); margin: 0; padding: 10px; list-style: none; }
-.numerot li { padding: 26px 24px; display: flex; flex-direction: column; justify-content: space-between; min-height: 170px; border-left: 1px solid var(--reuna); }
+.numerot li { padding: 26px 24px; display: flex; flex-direction: column; justify-content: flex-start; min-height: 150px; border-left: 1px solid var(--reuna); }
 .numerot li:first-child { border-left: 0; }
 .numerot-huom { margin: 18px 0 0; }
 .numerot strong { display: block; font-size: clamp(2.1rem, 3.4vw, 3rem); line-height: 1; font-weight: 500; letter-spacing: -0.055em; white-space: nowrap; }
