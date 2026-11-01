@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: yritys.kuvaus,
     start_url: '/',
     display: 'browser',
-    background_color: '#06080f',
-    theme_color: '#06080f',
+    background_color: '#040a1f',
+    theme_color: '#040a1f',
     lang: 'fi',
     icons: [
       { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml' },

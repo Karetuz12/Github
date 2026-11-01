@@ -18,7 +18,7 @@ export default function Yhteys() {
         teksti="Pari lausetta riittää. Vastaan yleensä saman päivän aikana – ja kerron suoraan, kannattaako jatkaa vai ei."
         polut={[{ nimi: 'Yhteys', polku: '/yhteys' }]} />
 
-      <section className="osio osio-tiivis" aria-label="Yhteydenotto">
+      <section className="osio osio-tiivis vaalea" aria-label="Yhteydenotto">
         <div className="sisalto yhteys-ruudukko">
           <div className="yhteys-kortti lasi ilmesty">
             <h2>Lähetä viesti</h2>

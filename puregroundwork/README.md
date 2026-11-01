@@ -17,16 +17,19 @@ Tiedostossa `lib/sisalto.ts` on merkintä `TÄYTÄ` seuraavissa kohdissa:
 
 ## Ilme
 
-- **Tumma liquid glass -ilme** konsultointialan premium-templatejen malliin:
+- **Nordic Hostin brändi-ilme** (nordichost.fi): Inter-fontti tiiviillä display-otsikoilla, tumma navy ja sähkönsininen korostus,
+  valkoiset pillipainikkeet, siniset valojuovat heron taustalla, lasikortit tummalla ja vaaleat sisältöosiot. Muita tunnusmerkkejä:
+  - yhdysviiva ympyrällä väitteen ympärillä
+  - UKK-haitari jakoviivoin ja pyöreillä +-painikkeilla
+  - logo, jossa ensimmäinen sana on lihavoitu (**Pure**Groundwork, kuten **Nordic**Host)
+- **Premium-elementit:**
   - kelluva lasiyläpalkki ja megavalikko
-  - iso editoriaalinen typografia, korostussanat kursiivilla serif-fontilla (Instrument Serif)
-  - heron havainnekuva, joka kallistuu paikalleen
-  - vaihtuva sana, logonauha ja vierityksen mukana syttyvä väite
-  - päällekkäin pinoutuvat palvelukortit, vertailutaulukko, prosessi animoidulla viivalla, bento-ruudukko
+  - kallistuva havainnekuva, vaihtuva sana ja vierityksen mukana syttyvä väite
+  - pinoutuvat palvelukortit, vertailu, prosessi animoidulla viivalla ja bento-ruudukko
   - iso CTA ja alapalkin jättiteksti
+- **Teemat:** sivu on oletuksena tumma. Osio saa vaalean teeman luokalla `vaalea`, ja elementti tumman teeman vaalean osion sisällä luokalla `tumma`.
+  Kaikki värit ovat muuttujia tiedoston `app/globals.css` alussa, joten väri vaihdetaan yhdestä paikasta.
 - Animaatiot pysähtyvät, jos kävijä on pyytänyt laitteeltaan vähemmän liikettä. Ilman JavaScriptiä kaikki sisältö näkyy.
-- **Värit:** tiedoston `app/globals.css` alussa (`:root`). **Fontit:** tiedostossa `app/layout.tsx` (`next/font`, ladataan omalta palvelimelta).
-  Nämä vaihdetaan Nordic Hostin brändin mukaisiksi, kun nordichost.fi on sallittu istunnon verkkoasetuksissa tai fontit ja värit on kerrottu.
 - **Alustojen logot** tulevat `simple-icons`-paketista (`components/LogoNauha.tsx`). Lista on tiedostossa `lib/sisalto.ts` (`alustat`).
 - **Asiakkaat** (`asiakkaat`) näkyvät tekstilogoina. Tarkista kirjoitusasu ja nimen käyttölupa.
 - **Kaikki tekstit** ovat tiedostossa `lib/sisalto.ts`. Palvelusivut syntyvät `palvelut`-listasta: uusi palvelu listaan = uusi sivu, valikkokohta,
@@ -57,7 +60,7 @@ Vanhat osoitteet (`/groundwork`, `/sivustot`, `/kumppanuus`, `/sparraus`, `/hinn
 - **Nopeus:**
   - kaikki sivut staattisia
   - CSS upotettu HTML:ään
-  - fontit omalta palvelimelta
+  - yksi fonttiperhe (Inter) omalta palvelimelta
   - animaatiot pelkällä CSS:llä, raskaat taustasumennukset vain yläpalkissa ja valikossa
   - LCP-teksti näkyy heti ensimmäisessä piirrossa
   - CLS 0
@@ -67,8 +70,10 @@ Lighthouse (mobiili, tuotantotila, paikallinen palvelin):
 
 | Sivu | Suorituskyky | Saavutettavuus | Parhaat käytännöt | SEO |
 |---|---|---|---|---|
-| Etusivu | 92 | 100 | 100 | 100 |
-| Palvelusivu (Groundwork) | 97 | 100 | 100 | 100 |
+| Etusivu | 93 | 100 | 100 | 100 |
+| Palvelusivu (Groundwork) | 95 | 100 | 100 | 100 |
+| Hinnasto | 97 | 100 | 100 | 100 |
+| Yhteys | 97 | 100 | 100 | 100 |
 
 ## Yhteydenottolomake → Laskutusmoottori
 

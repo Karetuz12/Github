@@ -28,7 +28,7 @@ export default function Kokemus() {
         <Numerot />
       </Osio>
 
-      <Osio id="hyodyt" ylaotsikko="Mitä se tarkoittaa sinulle" otsikko="Kokemus lyhentää matkaa tulokseen." korostus="lyhentää">
+      <Osio id="hyodyt" ylaotsikko="Mitä se tarkoittaa sinulle" otsikko="Kokemus lyhentää matkaa tulokseen." korostus="lyhentää" luokka="vaalea">
         <div className="hyodyt">
           {kokemusHyodyt.map((h, i) => (
             <div key={h.otsikko} className={`hyoty lasi ilmesty viive-${i}`}>
@@ -46,7 +46,7 @@ export default function Kokemus() {
         <KokemusBento />
       </Osio>
 
-      <Osio id="saavutukset" ylaotsikko="Ura" otsikko="Mitä olen tehnyt." korostus="tehnyt">
+      <Osio id="saavutukset" ylaotsikko="Ura" otsikko="Mitä olen tehnyt." korostus="tehnyt" luokka="vaalea">
         <ol className="saavutuslista">
           {saavutukset.map((s, i) => (
             <li key={s.slice(0, 24)} className={`ilmesty viive-${Math.min(i % 4, 4)}`}>
@@ -57,7 +57,7 @@ export default function Kokemus() {
         </ol>
       </Osio>
 
-      <Osio id="alustat" ylaotsikko="Työkalut" otsikko="Alustat, jotka tunnen läpikotaisin." korostus="läpikotaisin">
+      <Osio id="alustat" ylaotsikko="Työkalut" otsikko="Alustat, jotka tunnen läpikotaisin." korostus="läpikotaisin" luokka="vaalea">
         <ul className="alustaruudukko">
           {alustat.map((a, i) => (
             <li key={a} className={`lasi ilmesty viive-${i % 4}`}>

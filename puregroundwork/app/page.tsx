@@ -4,6 +4,7 @@ import { HeroNakyma } from '@/components/HeroNakyma';
 import { Kuvake } from '@/components/Kuvakkeet';
 import { LogoNauha } from '@/components/LogoNauha';
 import { Muotokuva } from '@/components/Muotokuva';
+import { Valojuovat } from '@/components/Valojuovat';
 import {
   CtaOsio, KokemusBento, Korostus, Numerot, Osio, PalveluPino, Prosessi, Sanakierto, TekstiPaljastus, UKK, Vertailu,
 } from '@/components/Osat';
@@ -23,6 +24,7 @@ export default function Etusivu() {
   return (
     <>
       <section className="hero hero-etusivu">
+        <Valojuovat />
         <div className="sisalto">
           <div className="hero-teksti">
             <p className="ylaotsikko hero-nousu">{hero.ylaotsikko}</p>
@@ -54,13 +56,17 @@ export default function Etusivu() {
       </section>
 
       <section className="nauha-osio" aria-label="Alustat ja työkalut">
-        <p className="nauha-otsikko">Alustat ja työkalut, joilla teen töitä päivittäin</p>
-        <LogoNauha nimet={alustat} />
+        <div className="sisalto">
+          <div className="luottamuskortti lasi">
+            <p className="nauha-otsikko">Alustat ja työkalut, joilla teen töitä päivittäin</p>
+            <LogoNauha nimet={alustat} />
+          </div>
+        </div>
       </section>
 
       <TekstiPaljastus teksti={vaite} />
 
-      <Osio id="palvelut" ylaotsikko="Palvelut" otsikko="Neljä tapaa laittaa perusta kuntoon." korostus="perusta"
+      <Osio id="palvelut" ylaotsikko="Palvelut" otsikko="Neljä tapaa laittaa perusta kuntoon." korostus="perusta" luokka="vaalea"
         johdanto="Aloita katselmuksella, rakenna uusi sivusto tai ulkoista mainonta kevyellä kuukausimallilla. Jokainen palvelu toimii yksinään – ja yhdessä vielä paremmin.">
         <PalveluPino />
       </Osio>
@@ -68,16 +74,6 @@ export default function Etusivu() {
       <Osio id="kokemus" ylaotsikko="Kokemus" otsikko="Kokemus, joka näkyy luvuissa." korostus="luvuissa"
         johdanto="Seitsemän vuotta oman markkinointitoimiston vetämistä ja yli kymmenen vuotta myyntiä ja markkinointia. Nämä luvut ovat sen ajalta.">
         <Numerot />
-      </Osio>
-
-      <Osio id="miksi" ylaotsikko="Miksi Pure Groundwork" otsikko="Kokeneen tekijän ote ilman toimiston raskautta." korostus="ote"
-        johdanto="Sama osaaminen kuin isossa toimistossa – mutta asioit suoraan tekijän kanssa ja tiedät hinnan etukäteen.">
-        <Vertailu />
-      </Osio>
-
-      <Osio id="prosessi" ylaotsikko="Prosessi" otsikko="Neljä askelta selkeään lopputulokseen." korostus="selkeään"
-        johdanto="Ei viikkojen kartoituksia eikä työpajoja. Ensimmäisen viikon jälkeen tiedät, mitä korjataan ja mitä se maksaa.">
-        <Prosessi vaiheet={vaiheet} />
       </Osio>
 
       <Osio id="toimialat" ylaotsikko="Toimialat" otsikko="Toimialat, joilla olen tehnyt tulosta." korostus="tulosta">
@@ -89,7 +85,17 @@ export default function Etusivu() {
         </p>
       </Osio>
 
-      <section className="osio" aria-labelledby="esittely-otsikko">
+      <Osio id="miksi" ylaotsikko="Miksi Pure Groundwork" otsikko="Kokeneen tekijän ote ilman toimiston raskautta." korostus="ote" luokka="vaalea"
+        johdanto="Sama osaaminen kuin isossa toimistossa – mutta asioit suoraan tekijän kanssa ja tiedät hinnan etukäteen.">
+        <Vertailu />
+      </Osio>
+
+      <Osio id="prosessi" ylaotsikko="Prosessi" otsikko="Neljä askelta selkeään lopputulokseen." korostus="selkeään" luokka="vaalea"
+        johdanto="Ei viikkojen kartoituksia eikä työpajoja. Ensimmäisen viikon jälkeen tiedät, mitä korjataan ja mitä se maksaa.">
+        <Prosessi vaiheet={vaiheet} />
+      </Osio>
+
+      <section className="osio vaalea" aria-labelledby="esittely-otsikko">
         <div className="sisalto esittely">
           <div className="ilmesty">
             <Muotokuva />
@@ -116,7 +122,7 @@ export default function Etusivu() {
         </div>
       </section>
 
-      <Osio id="hinnat" ylaotsikko="Hinnat" otsikko="Selkeät hinnat ennen aloitusta." korostus="Selkeät"
+      <Osio id="hinnat" ylaotsikko="Hinnat" otsikko="Selkeät hinnat ennen aloitusta." korostus="Selkeät" luokka="vaalea"
         johdanto="Ei tuntilaskutusta eikä yllätyksiä. Tarkka hinta sovitaan aina ennen kuin työ alkaa.">
         <div className="hintanostot">
           {palvelut.map((p, i) => (
@@ -140,7 +146,7 @@ export default function Etusivu() {
         </p>
       </Osio>
 
-      <Osio id="kysymykset" ylaotsikko="Kysymykset" otsikko="Usein kysyttyä." korostus="kysyttyä" luokka="osio-ukk">
+      <Osio id="kysymykset" ylaotsikko="Kysymykset" otsikko="Usein kysyttyä." korostus="kysyttyä" luokka="osio-ukk vaalea">
         <UKK kysymykset={kysymykset} />
       </Osio>
 

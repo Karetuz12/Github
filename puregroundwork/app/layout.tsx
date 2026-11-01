@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Instrument_Serif, Plus_Jakarta_Sans } from 'next/font/google';
+import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import { Alapalkki, Tausta } from '@/components/Rakenne';
@@ -9,10 +9,8 @@ import { Ylapalkki } from '@/components/Ylapalkki';
 import { organisaatioJsonLd } from '@/lib/seo';
 import { henkilo, yritys } from '@/lib/sisalto';
 
-// Brändifontit. Vaihda Nordic Hostin fontteihin tässä – muuttujat hoitavat loput.
-const otsikkoFontti = Plus_Jakarta_Sans({ subsets: ['latin'], weight: ['500', '600', '700'], variable: '--fontti-otsikko', display: 'swap' });
-const tekstiFontti = Inter({ subsets: ['latin'], variable: '--fontti-teksti', display: 'swap' });
-const serifFontti = Instrument_Serif({ subsets: ['latin'], weight: '400', style: 'italic', variable: '--fontti-serif', display: 'swap' });
+// Nordic Hostin brändifontti: Inter. Optinen koko (opsz) tekee isoista otsikoista tiiviin display-leikkauksen automaattisesti.
+const fontti = Inter({ subsets: ['latin'], axes: ['opsz'], variable: '--fontti', display: 'swap' });
 
 export const metadata: Metadata = {
   metadataBase: new URL(yritys.osoite),
@@ -26,14 +24,14 @@ export const metadata: Metadata = {
   twitter: { card: 'summary_large_image' },
 };
 
-export const viewport: Viewport = { themeColor: '#06080f', width: 'device-width', initialScale: 1, colorScheme: 'dark' };
+export const viewport: Viewport = { themeColor: '#040a1f', width: 'device-width', initialScale: 1, colorScheme: 'dark' };
 
 // Seurannat: aseta Vercelissä NEXT_PUBLIC_GTM_ID (esim. GTM-XXXXXXX). Tyhjä = ei seurantaa.
 const gtm = process.env.NEXT_PUBLIC_GTM_ID;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fi" className={`${otsikkoFontti.variable} ${tekstiFontti.variable} ${serifFontti.variable}`}>
+    <html lang="fi" className={fontti.variable}>
       <head>
         {/* Animaatiot piilottavat sisältöä vain, kun JavaScript on käytössä */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />

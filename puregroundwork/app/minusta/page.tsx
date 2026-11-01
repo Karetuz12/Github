@@ -34,7 +34,7 @@ export default function Minusta() {
         </div>
       </SivunHero>
 
-      <section className="osio" aria-label="Lainaus">
+      <section className="osio vaalea" aria-label="Lainaus">
         <div className="sisalto">
           <blockquote className="iso-lainaus ilmesty">
             <p>
@@ -45,7 +45,7 @@ export default function Minusta() {
         </div>
       </section>
 
-      <Osio id="ura" ylaotsikko="Ura" otsikko="Koodista myyntiin, toimistosta omalle nimelle." korostus="omalle nimelle">
+      <Osio id="ura" ylaotsikko="Ura" otsikko="Koodista myyntiin, toimistosta omalle nimelle." korostus="omalle nimelle" luokka="vaalea">
         <ol className="aikajana">
           {ura.map((u, i) => (
             <li key={u.vaihe} className={`ilmesty viive-${Math.min(i % 3, 4)}`}>
@@ -59,7 +59,7 @@ export default function Minusta() {
         </ol>
       </Osio>
 
-      <Osio id="tyotapa" ylaotsikko="Työtapa" otsikko="Miten teen töitä." korostus="töitä">
+      <Osio id="tyotapa" ylaotsikko="Työtapa" otsikko="Miten teen töitä." korostus="töitä" luokka="vaalea">
         <div className="hyodyt hyodyt-4">
           {tyotapa.map((t, i) => (
             <div key={t.otsikko} className={`hyoty lasi ilmesty viive-${i}`}>
@@ -71,7 +71,7 @@ export default function Minusta() {
         </div>
       </Osio>
 
-      <section className="nauha-osio" aria-label="Alustat ja työkalut">
+      <section className="nauha-osio vaalea" aria-label="Alustat ja työkalut">
         <p className="nauha-otsikko">Työkalut, joita käytän päivittäin</p>
         <LogoNauha nimet={alustat} />
       </section>

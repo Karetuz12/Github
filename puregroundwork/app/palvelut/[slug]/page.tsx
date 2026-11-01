@@ -41,11 +41,11 @@ export default async function PalveluSivu({ params }: Parametrit) {
         </div>
       </SivunHero>
 
-      <Osio id="kenelle" ylaotsikko="Kenelle" otsikko="Sopii sinulle, jos…" korostus="sinulle">
+      <Osio id="kenelle" ylaotsikko="Kenelle" otsikko="Sopii sinulle, jos…" korostus="sinulle" luokka="vaalea">
         <KenelleLista kohdat={p.kenelle} />
       </Osio>
 
-      <Osio id="ongelmat" ylaotsikko="Tunnistatko nämä?" otsikko="Kolme syytä, miksi tulosta ei synny." korostus="syytä">
+      <Osio id="ongelmat" ylaotsikko="Tunnistatko nämä?" otsikko="Kolme syytä, miksi tulosta ei synny." korostus="syytä" luokka="vaalea">
         <div className="ongelmat">
           {p.ongelmat.map((o, i) => (
             <div key={o.otsikko} className={`ongelma lasi ilmesty viive-${i}`}>
@@ -72,20 +72,20 @@ export default async function PalveluSivu({ params }: Parametrit) {
         </div>
       </Osio>
 
-      <Osio id="prosessi" ylaotsikko="Prosessi" otsikko="Näin edetään." korostus="edetään">
+      <Osio id="prosessi" ylaotsikko="Prosessi" otsikko="Näin edetään." korostus="edetään" luokka="vaalea">
         <Prosessi vaiheet={p.prosessi} />
       </Osio>
 
-      <Osio id="hinnat" ylaotsikko="Hinnat" otsikko="Selkeä hinta etukäteen." korostus="etukäteen" johdanto={maksuehdot}>
+      <Osio id="hinnat" ylaotsikko="Hinnat" otsikko="Selkeä hinta etukäteen." korostus="etukäteen" johdanto={maksuehdot} luokka="vaalea">
         <HintaKortit hinnat={p.hinnat} />
         <p className="hiljainen pieni osio-huom">{hinnatHuomautus}</p>
       </Osio>
 
-      <Osio id="kysymykset" ylaotsikko="Kysymykset" otsikko="Usein kysyttyä." korostus="kysyttyä" luokka="osio-ukk">
+      <Osio id="kysymykset" ylaotsikko="Kysymykset" otsikko="Usein kysyttyä." korostus="kysyttyä" luokka="osio-ukk vaalea">
         <UKK kysymykset={p.ukk} />
       </Osio>
 
-      <Osio id="muut" ylaotsikko="Muut palvelut" otsikko="Tarvitsetko jotain muuta?" korostus="muuta">
+      <Osio id="muut" ylaotsikko="Muut palvelut" otsikko="Tarvitsetko jotain muuta?" korostus="muuta" luokka="vaalea">
         <div className="muut-palvelut">
           {muut.map((m, i) => (
             <Link key={m.slug} href={`/palvelut/${m.slug}`} className={`muu-palvelu lasi ilmesty viive-${i}`}>

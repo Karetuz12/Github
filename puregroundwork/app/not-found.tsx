@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { Kuvake } from '@/components/Kuvakkeet';
+import { Valojuovat } from '@/components/Valojuovat';
 import { megavalikko } from '@/lib/sisalto';
 
 export const metadata: Metadata = { title: 'Sivua ei löytynyt', robots: { index: false } };
@@ -8,10 +9,11 @@ export const metadata: Metadata = { title: 'Sivua ei löytynyt', robots: { index
 export default function EiLoytynyt() {
   return (
     <section className="hero hero-sivu">
+      <Valojuovat />
       <div className="sisalto keskella-teksti">
         <p className="ylaotsikko">404</p>
         <h1>
-          Tämä sivu jäi <em className="serif">pohjatyön</em> alle.
+          Tämä sivu jäi <em className="korostus">pohjatyön</em> alle.
         </h1>
         <p className="iso">Osoite on vaihtunut tai sivua ei ole. Tästä pääset jatkamaan:</p>
         <div className="painikkeet keskella">

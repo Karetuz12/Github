@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Murupolku } from '@/components/Osat';
+import { SivunHero } from '@/components/Osat';
 import { sivunMeta } from '@/lib/seo';
 import { henkilo, yritys } from '@/lib/sisalto';
 
@@ -12,12 +12,12 @@ export const metadata: Metadata = sivunMeta({
 // Tarkista teksti ennen julkaisua. Täydennä rekisterinpitäjän tiedot lib/sisalto.ts-tiedostoon.
 export default function Tietosuoja() {
   return (
-    <section className="hero hero-sivu">
+    <>
+    <SivunHero ylaotsikko="Tietosuoja" otsikko="Tietosuojaseloste" teksti="Miten käsittelen yhteydenottojen, asiakkaiden ja sivuston kävijöiden tietoja. Päivitetty marraskuussa 2026."
+      polut={[{ nimi: 'Tietosuoja', polku: '/tietosuoja' }]} />
+    <section className="osio vaalea" aria-label="Tietosuojaseloste">
       <div className="sisalto">
-      <div className="tekstisivu lasi">
-        <Murupolku polut={[{ nimi: 'Tietosuoja', polku: '/tietosuoja' }]} />
-        <h1>Tietosuojaseloste</h1>
-        <p className="hiljainen">Päivitetty marraskuussa 2026.</p>
+      <div className="tekstisivu">
 
         <h2>Rekisterinpitäjä</h2>
         <p>
@@ -74,5 +74,6 @@ export default function Tietosuoja() {
       </div>
       </div>
     </section>
+    </>
   );
 }

@@ -26,7 +26,7 @@ export default function Hinnat() {
         </div>
       </SivunHero>
 
-      <section className="osio osio-tiivis" aria-label="Hinnasto">
+      <section className="osio osio-tiivis vaalea" aria-label="Hinnasto">
         <div className="sisalto">
           <div className="hinnasto">
             {hinnasto.map((ryhma, i) => (
@@ -62,7 +62,7 @@ export default function Hinnat() {
         </div>
       </section>
 
-      <Osio id="kysymykset" ylaotsikko="Kysymykset" otsikko="Kysyttyä hinnoista." korostus="hinnoista" luokka="osio-ukk">
+      <Osio id="kysymykset" ylaotsikko="Kysymykset" otsikko="Kysyttyä hinnoista." korostus="hinnoista" luokka="osio-ukk vaalea">
         <UKK kysymykset={hintaKysymykset} />
       </Osio>
 

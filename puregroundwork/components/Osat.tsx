@@ -2,20 +2,21 @@ import Link from 'next/link';
 import { JsonLd } from './JsonLd';
 import { Kuvake } from './Kuvakkeet';
 import { Laskuri } from './Laskuri';
+import { Valojuovat } from './Valojuovat';
 import { BrandiKuvake } from './LogoNauha';
 import { murupolkuJsonLd, ukkJsonLd } from '@/lib/seo';
 import {
   asiakkaat, hinnatHuomautus, numerot, numerotHuomautus, palvelut, toimialat, varausOsoite, vertailu, type Palvelu,
 } from '@/lib/sisalto';
 
-/** Korostaa otsikosta yhden sanan kursiivilla serif-fontilla. */
+/** Korostaa otsikosta yhden sanan brändin sinisellä liukuvärillä. */
 export function Korostus({ teksti, sana }: { teksti: string; sana?: string }) {
   if (!sana || !teksti.includes(sana)) return <>{teksti}</>;
   const [ennen, ...loput] = teksti.split(sana);
   return (
     <>
       {ennen}
-      <em className="serif">{sana}</em>
+      <em className="korostus">{sana}</em>
       {loput.join(sana)}
     </>
   );
@@ -69,6 +70,7 @@ export function SivunHero({ ylaotsikko, otsikko, korostus, teksti, polut, childr
 }) {
   return (
     <section className="hero hero-sivu">
+      <Valojuovat />
       <div className={sivu ? 'sisalto hero-ruudukko' : 'sisalto'}>
         <div className="hero-nousu">
           {polut && <Murupolku polut={polut} />}
@@ -88,8 +90,9 @@ export function SivunHero({ ylaotsikko, otsikko, korostus, teksti, polut, childr
 /** Väite, joka piirtyy näkyviin sana kerrallaan vierittäessä (Efektit.tsx). Ilman JavaScriptiä teksti näkyy kokonaan. */
 export function TekstiPaljastus({ teksti }: { teksti: string }) {
   return (
-    <section className="osio paljastus-osio" aria-label="Lähtökohta">
+    <section className="osio paljastus-osio vaalea" aria-label="Lähtökohta">
       <div className="sisalto">
+        <span className="yhdysviiva" aria-hidden="true" />
         <p className="paljastus">
           {teksti.split(' ').map((s, i) => (
             <span key={i} className="sana">
@@ -97,6 +100,7 @@ export function TekstiPaljastus({ teksti }: { teksti: string }) {
             </span>
           ))}
         </p>
+        <span className="yhdysviiva ala" aria-hidden="true" />
       </div>
     </section>
   );
@@ -249,7 +253,7 @@ const mallit: Record<string, () => React.ReactElement> = {
 export function PalveluMalli({ slug }: { slug: string }) {
   const M = mallit[slug] ?? MalliGroundwork;
   return (
-    <div className="malli-alue" aria-hidden="true">
+    <div className="malli-alue tumma" aria-hidden="true">
       <M />
     </div>
   );
@@ -306,7 +310,7 @@ export function HintaKortit({ hinnat }: { hinnat: Palvelu['hinnat'] }) {
   return (
     <div className={`hintakortit maara-${hinnat.length}`}>
       {hinnat.map((h, i) => (
-        <div key={h.nimi} className={`hintakortti lasi ilmesty viive-${i}${h.suosittu ? ' suosittu' : ''}`}>
+        <div key={h.nimi} className={`hintakortti lasi ilmesty viive-${i}${h.suosittu ? ' suosittu tumma' : ''}`}>
           {h.suosittu && <span className="merkki-pieni">Suosituin</span>}
           <h3>{h.nimi}</h3>
           <div className="hinta">{h.hinta}</div>
@@ -385,7 +389,7 @@ export function UKK({ kysymykset, jsonLd = true }: { kysymykset: { k: string; v:
     <>
       <div className="kysymykset">
         {kysymykset.map((q, i) => (
-          <details key={q.k} className={`lasi ilmesty viive-${Math.min(i, 4)}`}>
+          <details key={q.k} className={`ilmesty viive-${Math.min(i, 4)}`}>
             <summary>
               <h3>{q.k}</h3>
             </summary>
@@ -415,9 +419,10 @@ export function CtaOsio({ otsikko = 'Laitetaan perusta kuntoon.', korostus = 'pe
   otsikko?: string; korostus?: string; teksti?: string;
 }) {
   return (
-    <section className="osio cta-osio" aria-label="Yhteydenotto">
+    <section className="osio cta-osio vaalea" aria-label="Yhteydenotto">
       <div className="sisalto">
-        <div className="cta-kortti lasi ilmesty">
+        <div className="cta-kortti lasi tumma ilmesty">
+          <Valojuovat pieni />
           <h2>
             <Korostus teksti={otsikko} sana={korostus} />
           </h2>

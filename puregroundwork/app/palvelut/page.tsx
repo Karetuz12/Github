@@ -23,17 +23,17 @@ export default function Palvelut() {
         </div>
       </SivunHero>
 
-      <section className="osio osio-tiivis" aria-label="Palvelut">
+      <section className="osio osio-tiivis vaalea" aria-label="Palvelut">
         <div className="sisalto">
           <PalveluPino otsikkoTaso={2} />
         </div>
       </section>
 
-      <Osio id="prosessi" ylaotsikko="Prosessi" otsikko="Näin yhteistyö etenee." korostus="etenee">
+      <Osio id="prosessi" ylaotsikko="Prosessi" otsikko="Näin yhteistyö etenee." korostus="etenee" luokka="vaalea">
         <Prosessi vaiheet={vaiheet} />
       </Osio>
 
-      <Osio id="miksi" ylaotsikko="Miksi Pure Groundwork" otsikko="Toimiston osaaminen ilman toimiston raskautta." korostus="ilman">
+      <Osio id="miksi" ylaotsikko="Miksi Pure Groundwork" otsikko="Toimiston osaaminen ilman toimiston raskautta." korostus="ilman" luokka="vaalea">
         <Vertailu />
       </Osio>
 
