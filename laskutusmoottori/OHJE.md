@@ -9,8 +9,10 @@ Strategia, jonka varaan kone on rakennettu: [STRATEGIA.md](STRATEGIA.md).
 
 | Välilehti | Mitä siellä on | Kuka kirjoittaa |
 |---|---|---|
-| **Kojelauta** | Tämä kuu, myyntikoneen tahti, konversiot, huomiot, kuukausitaulukko, kaavio ja seuraavat askeleet | Kone (älä kirjoita tänne) |
-| **Kaupat** | Avoimet ja voitetut kaupat: arvo, vaihe, laskutuskuukaudet, kk-tulo | Sinä |
+| **Kojelauta** | Tämä kuu, myyntikoneen tahti, konversiot, huomiot, kuukausitaulukko (laskutus ja kassa), kaavio ja seuraavat askeleet | Kone (älä kirjoita tänne) |
+| **Viikot** | Viikkoseuranta: tuliko kauppa, kontaktit, vastaukset ja mihin kuukausiin voitettujen kauppojen laskutus osuu | Kone |
+| **Kaupat** | Avoimet ja voitetut kaupat: tuote, arvo, vaihe, tilauspäivä, kk-tulo | Sinä |
+| **Tuotteet** | Tuotteet hintoineen ja laskutusaikatauluineen (esim. 50 % aloituksesta, 50 % julkaisusta) | Sinä |
 | **Liidit** | Asiakashankinnan lista: yritys, yhteystiedot, havainto, sarjan tila | Sinä + kone |
 | **Laskut** | Kuukauden laskutuslista ja toteuma | Kone luo rivit, sinä merkitset lähetetyiksi |
 | **Toistuvat** | Sopimuspohjaiset kuukausitulot | Sinä |
@@ -74,8 +76,8 @@ Odotusajat ja tekstit voi muuttaa Viestipohjat-välilehdellä.
 - **Vastaukset:** vastaa Gmailissa ja päivitä liidin tila (*Palaveri*, *Ei kiinnosta* tai *Älä ota yhteyttä*). Kun palaveri on sovittu, valitse liidin rivi ja valikosta **Siirrä valittu liidi kauppoihin**.
 - **LinkedIn-lista:** lähetä kutsu ilman viestiä. Kun kutsu on hyväksytty, lähetä koosteen valmis viesti ja päivitä *LinkedIn-tila*.
 - **Soittolista:** soita ja kirjaa tulos *Soitto*-sarakkeeseen.
-- **Kaupat:** pidä *Vaihe*, *Seuraava askel* ja *Seuraava pvm* ajan tasalla. Kun kauppa on voitettu, täytä **1. lasku kk**.
-  Jos laskutetaan 50 % tilauksesta ja 50 % julkaisusta, täytä myös **Loppulasku kk**. Kuukausimaksu kirjataan **Kk-tulo €** -sarakkeeseen.
+- **Kaupat:** kirjoita asiakas. Tuote (oletus Verkkosivuprojekti), vaihe (Liidi) ja luontipäivä täyttyvät itsestään. Pidä *Vaihe*, *Seuraava askel* ja *Seuraava pvm* ajan tasalla.
+  Kun kauppa on voitettu, vaihda vaiheeksi *Voitettu* ja kirjaa **Tilauspvm**. Avoimelle kaupalle Tilauspvm on arvio. Katso tarkemmin kohta *Laskutusaikataulut ja viikkoseuranta*.
 - **Laskut:** kun lasku on lähtenyt, vaihda tilaksi *Lähetetty* ja korjaa summa toteutuneeksi, esim. Markkinointiboostin provisio. Vain *Lähetetty* ja *Maksettu* lasketaan laskutetuksi.
 
 ## Kojelaudan luvut
@@ -87,10 +89,50 @@ Odotusajat ja tekstit voi muuttaa Viestipohjat-välilehdellä.
 | Ennuste | Varmistettu + putki |
 | Laskutettu | Laskut-välilehden *Lähetetty*- ja *Maksettu*-rivit |
 | Avoin vaje | Tämän ja ensi kuun vaje putken jälkeen. Kylmä kontakti ehtii laskutukseen yleensä vasta ensi kuussa, siksi mukana on kaksi kuukautta. |
-| Kiintiö | Avoin vaje ÷ keskikauppa ÷ palaveri→kauppa ÷ kontakti→palaveri ÷ arkipäivät ensi kuun loppuun, josta vähennetään jo kesken olevat. Pysyy minimin ja maksimin välissä. |
+| Tahti vajeesta | Avoin vaje ÷ keskikauppa ÷ palaveri→kauppa ÷ kontakti→palaveri, josta vähennetään jo kesken olevat ja joka jaetaan arkipäivillä ensi kuun loppuun |
+| Tahti viikkotavoitteesta | Kauppoja / viikko ÷ palaveri→kauppa ÷ kontakti→palaveri ÷ 5. Esim. 1 kauppa viikossa = 17 kontaktia päivässä. |
+| Kiintiö | Isompi kahdesta tahdista, kuitenkin minimin ja maksimin välissä |
+| Kassaan (ennuste) | Milloin rahat ovat tilillä: laskun päivä + maksuaika. Avoimet kaupat painotettuina. |
+| Kassa kumulatiivinen | Kassaan tulevat rahat yhteensä tästä kuusta eteenpäin |
 | Konversiot | Oletukset 4 % ja 30 % vaihtuvat toteutuneisiin, kun kontakteja on 60 ja suljettuja kauppoja 5 |
 
 Arkipäivistä on jätetty pois viikonloput ja Suomen arkipyhät: vappu, juhannusaatto ja jouluaatto lasketaan myös pyhiksi.
+
+## Laskutusaikataulut ja viikkoseuranta
+
+**Tuote määrää, miten kauppa laskutetaan.** Tuotteet-välilehdellä on jokaiselle tuotteelle hinta ja enintään kolme erää. Jokaisella erällä on
+osuus ja tieto siitä, montako päivää tilauksesta lasku lähtee. Lisäksi tuotteella on maksuaika.
+
+| Tuote | Hinta | Erät | Maksuaika |
+|---|---:|---|---|
+| Verkkosivuprojekti | 2 500 € | 50 % 7 pv + 50 % 35 pv tilauksesta | 14 pv |
+| Iso projekti (3 erää) | 6 000 € | 30 % 7 pv + 40 % 35 pv + 30 % 63 pv | 14 pv |
+| Korjauspaketti | 1 500 € | 100 % 14 pv | 14 pv |
+| Pikatyö | 300 € | 100 % 3 pv | 14 pv |
+| Ylläpito ja hosting | 149 €/kk | kuukausimaksu tilauskuusta | 14 pv |
+| Kertalasku | – | 100 % tilauspäivänä | 14 pv |
+
+Muuta luvut omiksesi ja lisää omat tuotteesi, esimerkiksi booking engine, kun hinnoittelu on lukittu.
+
+**Kaupalla riittää kolme tietoa:** Tuote, Vaihe ja Tilauspvm. Jos Kertatulo on tyhjä, käytetään tuotteen hintaa. Jos hinta on muu, kirjoita se sarakkeeseen.
+
+- **Voitettu kauppa:** Tilauspvm on oikea tilauspäivä. Erät menevät laskutukseen ja kassaan sen mukaan.
+- **Avoin kauppa:** Tilauspvm on arvio. Tyhjä arvio = luontipäivä + myyntisykli (Asetukset, 21 pv). Jos arvio on mennyt ohi, ennuste
+  siirtää kaupan tälle päivälle ja huomauttaa siitä. Avoimet kaupat painotetaan vaiheen todennäköisyydellä.
+
+Esimerkki: 2 000 € verkkosivuprojekti tilataan 15.11. Puolet laskutetaan 22.11. ja ne ovat tilillä 6.12. Toinen puoli laskutetaan 20.12.
+ja se on tilillä 3.1. Kun 1.12. tulee toinen samanlainen kauppa, joulukuun laskutukseen kertyy 2 000 € ja joulukuun kassaan 2 000 €.
+Kojelaudan kuukausitaulukko näyttää sekä laskutuksen että kassan. *Kassa kumulatiivinen* kertoo, paljonko rahaa on tulossa yhteensä.
+
+**Viikot-välilehti** vastaa viikko kerrallaan kysymykseen: tuliko kauppa? Siinä näkyvät kahdeksan mennyttä viikkoa, kuluva viikko ja neljä tulevaa:
+
+- kontaktit, vastaukset, uudet kaupat ja voitetut kaupat
+- kuun kaupat yhteensä
+- ✓ tai ✗ viikkotavoitteeseen nähden (Asetukset → *Kauppoja / viikko, tavoite*, oletus 1)
+- mihin kuukausiin voitettujen kauppojen laskutus osuu, esim. *marras 1 000 € · joulu 1 000 €*
+
+Voitettu kauppa lasketaan sille viikolle, jolle sen Tilauspvm osuu. Kooste kertoo joka aamu tämän viikon kaupat.
+Maanantain viikkoraportissa on viiden viikon seuranta.
 
 ## Liidin tilat
 
@@ -110,6 +152,11 @@ Arkipäivistä on jätetty pois viikonloput ja Suomen arkipyhät: vappu, juhannu
 
 - **Erillinen lähetysdomain.** Kylmät viestit kannattaa lähettää omasta domainista ja postilaatikosta, ei päädomainista. Asenna moottori sen tilin taulukkoon. Laita domainille SPF, DKIM ja DMARC kuntoon ja lämmitä laatikkoa 2–3 viikkoa ennen kuin tahti nousee yli 10 viestin päivässä.
 - **Pelkkä teksti.** Pohjat on kirjoitettu ilman linkkejä ja liitteitä, koska ne heikentävät avausviestin perillemenoa.
+- **Tarkista valmis lista ennen tuontia.** Kerätyissä listoissa on vanhentuneita osoitteita, ja pomput heikentävät lähetysdomainin mainetta.
+  Aja lista osoitteentarkistuspalvelun läpi ennen kuin liität sen Liidit-välilehdelle.
+- **Kerätyt yhteystiedot ja GDPR.** Kun tiedot on kerätty muualta kuin henkilöltä itseltään, hänelle pitää kertoa tietojen lähde ja käsittely.
+  Täytä Asetukset → *Tietosuojalause*, esim. *"Löysin yhteystietosi yrityksenne verkkosivuilta. Tietosuojaseloste: …"*.
+  Lause lisätään jokaisen avausviestin loppuun muuttujalla `{{tietosuoja}}`.
 - **B2B-pelisäännöt.** Lähetä vain yritysten työosoitteisiin, ja viestin pitää liittyä vastaanottajan työtehtävään. Jokaisessa avauksessa on helppo tapa kieltäytyä ("vastaa ei kiitos"). Kun joku kieltäytyy, aseta tilaksi *Älä ota yhteyttä*.
 - **LinkedIn pysyy käsityönä.** Kone ei koske LinkedIniin, koska LinkedInin käyttöehdot kieltävät automaation ja tili voidaan jäädyttää. Kone antaa listan ja tekstin, sinä klikkaat.
 - **Määrät.** Asetusten katto on 40 viestiä päivässä (uudet ja jatkoviestit yhteensä). Se on selvästi Googlen päivärajojen alla.
@@ -118,14 +165,16 @@ Arkipäivistä on jätetty pois viikonloput ja Suomen arkipyhät: vappu, juhannu
 
 - Sarakkeita saa siirtää ja lisätä. **Otsikoita ei saa nimetä uudelleen**, koska kone etsii sarakkeet niiden perusteella.
 - Kojelauta kirjoitetaan uudelleen joka muokkauksella, joten älä kirjoita sinne. Kaupat-välilehden *Tod. %* on kaava.
-- Uusi koodiversio: avaa Apps Script, korvaa koodi ja tallenna. **asenna-funktiota ei ajeta uudelleen.**
+- Uusi koodiversio: avaa Apps Script, korvaa koodi ja tallenna. Valitse taulukon valikosta **Laskutusmoottori → Päivitä taulukon rakenne**.
+  Se lisää puuttuvat välilehdet, sarakkeet ja asetukset koskematta dataan. **asenna-funktiota ei ajeta uudelleen.**
 - Ajon kellonaika: muuta *Ajo klo* ja valitse valikosta **Asenna ajastus uudelleen**.
 - Kaupan vaiheita voi lisätä Asetukset-välilehden E–F-sarakkeisiin. *Voitettu* ja *Hävitty* pitää säilyttää nimillään.
 
 ## Kehittäjälle
 
 - Laskenta, sekvenssien päätökset, sivustoanalyysi, viestien muodostus ja kooste ovat puhtaita funktioita
-  (`laske`, `suunnittele`, `valitseTehtavat`, `analysoiSivu`, `renderoiViesti`, `rakennaMime`, `rakennaKooste`, `laskutusrivit`).
+  (`laske`, `kaupanAikataulu`, `viikkoseuranta`, `suunnittele`, `valitseTehtavat`, `analysoiSivu`, `renderoiViesti`, `rakennaMime`,
+  `rakennaKooste`, `laskutusrivit`).
   Google-palveluja kutsuvat vain ohuet kääreet niiden ympärillä.
 - Testit: `node --test "laskutusmoottori/testit/*.test.js"`. Yksikkötestit kattavat puhtaat funktiot. Integraatiotesti ajaa asennuksen,
   aamuajot, vastauksen, jatkoviestin, luonnostilan ja kauppaan siirron muistinvaraista Sheets- ja Gmail-jäljitelmää vasten.

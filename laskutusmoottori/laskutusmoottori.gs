@@ -20,6 +20,8 @@ const V = {
   laskut: 'Laskut',
   toistuvat: 'Toistuvat',
   tavoitteet: 'Tavoitteet',
+  tuotteet: 'Tuotteet',
+  viikot: 'Viikot',
   pohjat: 'Viestipohjat',
   asetukset: 'Asetukset',
   loki: 'Loki',
@@ -33,8 +35,8 @@ const SAR = {
     alkaa: 'Alkaa', paattyy: 'Päättyy', muistiinpano: 'Muistiinpano',
   },
   [V.kaupat]: {
-    asiakas: 'Asiakas', kuvaus: 'Kuvaus', lahde: 'Lähde', vaihe: 'Vaihe', tod: 'Tod. %',
-    kerta: 'Kertatulo €', lasku1: '1. lasku kk', lasku2: 'Loppulasku kk',
+    asiakas: 'Asiakas', kuvaus: 'Kuvaus', tuote: 'Tuote', lahde: 'Lähde', vaihe: 'Vaihe', tod: 'Tod. %',
+    kerta: 'Kertatulo €', tilauspvm: 'Tilauspvm',
     kk: 'Kk-tulo €', kkAlkaa: 'Kk-tulo alkaa', kkPaattyy: 'Kk-tulo päättyy',
     seuraava: 'Seuraava askel', seuraavaPvm: 'Seuraava pvm', yhteys: 'Yhteyshenkilö',
     muistiinpano: 'Muistiinpanot', luotu: 'Luotu',
@@ -52,6 +54,10 @@ const SAR = {
     ketju: 'Gmail-ketju', luonnos: 'Luonnos', liTila: 'LinkedIn-tila', soitto: 'Soitto',
     muistiinpano: 'Muistiinpanot', lisatty: 'Lisätty',
   },
+  [V.tuotteet]: {
+    tuote: 'Tuote', hinta: 'Hinta €', kk: 'Kk-tulo €', e1: '1. erä %', p1: '1. erä pv', e2: '2. erä %', p2: '2. erä pv',
+    e3: '3. erä %', p3: '3. erä pv', maksuaika: 'Maksuaika pv', selite: 'Selite',
+  },
   [V.pohjat]: { vaihe: 'Vaihe', segmentti: 'Segmentti', odota: 'Odota arkipäivää', aihe: 'Aihe', viesti: 'Viesti' },
   [V.loki]: { aika: 'Aika', toiminto: 'Toiminto', kohde: 'Kohde', tulos: 'Tulos' },
 };
@@ -64,6 +70,10 @@ const ASETUSRIVIT = [
   ['referenssi', 'Referenssilause', 'Viimeisimpiä töitäni ovat Book Lapland ja SkyView Igloo Resort.', '{{referenssi}} viesteissä. Varmista, että saat käyttää nimiä.'],
   ['raportti', 'Raporttien osoite', '', 'Päivän kooste ja maanantain viikkoraportti tulevat tähän osoitteeseen.'],
   ['alias', 'Lähetysosoite (alias)', '', 'Tyhjä = tämän Google-tilin osoite. Muun osoitteen pitää olla Gmailissa lähetysosoitteena (Asetukset → Tilit).'],
+  ['kauppojaViikossa', 'Kauppoja / viikko, tavoite', 1, 'Viikkoseurannan tavoite. Kone pitää vähintään tämän vaatiman lähetystahdin (0 = tahti vain vajeen mukaan).'],
+  ['myyntisykli', 'Myyntisykli (pv)', 21, 'Avoimen kaupan arvioitu tilauspäivä, jos Tilauspvm on tyhjä: luontipäivä + tämä.'],
+  ['maksuaika', 'Maksuaika pv (toistuvat)', 14, 'Toistuvat laskut lähtevät kuun 1. päivä, rahat tulevat tämän jälkeen. Tuotteilla on oma maksuaikansa.'],
+  ['oletusTuote', 'Oletustuote', 'Verkkosivuprojekti', 'Uudelle kaupalle valittava tuote (Tuotteet-välilehti).'],
   ['keskikauppa', 'Keskikauppa €', 2500, 'Yhden projektin keskimääräinen arvo (alv 0). Tällä lasketaan, montako kauppaa vaje vaatii.', 'eur'],
   ['kp', 'Kontakti → palaveri', 0.04, 'Montako prosenttia kontaktoiduista päätyy palaveriin. Kone vaihtaa toteutuneeseen, kun dataa on tarpeeksi.', 'pct'],
   ['pk', 'Palaveri → kauppa', 0.3, 'Montako prosenttia palavereista johtaa kauppaan.', 'pct'],
@@ -74,6 +84,7 @@ const ASETUSRIVIT = [
   ['loppuOdotus', 'Odota viimeisen viestin jälkeen (arkipäivää)', 5, 'Tämän jälkeen liidin tilaksi tulee Ei vastausta.'],
   ['vaadiHavainto', 'Vaadi havainto', true, 'Ensimmäinen viesti lähtee vain liidille, jolla on havainto (täsmäisku).'],
   ['autoHavainto', 'Hyväksy ehdotetut havainnot automaattisesti', false, 'Kyllä = jos Havainto on tyhjä, kone käyttää sivustotarkistuksen ehdotusta.'],
+  ['tietosuoja', 'Tietosuojalause', '', '{{tietosuoja}} avausviestin loppuun. Jos lista on kerätty julkisista lähteistä, kerro lähde ja linkki tietosuojaselosteeseen.'],
   ['li', 'LinkedIn-tehtäviä / päivä', 5, 'Kone ei käytä LinkedIniä itse. Saat listan profiileista ja valmiin viestin.'],
   ['soitot', 'Soittoja / päivä', 3, 'Liidit, joilla on puhelinnumero ja kaksi viestiä ilman vastausta.'],
   ['arkisin', 'Lähetä vain arkipäivinä', true, 'Viikonloppuisin ja arkipyhinä kone tarkistaa vain vastaukset.'],
@@ -93,7 +104,7 @@ const VOITETTU = 'Voitettu';
 const HAVITTY = 'Hävitty';
 
 const LAHTEET = ['Verkosto', 'Olemassa oleva asiakas', 'Sähköposti', 'LinkedIn', 'Puhelin', 'Suositus',
-  'Markkinointiboosti', 'Nordic Host', 'Muu'];
+  'Markkinointiboosti', 'Nordic Host', 'nerot.fi', 'Muu'];
 const LASKUTILAT = ['Laskuttamatta', 'Lähetetty', 'Maksettu', 'Peruttu'];
 const LASKUTETTU = ['Lähetetty', 'Maksettu'];
 const LIIDITILAT = ['Uusi', 'Luonnos', 'Sekvenssissä', 'Vastasi', 'Palaveri', 'Kauppa', 'Ei kiinnosta',
@@ -115,7 +126,20 @@ const KUUKAUDET = ['tammikuu', 'helmikuu', 'maaliskuu', 'huhtikuu', 'toukokuu', 
 const VIIKONPAIVAT = ['su', 'ma', 'ti', 'ke', 'to', 'pe', 'la'];
 
 // Kojelaudan kiinteä asettelu (kaavio lukee kuukausitaulukkoa riveiltä KL.kk..KL.kk+KL.kkRiveja)
-const KL = { kpi: 3, huomiot: 13, huomioRiveja: 6, kk: 21, kkRiveja: 24, askeleet: 47, askelRiveja: 10 };
+const KL = { kpi: 3, kpiRiveja: 10, huomiot: 14, huomioRiveja: 6, kk: 22, kkRiveja: 24, askeleet: 48, askelRiveja: 10, leveys: 12 };
+
+// [tuote, hinta, kk-tulo, 1. erä %, pv, 2. erä %, pv, 3. erä %, pv, maksuaika, selite] – pv = päiviä tilauksesta laskuun
+const TUOTTEET_OLETUS = [
+  ['Verkkosivuprojekti', 2500, '', 0.5, 7, 0.5, 35, '', '', 14, '50 % aloituksesta, 50 % julkaisusta noin neljän viikon päästä.'],
+  ['Iso projekti (3 erää)', 6000, '', 0.3, 7, 0.4, 35, 0.3, 63, 14, '30 / 40 / 30 %: aloitus, välitoimitus, julkaisu.'],
+  ['Korjauspaketti', 1500, '', 1, 14, '', '', '', '', 14, 'Kerralla valmistuttua.'],
+  ['Pikatyö', 300, '', 1, 3, '', '', '', '', 14, 'Pienet koodaus- ja sivutyöt (esim. nerot.fi). Kerralla valmistuttua.'],
+  ['Ylläpito ja hosting', '', 149, '', '', '', '', '', '', 14, 'Pelkkä kuukausimaksu, alkaa tilauskuusta.'],
+  ['Kertalasku', '', '', 1, 0, '', '', '', '', 14, 'Koko summa laskutetaan tilauspäivänä.'],
+];
+
+const VIIKKO_OTSIKOT = ['Viikko', 'Ajalla', 'Kontaktit', 'Vastaukset', 'Uudet kaupat', 'Voitetut kaupat',
+  'Voitettu € (kerta)', 'Kk-tulo €', 'Kuun kaupat yht.', 'Tavoite / vk', 'Tila', 'Laskutus osuu kuukausille'];
 
 const POHJAT_OLETUS = [
   [1, 'Matkailu', '', '{{yritys}} / sivut ja varaukset',
@@ -125,7 +149,7 @@ const POHJAT_OLETUS = [
     'Teen matkailuyrityksille sivustoja ja suoria varauspolkuja. {{referenssi}} Tyypillinen projekti valmistuu 2–3 viikossa kiinteällä hinnalla.\n\n' +
     'Sopisiko 15 minuutin puhelu ensi viikolla? Kerron kolme asiaa, jotka korjaisin sivuillanne ensimmäisenä – maksutta, vaikka ette lähtisi projektiin.\n\n' +
     '{{allekirjoitus}}\n\n' +
-    'P.S. Jos aihe ei ole nyt ajankohtainen, vastaa "ei kiitos", niin en laita enempää viestejä.'],
+    'P.S. Jos aihe ei ole nyt ajankohtainen, vastaa "ei kiitos", niin en laita enempää viestejä.\n\n{{tietosuoja}}'],
   [1, '', '', '{{yritys}} / verkkosivut',
     'Hei {{etunimi}},\n\n' +
     'kävin läpi sivujanne ({{sivusto}}) ja huomasin, että {{havainto}}.\n\n' +
@@ -133,7 +157,7 @@ const POHJAT_OLETUS = [
     'Teen yrityksille verkkosivuja, jotka on rakennettu tuomaan yhteydenottoja. {{referenssi}} Tyypillinen projekti valmistuu 2–3 viikossa kiinteällä hinnalla.\n\n' +
     'Sopisiko 15 minuutin puhelu ensi viikolla? Kerron kolme asiaa, jotka korjaisin sivuillanne ensimmäisenä – maksutta, vaikka ette lähtisi projektiin.\n\n' +
     '{{allekirjoitus}}\n\n' +
-    'P.S. Jos aihe ei ole nyt ajankohtainen, vastaa "ei kiitos", niin en laita enempää viestejä.'],
+    'P.S. Jos aihe ei ole nyt ajankohtainen, vastaa "ei kiitos", niin en laita enempää viestejä.\n\n{{tietosuoja}}'],
   [2, '', 3, '',
     'Hei {{etunimi}},\n\n' +
     'nostan tämän vielä esiin. Jos puhelu tuntuu isolta askeleelta, voin lähettää ne kolme korjausehdotusta suoraan sähköpostilla. Laitanko?\n\n' +
@@ -158,7 +182,7 @@ function asenna() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
   if (!ss) throw new Error('Avaa skripti taulukon kautta: Laajennukset → Apps Script.');
   if (ss.getSheetByName(V.kojelauta)) {
-    throw new Error('Laskutusmoottori on jo asennettu tähän taulukkoon. Päivitä koodi liittämällä uusi versio – asennusta ei ajeta uudelleen.');
+    throw new Error('Laskutusmoottori on jo asennettu tähän taulukkoon. Uuden version jälkeen aja paivitaRakenne – asennusta ei ajeta uudelleen.');
   }
   if (typeof Gmail === 'undefined') {
     throw new Error('Lisää ensin Gmail API: editorin vasemmasta reunasta Palvelut (Services) + → Gmail API → Lisää. Aja sitten asenna uudelleen.');
@@ -167,40 +191,27 @@ function asenna() {
   ss.setSpreadsheetLocale('fi_FI');
   ss.setSpreadsheetTimeZone('Europe/Helsinki');
   const vanhat = ss.getSheets();
+  const nyt = tanaanAvain().slice(0, 7);
 
-  const tanaan = tanaanAvain();
-  const nyt = tanaan.slice(0, 7);
-
-  // Välilehdet tässä järjestyksessä. Asetukset rakennetaan ensin, koska muut viittaavat siihen.
+  // Välilehdet tässä järjestyksessä. Asetukset ja Tuotteet rakennetaan ensin, koska muut viittaavat niihin.
   const kojelauta = ss.insertSheet(V.kojelauta, 0);
   const sh = {};
-  [V.kaupat, V.liidit, V.laskut, V.toistuvat, V.tavoitteet, V.pohjat, V.asetukset, V.loki]
+  [V.viikot, V.kaupat, V.liidit, V.laskut, V.toistuvat, V.tavoitteet, V.tuotteet, V.pohjat, V.asetukset, V.loki]
     .forEach((n, i) => { sh[n] = ss.insertSheet(n, i + 1); });
   vanhat.forEach((s) => ss.deleteSheet(s));
   rakennaAsetukset(sh[V.asetukset]);
+  rakennaTuotteet(sh[V.tuotteet]);
   rakennaKaupat(sh[V.kaupat], nyt);
   rakennaLiidit(sh[V.liidit]);
   rakennaLaskut(sh[V.laskut]);
   rakennaToistuvat(sh[V.toistuvat], nyt);
   rakennaTavoitteet(sh[V.tavoitteet], nyt);
   rakennaPohjat(sh[V.pohjat]);
+  rakennaViikot(sh[V.viikot]);
   rakennaLoki(sh[V.loki]);
+  asetaTodKaava(sh[V.kaupat]);
 
-  // Tod. % -sarake Kaupat-välilehdelle (nimetty alue VAIHEET on nyt olemassa)
-  const kaupat = sh[V.kaupat];
-  const k = SAR[V.kaupat];
-  const otsikot = Object.values(k);
-  const todSar = otsikot.indexOf(k.tod) + 1;
-  const vaiheSar = sarakeKirjain(otsikot.indexOf(k.vaihe) + 1);
-  kaupat.getRange(1, todSar).setFormula(
-    '={"' + k.tod + '";ARRAYFORMULA(IF(' + vaiheSar + '2:' + vaiheSar + '="",,IFERROR(VLOOKUP(' +
-    vaiheSar + '2:' + vaiheSar + ',VAIHEET,2,FALSE),0)))}');
-
-  kojelauta.setColumnWidth(1, 270).setColumnWidth(2, 120).setColumnWidth(3, 120).setColumnWidth(4, 270)
-    .setColumnWidth(5, 120).setColumnWidth(6, 120).setColumnWidth(7, 200)
-    .setColumnWidths(8, 3, 110);
-  kojelauta.setHiddenGridlines(true);
-
+  muotoileKojelauta(kojelauta);
   luoLaskutuslista(nyt);
   PropertiesService.getScriptProperties().setProperty('LASKUTUSLISTA_KK', nyt);
   paivitaKojelauta();
@@ -210,6 +221,74 @@ function asenna() {
 
   loki('Asennus', ss.getName(), 'Valmis');
   Logger.log('Valmis! Päivitä taulukon sivu, niin valikko Laskutusmoottori ilmestyy.\n' + ss.getUrl());
+}
+
+/**
+ * Tuo vanhemmalla versiolla asennetun taulukon ajan tasalle: lisää puuttuvat välilehdet, sarakkeet ja asetukset.
+ * Aja tämä aina, kun olet liittänyt uuden koodiversion. Olemassa olevaan dataan ei kosketa.
+ */
+function paivitaRakenne() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const muutokset = [];
+  if (!ss.getSheetByName(V.tuotteet)) {
+    rakennaTuotteet(ss.insertSheet(V.tuotteet, ss.getSheets().length));
+    muutokset.push('välilehti Tuotteet');
+  }
+  if (!ss.getSheetByName(V.viikot)) {
+    rakennaViikot(ss.insertSheet(V.viikot, 1));
+    muutokset.push('välilehti Viikot');
+  }
+  Object.keys(SAR).forEach((nimi) => {
+    const sh = ss.getSheetByName(nimi);
+    if (!sh) return;
+    const otsikot = sh.getRange(1, 1, 1, Math.max(1, sh.getLastColumn())).getValues()[0].map((x) => String(x).trim());
+    Object.values(SAR[nimi]).filter((o) => otsikot.indexOf(o) < 0).forEach((o) => {
+      const sar = sh.getLastColumn() + 1;
+      if (sar > sh.getMaxColumns()) sh.insertColumnsAfter(sh.getMaxColumns(), sar - sh.getMaxColumns());
+      sh.getRange(1, sar).setValue(o).setFontWeight('bold').setBackground('#1f2937').setFontColor('#ffffff').setWrap(true);
+      muutokset.push(nimi + ': ' + o);
+    });
+  });
+
+  const kaupat = ss.getSheetByName(V.kaupat);
+  if (kaupat) {
+    kaupanValidoinnit(kaupat);
+    // Edellisen version "1. lasku kk" → Tilauspvm, jos Tilauspvm on tyhjä
+    const t = otsikkoIndeksit(kaupat, V.kaupat);
+    const ots = kaupat.getRange(1, 1, 1, kaupat.getLastColumn()).getValues()[0].map((x) => String(x).trim());
+    const vanha = ots.indexOf('1. lasku kk');
+    if (vanha >= 0 && kaupat.getLastRow() > 1) {
+      const n = kaupat.getLastRow() - 1;
+      const vanhat = kaupat.getRange(2, vanha + 1, n, 1).getValues();
+      const tilaus = kaupat.getRange(2, t.idx.tilauspvm + 1, n, 1);
+      const arvot = tilaus.getValues();
+      let siirretty = 0;
+      arvot.forEach((r, i) => { if (!r[0] && vanhat[i][0]) { r[0] = vanhat[i][0]; siirretty++; } });
+      if (siirretty) {
+        tilaus.setValues(arvot);
+        muutokset.push(siirretty + ' kaupan 1. lasku kk → Tilauspvm');
+      }
+    }
+  }
+
+  const as = valilehti(V.asetukset);
+  const olemassa = as.getRange(1, 1, as.getLastRow(), 1).getValues().map((r) => String(r[0]).trim());
+  let viimeinen = olemassa.reduce((m, x, i) => (x ? i + 1 : m), 1);
+  ASETUSRIVIT.forEach(([avain, otsikko, oletus, selite, muoto]) => {
+    if (olemassa.indexOf(otsikko) >= 0) return;
+    viimeinen++;
+    as.getRange(viimeinen, 1, 1, 3).setValues([[otsikko, typeof oletus === 'boolean' ? '' : oletus, selite]]);
+    muotoileAsetus(as.getRange(viimeinen, 2), avain, oletus, muoto);
+    muutokset.push('asetus ' + otsikko);
+  });
+
+  const kl = valilehti(V.kojelauta);
+  kl.getCharts().forEach((c) => kl.removeChart(c));
+  muotoileKojelauta(kl);
+  paivitaKojelauta();
+  luoKaavio(kl);
+  loki('Rakenne päivitetty', '', muutokset.join(', ') || 'ei muutoksia');
+  ilmoita(muutokset.length ? 'Lisätty: ' + muutokset.join(', ') : 'Rakenne oli jo ajan tasalla.');
 }
 
 /** Päivittäinen ajo Ajo klo -asetuksen mukaan. Aja uudelleen, jos muutat kellonaikaa. */
@@ -238,7 +317,9 @@ function rakennaOtsikot(sh, nimi, leveydet) {
 }
 
 function sarakeRange(sh, nimi, avain, rivit) {
-  const sar = Object.keys(SAR[nimi]).indexOf(avain) + 1;
+  const otsikot = sh.getRange(1, 1, 1, Math.max(1, sh.getLastColumn())).getValues()[0].map((x) => String(x).trim());
+  const sar = otsikot.indexOf(SAR[nimi][avain]) + 1;
+  if (!sar) throw new Error('Välilehdeltä ' + nimi + ' puuttuu sarake "' + SAR[nimi][avain] + '"');
   return sh.getRange(2, sar, rivit || sh.getMaxRows() - 1, 1);
 }
 
@@ -253,37 +334,69 @@ function paivamaara() {
 }
 
 function rakennaKaupat(sh, nyt) {
-  rakennaOtsikot(sh, V.kaupat, [200, 200, 140, 140, 70, 100, 100, 100, 90, 100, 100, 220, 100, 160, 240, 90]);
+  rakennaOtsikot(sh, V.kaupat, [200, 180, 170, 140, 140, 70, 100, 100, 90, 100, 100, 220, 100, 160, 240, 90]);
   const n = V.kaupat;
+  kaupanValidoinnit(sh);
+  const muistiot = {
+    tuote: 'Tuote määrää hinnan ja laskutusaikataulun (Tuotteet-välilehti). Tyhjä Kertatulo / Kk-tulo = tuotteen hinta.',
+    vaihe: 'Liidi 10 %, Palaveri sovittu 25 %, Tarjous lähetetty 50 %, Neuvottelu 75 %, Voitettu 100 %, Hävitty 0 %. Todennäköisyydet: Asetukset-välilehti.',
+    kerta: 'Projektin hinta alv 0. Tyhjä = tuotteen hinta.',
+    tilauspvm: 'Voitettu kauppa: tilauspäivä. Avoin kauppa: arvioitu tilauspäivä.\nTyhjä = luontipäivä + myyntisykli (Asetukset). Jos arvio on mennyt ohi, ennuste siirtää sen tälle päivälle.\n\nLaskutuserät lasketaan tästä tuotteen aikataululla.',
+    kk: 'Kuukausittainen tulo kaupasta: ylläpito, hosting, markkinointi tai booking engine. Tyhjä = tuotteen kk-tulo.',
+    kkAlkaa: 'Ensimmäinen kuukausi, jolta kk-tulo laskutetaan. Tyhjä = viimeisen erän kuukausi.',
+    tod: 'Täyttyy automaattisesti vaiheen mukaan. Älä kirjoita tähän sarakkeeseen.',
+    asiakas: 'Kun kirjoitat asiakkaan, Tuote (oletustuote), Vaihe (Liidi) ja Luotu täyttyvät itsestään.',
+  };
+  const t = otsikkoIndeksit(sh, n);
+  Object.keys(muistiot).forEach((s) => sh.getRange(1, t.idx[s] + 1).setNote(muistiot[s]));
+
+  // Lähtötilanne: marraskuun verkkosivuprojekti, josta laskutetaan 1 000 € marraskuussa
+  kirjoitaRivi(sh, n, 2, {
+    asiakas: 'Verkkosivuasiakas', kuvaus: 'Verkkosivuprojekti', tuote: 'Kertalasku', lahde: 'Muu', vaihe: VOITETTU,
+    kerta: 1000, tilauspvm: pvmSolu(nyt + '-01'), seuraava: 'Laskuta', seuraavaPvm: pvmSolu(tanaanAvain()),
+    muistiinpano: 'Vaihda asiakkaan nimi.', luotu: new Date(),
+  });
+}
+
+function kaupanValidoinnit(sh) {
+  const n = V.kaupat;
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
   sarakeRange(sh, n, 'vaihe').setDataValidation(SpreadsheetApp.newDataValidation()
-    .requireValueInRange(SpreadsheetApp.getActive().getRange(V.asetukset + '!E2:E20'), true).build());
+    .requireValueInRange(ss.getRange(V.asetukset + '!E2:E20'), true).build());
+  sarakeRange(sh, n, 'tuote').setDataValidation(SpreadsheetApp.newDataValidation()
+    .requireValueInRange(ss.getRange(V.tuotteet + '!A2:A50'), true).setAllowInvalid(false).build());
   sarakeRange(sh, n, 'lahde').setDataValidation(lista(LAHTEET, true));
   ['kerta', 'kk'].forEach((s) => sarakeRange(sh, n, s).setNumberFormat('#,##0 "€"'));
   sarakeRange(sh, n, 'tod').setNumberFormat('0%');
-  ['lasku1', 'lasku2', 'kkAlkaa', 'kkPaattyy'].forEach((s) =>
-    sarakeRange(sh, n, s).setNumberFormat('mm/yyyy').setDataValidation(paivamaara()));
-  ['seuraavaPvm', 'luotu'].forEach((s) => sarakeRange(sh, n, s).setNumberFormat('d.m.yyyy'));
-  sarakeRange(sh, n, 'seuraavaPvm').setDataValidation(paivamaara());
+  ['kkAlkaa', 'kkPaattyy'].forEach((s) => sarakeRange(sh, n, s).setNumberFormat('mm/yyyy').setDataValidation(paivamaara()));
+  ['tilauspvm', 'seuraavaPvm'].forEach((s) => sarakeRange(sh, n, s).setNumberFormat('d.m.yyyy').setDataValidation(paivamaara()));
+  sarakeRange(sh, n, 'luotu').setNumberFormat('d.m.yyyy');
+}
 
-  const muistiot = {
-    vaihe: 'Liidi 10 %, Palaveri sovittu 25 %, Tarjous lähetetty 50 %, Neuvottelu 75 %, Voitettu 100 %, Hävitty 0 %. Todennäköisyydet: Asetukset-välilehti.',
-    kerta: 'Projektin kertahinta alv 0.',
-    lasku1: 'Kuukausi, jona ensimmäinen lasku lähtee. Mikä tahansa kuun päivä käy.\nJos Loppulasku kk on täytetty, kertatulo jaetaan 50/50 näille kuukausille.',
-    lasku2: 'Valinnainen. Esim. 50 % tilauksesta, 50 % julkaisusta.',
-    kk: 'Kuukausittainen tulo kaupasta: ylläpito, hosting, markkinointi tai booking engine -tilaus.',
-    kkAlkaa: 'Ensimmäinen kuukausi, jolta kk-tulo laskutetaan. Tyhjä = Loppulasku kk, sen puuttuessa 1. lasku kk.',
-    tod: 'Täyttyy automaattisesti vaiheen mukaan. Älä kirjoita tähän sarakkeeseen.',
-  };
-  Object.keys(muistiot).forEach((s) => {
-    sh.getRange(1, Object.keys(SAR[n]).indexOf(s) + 1).setNote(muistiot[s]);
-  });
+/** Tod. % -sarake Kaupat-välilehdelle: vaiheen todennäköisyys nimetystä alueesta VAIHEET. */
+function asetaTodKaava(sh) {
+  const t = otsikkoIndeksit(sh, V.kaupat);
+  const v = sarakeKirjain(t.idx.vaihe + 1);
+  sh.getRange(1, t.idx.tod + 1).setFormula('={"' + SAR[V.kaupat].tod + '";ARRAYFORMULA(IF(' + v + '2:' + v + '="",,IFERROR(VLOOKUP(' +
+    v + '2:' + v + ',VAIHEET,2,FALSE),0)))}');
+}
 
-  // Lähtötilanne: marraskuun verkkosivuprojekti
-  kirjoitaRivi(sh, n, 2, {
-    asiakas: 'Verkkosivuasiakas', kuvaus: 'Verkkosivuprojekti', lahde: 'Muu', vaihe: VOITETTU,
-    kerta: 1000, lasku1: pvmSolu(nyt + '-01'), seuraava: 'Laskuta', seuraavaPvm: pvmSolu(tanaanAvain()),
-    muistiinpano: 'Vaihda asiakkaan nimi.', luotu: new Date(),
-  });
+function rakennaTuotteet(sh) {
+  rakennaOtsikot(sh, V.tuotteet, [200, 100, 100, 80, 80, 80, 80, 80, 80, 100, 420]);
+  const n = V.tuotteet;
+  sh.getRange(2, 1, TUOTTEET_OLETUS.length, TUOTTEET_OLETUS[0].length).setValues(TUOTTEET_OLETUS);
+  ['hinta', 'kk'].forEach((s) => sarakeRange(sh, n, s).setNumberFormat('#,##0 "€"'));
+  ['e1', 'e2', 'e3'].forEach((s) => sarakeRange(sh, n, s).setNumberFormat('0%'));
+  sh.getRange(1, 1).setNote('Tuote = hinta + laskutusaikataulu. Kaupat-välilehden Tuote-sarake valitsee rivin täältä.\n\nErä % ja pv: osuus hinnasta ja montako päivää tilauksesta lasku lähtee. Esim. 50 % / 7 pv + 50 % / 35 pv.\nMaksuaika pv: montako päivää laskusta rahat ovat tilillä.\n\nLisää omia tuotteita alle (esim. Booking engine, kun hinnoittelu on lukittu).');
+}
+
+function rakennaViikot(sh) {
+  sh.getRange(1, 1, 1, VIIKKO_OTSIKOT.length).setValues([VIIKKO_OTSIKOT])
+    .setFontWeight('bold').setBackground('#1f2937').setFontColor('#ffffff').setWrap(true).setVerticalAlignment('middle');
+  sh.setFrozenRows(1);
+  sh.setRowHeight(1, 34);
+  [70, 110, 80, 90, 90, 100, 120, 90, 100, 90, 110, 380].forEach((w, i) => sh.setColumnWidth(i + 1, w));
+  sh.getRange(1, 1).setNote('Kone kirjoittaa tämän välilehden. Voitettu kauppa lasketaan sille viikolle, jolle sen Tilauspvm osuu.\n\nTila: ✓ = viikon kauppatavoite täyttyi, ✗ = jäi. Tavoite: Asetukset → Kauppoja / viikko, tavoite.');
 }
 
 function rakennaLiidit(sh) {
@@ -391,18 +504,20 @@ function rakennaAsetukset(sh) {
   sh.getRange(2, 3, rivit.length, 1).setWrap(true).setFontColor('#6b7280');
   sh.getRange(2, 2, rivit.length, 1).setWrap(true).setBackground('#fffbea');
 
-  ASETUSRIVIT.forEach(([avain, , oletus, , muoto], i) => {
-    const solu = sh.getRange(i + 2, 2);
-    if (avain === 'tila') solu.setDataValidation(lista(TILAT)).setFontWeight('bold');
-    if (typeof oletus === 'boolean') solu.insertCheckboxes().setValue(oletus);
-    if (muoto === 'pct') solu.setNumberFormat('0.0%');
-    if (muoto === 'eur') solu.setNumberFormat('#,##0 "€"');
-  });
+  ASETUSRIVIT.forEach(([avain, , oletus, , muoto], i) => muotoileAsetus(sh.getRange(i + 2, 2), avain, oletus, muoto));
 
   sh.getRange(2, 5, VAIHEET_OLETUS.length, 2).setValues(VAIHEET_OLETUS);
   sh.getRange(2, 6, 19, 1).setNumberFormat('0%');
   SpreadsheetApp.getActive().setNamedRange('VAIHEET', sh.getRange('E2:F20'));
   sh.getRange(1, 5).setNote('Voitettu ja Hävitty ovat koneelle erityisiä – älä nimeä niitä uudelleen. Muita vaiheita voit lisätä alle.');
+}
+
+function muotoileAsetus(solu, avain, oletus, muoto) {
+  solu.setWrap(true).setBackground('#fffbea');
+  if (avain === 'tila') solu.setDataValidation(lista(TILAT)).setFontWeight('bold');
+  if (typeof oletus === 'boolean') solu.insertCheckboxes().setValue(oletus);
+  if (muoto === 'pct') solu.setNumberFormat('0.0%');
+  if (muoto === 'eur') solu.setNumberFormat('#,##0 "€"');
 }
 
 function rakennaLoki(sh) {
@@ -412,12 +527,11 @@ function rakennaLoki(sh) {
 
 function luoKaavio(sh) {
   try {
-    const alku = KL.kk;
-    const loppu = KL.kk + KL.kkRiveja;
+    const rivit = KL.kkRiveja + 1;
     const kaavio = sh.newChart()
       .asComboChart()
-      .addRange(sh.getRange(alku, 1, loppu - alku + 1, 2)) // Kuukausi + Tavoite
-      .addRange(sh.getRange(alku, 7, loppu - alku + 1, 2)) // Ennuste + Laskutettu
+      .addRange(sh.getRange(KL.kk, 1, rivit, 2)) // Kuukausi + Tavoite
+      .addRange(sh.getRange(KL.kk, 7, rivit, 2)) // Ennuste + Laskutettu
       .setNumHeaders(1)
       .setOption('title', 'Tavoite, ennuste ja laskutettu')
       .setOption('seriesType', 'bars')
@@ -425,12 +539,19 @@ function luoKaavio(sh) {
       .setOption('legend', { position: 'bottom' })
       .setOption('width', 760)
       .setOption('height', 340)
-      .setPosition(KL.kpi, 12, 0, 0)
+      .setPosition(KL.kpi, KL.leveys + 2, 0, 0)
       .build();
     sh.insertChart(kaavio);
   } catch (e) {
     Logger.log('Kaavion luonti ei onnistunut: ' + e.message);
   }
+}
+
+function muotoileKojelauta(sh) {
+  sh.setColumnWidth(1, 270).setColumnWidth(2, 120).setColumnWidth(3, 110).setColumnWidth(4, 290)
+    .setColumnWidth(5, 120).setColumnWidth(6, 120).setColumnWidth(7, 200)
+    .setColumnWidths(8, 5, 110);
+  sh.setHiddenGridlines(true);
 }
 
 // ───────────────────────────── Valikko ja muokkaukset ─────────────────────────────
@@ -446,6 +567,7 @@ function onOpen() {
     .addItem('Lähetä viikkoraportti nyt', 'lahetaViikkoraportti')
     .addItem('Luo tämän kuun laskutuslista', 'valikkoLaskutuslista')
     .addItem('Asenna ajastus uudelleen', 'asennaAjastus')
+    .addItem('Päivitä taulukon rakenne (uuden version jälkeen)', 'paivitaRakenne')
     .addToUi();
 }
 
@@ -492,13 +614,20 @@ function taytaKaupanOletukset(sh, range) {
   const alku = Math.max(2, range.getRow());
   const loppu = range.getLastRow();
   if (loppu < alku) return;
-  const asiakkaat = sh.getRange(alku, t.idx.asiakas + 1, loppu - alku + 1, 1).getValues();
-  const luodut = sh.getRange(alku, t.idx.luotu + 1, loppu - alku + 1, 1).getValues();
-  let muuttui = false;
-  luodut.forEach((r, i) => {
-    if (teksti(asiakkaat[i][0]) && !r[0]) { r[0] = new Date(); muuttui = true; }
+  const oletusTuote = lueAsetukset().oletusTuote;
+  const alue = sh.getRange(alku, 1, loppu - alku + 1, t.leveys);
+  const arvot = alue.getValues();
+  const muuttuneet = {};
+  arvot.forEach((r) => {
+    if (!teksti(r[t.idx.asiakas])) return;
+    if (!r[t.idx.luotu]) { r[t.idx.luotu] = new Date(); muuttuneet.luotu = true; }
+    if (!teksti(r[t.idx.tuote]) && oletusTuote) { r[t.idx.tuote] = oletusTuote; muuttuneet.tuote = true; }
+    if (!teksti(r[t.idx.vaihe])) { r[t.idx.vaihe] = 'Liidi'; muuttuneet.vaihe = true; }
   });
-  if (muuttui) sh.getRange(alku, t.idx.luotu + 1, luodut.length, 1).setValues(luodut);
+  // Kirjoitetaan vain koneen sarakkeet: Tod. % on kaava, jota ei saa kirjoittaa yli
+  Object.keys(muuttuneet).forEach((s) => {
+    sh.getRange(alku, t.idx[s] + 1, arvot.length, 1).setValues(arvot.map((r) => [r[t.idx[s]]]));
+  });
 }
 
 /** Valikko: siirtää aktiivisen rivin liidin Kaupat-välilehdelle vaiheeseen Palaveri sovittu. */
@@ -517,11 +646,10 @@ function siirraKauppoihin() {
   const uusiRivi = k.rivit.reduce((m, r) => Math.max(m, r._rivi), 1) + 1;
   kirjoitaRivi(kaupat, V.kaupat, uusiRivi, {
     asiakas: teksti(l.yritys) || teksti(l.email),
-    kuvaus: 'Verkkosivuprojekti',
+    kuvaus: a.oletusTuote || 'Verkkosivuprojekti',
+    tuote: a.oletusTuote,
     lahde: luku(l.vaihe) >= 1 ? 'Sähköposti' : (teksti(l.liTila) ? 'LinkedIn' : 'Muu'),
     vaihe: 'Palaveri sovittu',
-    kerta: luku(a.keskikauppa) || 2500,
-    lasku1: pvmSolu(kkLisaa(tanaanAvain().slice(0, 7), 1) + '-01'),
     seuraava: 'Palaveri',
     seuraavaPvm: pvmSolu(lisaaArkipaivia(tanaanAvain(), 2)),
     yhteys: [teksti(l.etunimi), teksti(l.sukunimi), teksti(l.email), teksti(l.puhelin)].filter(String).join(' '),
@@ -533,7 +661,7 @@ function siirraKauppoihin() {
   paivitaKojelauta();
   ss.setActiveSheet(kaupat);
   kaupat.setActiveRange(kaupat.getRange(uusiRivi, 1));
-  ilmoita('Siirretty Kaupat-välilehdelle. Tarkista arvo ja laskutuskuukausi.');
+  ilmoita('Siirretty Kaupat-välilehdelle. Tarkista tuote, hinta ja arvioitu tilauspäivä.');
 }
 
 function valikkoLaskutuslista() {
@@ -827,7 +955,7 @@ function merkitseTehtavat(t, d, raportti, testi) {
 function luoLaskutuslista(kk) {
   const d = lueKaikki();
   const olemassa = new Set(d.malli.laskut.map((l) => l.tunniste).filter(String));
-  const uudet = laskutusrivit(d.malli, kk).filter((r) => !olemassa.has(r.tunniste));
+  const uudet = laskutusrivit(d.malli, kk, tanaanAvain()).filter((r) => !olemassa.has(r.tunniste));
   if (!uudet.length) return 0;
   const sh = d.taulut.las.sh;
   const t = d.taulut.las;
@@ -929,10 +1057,11 @@ function paivitaKojelauta() {
 
 function kirjoitaKojelauta(t) {
   const sh = valilehti(V.kojelauta);
-  const leveys = 10;
+  const leveys = KL.leveys;
   sh.getRange(1, 1, KL.askeleet + KL.askelRiveja + 2, leveys).clear();
   const r = t.nyt;
   const a = t.asetukset;
+  const vk = t.tamaViikko || { viikko: '', voitetut: 0 };
 
   sh.getRange(1, 1, 1, 2).setValues([['Laskutusmoottori', 'Päivitetty ' + Utilities.formatDate(new Date(), tz(), 'd.M.yyyy HH.mm')]]);
   sh.getRange(1, 1).setFontSize(18).setFontWeight('bold');
@@ -947,6 +1076,7 @@ function kirjoitaKojelauta(t) {
     ['Ennuste', r.ennuste],
     ['Vaje tavoitteeseen', r.vaje],
     ['Laskuttamatta (rästit)', t.laskuttamatta.summa],
+    ['Kassaan tässä kuussa (ennuste)', r.kassa],
     ['Suurimman asiakkaan osuus', t.keskittyma.osuus],
   ];
   const kone = [
@@ -954,11 +1084,12 @@ function kirjoitaKojelauta(t) {
     ['Avoin vaje (tämä + ensi kk)', t.kone.avoinVaje],
     ['Tarvittavat kaupat', t.kone.kaupat],
     ['Tarvittavat palaverit', t.kone.palaverit],
-    ['Tarvittavat kontaktit', t.kone.kontaktit],
-    ['Jo kesken sekvenssissä', t.kone.kesken],
-    ['Arkipäiviä ensi kuun loppuun', t.kone.arkipaivat],
+    ['Tarvittavat kontaktit (kesken ' + t.kone.kesken + ')', t.kone.kontaktit],
+    ['Tahti vajeesta / arkipäivä', t.kone.tahtiVajeesta],
+    ['Tahti viikkotavoitteesta / arkipäivä', t.kone.tahtiViikosta],
     ['Kiintiö: uusia kontakteja / arkipäivä', t.kone.kiintio],
     ['Liidejä jonossa', t.kone.jonossa],
+    ['Kauppoja vk ' + vk.viikko + ' / tavoite', vk.voitetut + ' / ' + a.kauppojaViikossa + ' · kuussa ' + t.kuunKaupat],
   ];
   const tai = (x) => (x === null || x === undefined ? '–' : x);
   const konv = [
@@ -971,6 +1102,7 @@ function kirjoitaKojelauta(t) {
     ['Palaverit', '', t.konv.palaverit, ''],
     ['Odottaa havaintoa', '', t.kone.odottaaHavaintoa, ''],
     ['', '', '', ''],
+    ['', '', '', ''],
   ];
   sh.getRange(KL.kpi, 1, kpi.length, 2).setValues(kpi);
   sh.getRange(KL.kpi, 4, kone.length, 2).setValues(kone);
@@ -978,16 +1110,17 @@ function kirjoitaKojelauta(t) {
 
   [sh.getRange(KL.kpi, 1, 1, 2), sh.getRange(KL.kpi, 4, 1, 2), sh.getRange(KL.kpi, 7, 1, 4)]
     .forEach((x) => x.setFontWeight('bold').setBackground('#1f2937').setFontColor('#ffffff'));
-  sh.getRange(KL.kpi + 1, 2, 7, 1).setNumberFormat('#,##0 "€"');
-  sh.getRange(KL.kpi + 8, 2).setNumberFormat('0%');
+  sh.getRange(KL.kpi + 1, 2, 8, 1).setNumberFormat('#,##0 "€"');
+  sh.getRange(KL.kpi + 9, 2).setNumberFormat('0%');
   sh.getRange(KL.kpi + 5, 1, 1, 2).setFontWeight('bold');
   sh.getRange(KL.kpi + 6, 2).setBackground(r.vaje > 0 ? '#fee2e2' : '#dcfce7').setFontWeight('bold');
   sh.getRange(KL.kpi + 7, 2).setBackground(t.laskuttamatta.summa > 0 ? '#fef3c7' : null);
-  sh.getRange(KL.kpi + 8, 2).setBackground(t.keskittyma.osuus > 0.5 ? '#fef3c7' : null);
+  sh.getRange(KL.kpi + 9, 2).setBackground(t.keskittyma.osuus > 0.5 ? '#fef3c7' : null);
   sh.getRange(KL.kpi + 1, 5).setNumberFormat('#,##0 "€"');
   sh.getRange(KL.kpi + 2, 5, 3, 1).setNumberFormat('0.0');
   sh.getRange(KL.kpi + 7, 4, 1, 2).setFontWeight('bold').setFontSize(12);
   sh.getRange(KL.kpi + 7, 5).setBackground(t.kone.rajoitettu ? '#fee2e2' : '#dbeafe');
+  sh.getRange(KL.kpi + 9, 5).setBackground(a.kauppojaViikossa > 0 && vk.voitetut >= a.kauppojaViikossa ? '#dcfce7' : null);
   sh.getRange(KL.kpi + 1, 8, 2, 3).setNumberFormat('0.0%');
   sh.getRange(KL.kpi + 3, 8, 1, 3).setNumberFormat('#,##0 "€"');
   sh.getRange(KL.kpi, 2, kpi.length, 1).setHorizontalAlignment('right');
@@ -999,37 +1132,61 @@ function kirjoitaKojelauta(t) {
   if (huomiot.length) sh.getRange(KL.huomiot + 1, 1, huomiot.length, 1).setValues(huomiot.map((h) => [h]));
 
   const kkOtsikot = ['Kuukausi', 'Tavoite', 'Toistuvat', 'Voitetut kaupat', 'Varmistettu', 'Putki (painotettu)',
-    'Ennuste', 'Laskutettu', 'Vaje', 'Tila'];
+    'Ennuste', 'Laskutettu', 'Vaje', 'Tila', 'Kassaan (ennuste)', 'Kassa kumulatiivinen'];
   sh.getRange(KL.kk, 1, 1, leveys).setValues([kkOtsikot])
-    .setFontWeight('bold').setBackground('#1f2937').setFontColor('#ffffff');
+    .setFontWeight('bold').setBackground('#1f2937').setFontColor('#ffffff').setWrap(true);
   const nytIdx = t.kuukaudet.findIndex((m) => m.kk === r.kk);
   const alkuIdx = Math.max(0, Math.min(nytIdx - 6, t.kuukaudet.length - KL.kkRiveja));
   const kkRivit = t.kuukaudet.slice(alkuIdx, alkuIdx + KL.kkRiveja);
   if (kkRivit.length) {
     const arvot = kkRivit.map((m) => [kkNimi(m.kk), m.tavoite, m.toistuvat, m.voitetut, m.varmistettu, m.putki,
-      m.ennuste, m.laskutettu, m.vaje, m.tila]);
+      m.ennuste, m.laskutettu, m.vaje, m.tila, m.kassa, m.kassaKumul]);
     sh.getRange(KL.kk + 1, 1, arvot.length, leveys).setValues(arvot);
     sh.getRange(KL.kk + 1, 2, arvot.length, 8).setNumberFormat('#,##0 "€"');
+    sh.getRange(KL.kk + 1, 11, arvot.length, 2).setNumberFormat('#,##0 "€"');
     kkRivit.forEach((m, i) => {
       const vari = m.kk === r.kk ? '#eff6ff' : null;
       sh.getRange(KL.kk + 1 + i, 1, 1, leveys).setBackground(vari);
       const merkki = m.tila.charAt(0);
-      sh.getRange(KL.kk + 1 + i, leveys).setFontColor(merkki === '✓' ? '#15803d' : merkki === '–' ? '#6b7280' : '#b91c1c');
+      sh.getRange(KL.kk + 1 + i, 10).setFontColor(merkki === '✓' ? '#15803d' : merkki === '–' ? '#6b7280' : '#b91c1c');
       if (m.kk === r.kk) sh.getRange(KL.kk + 1 + i, 1, 1, leveys).setFontWeight('bold');
     });
   }
 
   sh.getRange(KL.askeleet, 1).setValue('SEURAAVAT ASKELEET (KAUPAT)').setFontWeight('bold');
-  sh.getRange(KL.askeleet + 1, 1, 1, 5).setValues([['Pvm', 'Asiakas', 'Seuraava askel', 'Vaihe', 'Arvo']])
+  sh.getRange(KL.askeleet + 1, 1, 1, 6).setValues([['Pvm', 'Asiakas', 'Seuraava askel', 'Vaihe', 'Arvo', 'Arvioitu tilaus']])
     .setFontWeight('bold').setBackground('#e5e7eb');
   const askeleet = t.askeleet.slice(0, KL.askelRiveja).map((k) =>
-    [k.seuraavaPvm ? suomiPvm(k.seuraavaPvm) : 'puuttuu', k.asiakas, k.seuraava || '– ei seuraavaa askelta –', k.vaihe, k.kerta + k.kk]);
+    [k.seuraavaPvm ? suomiPvm(k.seuraavaPvm) : 'puuttuu', k.asiakas, k.seuraava || '– ei seuraavaa askelta –', k.vaihe,
+      (k.kerta || 0) + (k.kk || 0), k._at.tilaus ? suomiPvm(k._at.tilaus) : '']);
   if (askeleet.length) {
-    sh.getRange(KL.askeleet + 2, 1, askeleet.length, 5).setValues(askeleet);
+    sh.getRange(KL.askeleet + 2, 1, askeleet.length, 6).setValues(askeleet);
     sh.getRange(KL.askeleet + 2, 5, askeleet.length, 1).setNumberFormat('#,##0 "€"');
   } else {
     sh.getRange(KL.askeleet + 2, 1).setValue('Ei avoimia kauppoja.').setFontColor('#6b7280');
   }
+  kirjoitaViikot(t);
+}
+
+/** Viikot-välilehti: tuliko kauppa ja mihin kuukausiin sen laskutus osuu. */
+function kirjoitaViikot(t) {
+  const sh = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(V.viikot);
+  if (!sh) return;
+  const n = VIIKKO_OTSIKOT.length;
+  sh.getRange(2, 1, 30, n).clear();
+  const arvot = t.viikot.map((v) => ['vk ' + v.viikko, Number(v.alku.slice(8, 10)) + '.' + Number(v.alku.slice(5, 7)) + '.–' +
+    suomiPvm(v.loppu).replace(/\.\d{4}$/, '.'), v.kontaktit, v.vastaukset, v.uudetKaupat, v.voitetut, v.voitettuEur, v.kkTulo,
+    v.kuunKaupat, v.tavoite, v.tila, v.osuu]);
+  sh.getRange(2, 1, arvot.length, n).setValues(arvot);
+  sh.getRange(2, 7, arvot.length, 2).setNumberFormat('#,##0 "€"');
+  t.viikot.forEach((v, i) => {
+    const rivi = sh.getRange(2 + i, 1, 1, n);
+    if (v.nykyinen) rivi.setBackground('#eff6ff').setFontWeight('bold');
+    else if (v.alku > t.tanaan) rivi.setFontColor('#9ca3af');
+    const merkki = v.tila.charAt(0);
+    if (merkki === '✓') sh.getRange(2 + i, 11).setFontColor('#15803d');
+    if (merkki === '✗') sh.getRange(2 + i, 11).setFontColor('#b91c1c');
+  });
 }
 
 // ───────────────────────────── Kooste sähköpostiin ─────────────────────────────
@@ -1055,6 +1212,8 @@ function rakennaKooste(t, r, a, viikko, taulukkoUrl) {
   h.push('<table style="border-collapse:collapse">' + [
     ['Tavoite', eur(n.tavoite)], ['Laskutettu', eur(n.laskutettu)], ['Varmistettu', eur(n.varmistettu)],
     ['Putki (painotettu)', eur(n.putki)], ['Ennuste', eur(n.ennuste)], ['Vaje', eur(n.vaje)],
+    ['Kassaan tässä kuussa', eur(n.kassa)],
+    ['Kauppoja tällä viikolla', (t.tamaViikko ? t.tamaViikko.voitetut : 0) + ' / tavoite ' + a.kauppojaViikossa + ' · ' + kkNimi(n.kk) + ': ' + t.kuunKaupat],
     ['Kiintiö', t.kone.kiintio + ' uutta kontaktia / arkipäivä'],
   ].map(([x, y]) => '<tr><td style="padding:2px 16px 2px 0;color:#6b7280">' + x + '</td><td><b>' + esc(y) + '</b></td></tr>').join('') +
     '</table>');
@@ -1105,14 +1264,26 @@ function rakennaKooste(t, r, a, viikko, taulukkoUrl) {
   if (viikko) {
     osio('Viikkoraportti: kuukaudet');
     h.push('<table style="border-collapse:collapse;font-size:13px"><tr>' +
-      ['Kuukausi', 'Tavoite', 'Ennuste', 'Laskutettu', 'Vaje', 'Tila'].map((x) =>
+      ['Kuukausi', 'Tavoite', 'Ennuste', 'Laskutettu', 'Vaje', 'Tila', 'Kassaan', 'Kassa kumul.'].map((x) =>
         '<th style="text-align:left;padding:4px 10px;border-bottom:1px solid #ddd">' + x + '</th>').join('') + '</tr>' +
       t.kuukaudet.filter((m) => m.kk >= kkLisaa(n.kk, -2) && m.kk <= kkLisaa(n.kk, 6)).map((m) =>
         '<tr' + (m.kk === n.kk ? ' style="font-weight:bold"' : '') + '>' +
-        [kkNimi(m.kk), eur(m.tavoite), eur(m.ennuste), eur(m.laskutettu), eur(m.vaje), m.tila].map((x) =>
+        [kkNimi(m.kk), eur(m.tavoite), eur(m.ennuste), eur(m.laskutettu), eur(m.vaje), m.tila, eur(m.kassa),
+          m.kassaKumul === '' ? '' : eur(m.kassaKumul)].map((x) =>
+          '<td style="padding:4px 10px;border-bottom:1px solid #eee">' + esc(x) + '</td>').join('') + '</tr>').join('') +
+      '</table>');
+    osio('Viikkoraportti: viikot');
+    h.push('<table style="border-collapse:collapse;font-size:13px"><tr>' +
+      ['Viikko', 'Kontaktit', 'Vastaukset', 'Uudet kaupat', 'Voitetut', 'Voitettu €', 'Tila', 'Laskutus osuu'].map((x) =>
+        '<th style="text-align:left;padding:4px 10px;border-bottom:1px solid #ddd">' + x + '</th>').join('') + '</tr>' +
+      t.viikot.filter((v) => v.alku <= pv && v.loppu >= lisaaPaivia(pv, -35)).map((v) =>
+        '<tr' + (v.nykyinen ? ' style="font-weight:bold"' : '') + '>' +
+        ['vk ' + v.viikko, v.kontaktit, v.vastaukset, v.uudetKaupat, v.voitetut, eur(v.voitettuEur), v.tila, v.osuu].map((x) =>
           '<td style="padding:4px 10px;border-bottom:1px solid #eee">' + esc(x) + '</td>').join('') + '</tr>').join('') +
       '</table>');
     osio('Viikkoraportti: myyntikone');
+    h.push('<p>Tahti: vajeesta ' + t.kone.tahtiVajeesta + ' / pv, viikkotavoitteesta ' + t.kone.tahtiViikosta + ' / pv → kiintiö ' + t.kone.kiintio + ' / pv' +
+      (t.kone.rajoitettu ? ' (katto)' : '') + '</p>');
     h.push('<p>Kontaktoitu ' + t.konv.kontaktoidut + ' · vastanneet ' + t.konv.vastanneet + ' · palaverit ' + t.konv.palaverit +
       '<br>Kontakti → palaveri: oletus ' + pct(a.kp) + ', toteutunut ' + (t.konv.kpTot === null ? '–' : pct(t.konv.kpTot)) +
       '<br>Palaveri → kauppa: oletus ' + pct(a.pk) + ', toteutunut ' + (t.konv.pkTot === null ? '–' : pct(t.konv.pkTot)) +
@@ -1137,7 +1308,7 @@ function viestitHtml(lista) {
 // ───────────────────────────── Laskenta (puhtaat funktiot) ─────────────────────────────
 
 /**
- * Laskee kuukausitaulukon, tämän kuun tunnusluvut ja myyntikoneen tahdin.
+ * Laskee kuukausitaulukon (laskutus ja kassa), tämän kuun tunnusluvut, viikkoseurannan ja myyntikoneen tahdin.
  * m = lueKaikki().malli, tanaan = 'YYYY-MM-DD'.
  */
 function laske(m, tanaan) {
@@ -1147,16 +1318,24 @@ function laske(m, tanaan) {
   const tavoite = {};
   m.tavoitteet.forEach((t) => { tavoite[t.kk] = t.tavoite; });
   const kuukaudet = Array.from(new Set(m.tavoitteet.map((t) => t.kk).concat([nyt, ensi]))).sort();
+  const kaupat = m.kaupat.map((k) => Object.assign({}, k, { _at: kaupanAikataulu(k, tanaan, a) }));
 
   const rivit = kuukaudet.map((kk) => {
-    const toistuvat = summa(m.toistuvat.filter((t) => aktiivinen(t.alkaa, t.paattyy, kk)).map((t) => t.summa));
+    let toistuvat = 0;
+    let kassa = 0;
+    m.toistuvat.forEach((t) => {
+      if (aktiivinen(t.alkaa, t.paattyy, kk)) toistuvat += t.summa;
+      kassa += kkTulonKassa(t.alkaa, t.paattyy, t.summa, a.maksuaika, kk);
+    });
     let voitetut = 0;
     let putki = 0;
-    m.kaupat.forEach((k) => {
-      const e = kauppaKuussa(k, kk);
-      if (!e) return;
-      if (k.vaihe === VOITETTU) voitetut += e;
-      else if (k.vaihe !== HAVITTY) putki += e * k.tod;
+    kaupat.forEach((k) => {
+      if (k.vaihe === HAVITTY) return;
+      const e = kaupanKuukausi(k, kk);
+      const paino = k.vaihe === VOITETTU ? 1 : k.tod;
+      if (k.vaihe === VOITETTU) voitetut += e.laskutus;
+      else putki += e.laskutus * paino;
+      kassa += e.kassa * paino;
     });
     const varmistettu = toistuvat + voitetut;
     const ennuste = varmistettu + putki;
@@ -1169,8 +1348,10 @@ function laske(m, tanaan) {
     else if (varmistettu >= tav) tila = '✓ Varmistettu';
     else if (ennuste >= tav) tila = '✓ Ennuste riittää';
     else tila = '⚠ Vaje ' + eur(vaje);
-    return { kk, tavoite: tav, toistuvat, voitetut, varmistettu, putki, ennuste, laskutettu, vaje, tila };
+    return { kk, tavoite: tav, toistuvat, voitetut, varmistettu, putki, ennuste, laskutettu, vaje, tila, kassa, kassaKumul: '' };
   });
+  let kumul = 0;
+  rivit.forEach((r) => { if (r.kk >= nyt) { kumul += r.kassa; r.kassaKumul = kumul; } });
   const rNyt = rivit.find((r) => r.kk === nyt);
   const rEnsi = rivit.find((r) => r.kk === ensi);
 
@@ -1179,8 +1360,8 @@ function laske(m, tanaan) {
   const kontaktoidut = lid.filter((l) => l.vaihe >= 1).length;
   const vastanneet = lid.filter((l) => VASTANNEET.includes(l.tila)).length;
   const palaverit = lid.filter((l) => PALAVERIT.includes(l.tila)).length;
-  const voitetutKaupat = m.kaupat.filter((k) => k.vaihe === VOITETTU);
-  const suljetut = voitetutKaupat.length + m.kaupat.filter((k) => k.vaihe === HAVITTY).length;
+  const voitetutKaupat = kaupat.filter((k) => k.vaihe === VOITETTU);
+  const suljetut = voitetutKaupat.length + kaupat.filter((k) => k.vaihe === HAVITTY).length;
   const kpTot = kontaktoidut ? palaverit / kontaktoidut : null;
   const pkTot = suljetut ? voitetutKaupat.length / suljetut : null;
   const kertaKaupat = voitetutKaupat.filter((k) => k.kerta > 0);
@@ -1188,18 +1369,25 @@ function laske(m, tanaan) {
   const kp = kontaktoidut >= a.kynnys && a.kynnys > 0 ? Math.max(kpTot, 0.005) : a.kp;
   const pk = suljetut >= 5 ? Math.max(pkTot, 0.05) : a.pk;
 
+  // Viikkoseuranta
+  const viikot = viikkoseuranta(m, kaupat, tanaan, a);
+  const tamaViikko = viikot.find((v) => v.nykyinen);
+  const kuunKaupat = voitetutKaupat.filter((k) => k._at.tilaus && k._at.tilaus.slice(0, 7) === nyt).length;
+
   // Myyntikone: vaje → kaupat → palaverit → kontaktit → kontaktia / arkipäivä
   const vajeKk = (r) => Math.max(0, r.tavoite - r.varmistettu - r.putki);
   const avoinVaje = vajeKk(rNyt) + vajeKk(rEnsi);
-  const kaupat = a.keskikauppa > 0 ? avoinVaje / a.keskikauppa : 0;
-  const palaveritTarve = pk > 0 ? kaupat / pk : 0;
+  const kauppojaTarve = a.keskikauppa > 0 ? avoinVaje / a.keskikauppa : 0;
+  const palaveritTarve = pk > 0 ? kauppojaTarve / pk : 0;
   const kontaktit = kp > 0 ? palaveritTarve / kp : 0;
   const kesken = lid.filter((l) => l.tila === 'Sekvenssissä' || l.tila === 'Luonnos').length;
   const jaljella = Math.max(0, Math.ceil(kontaktit - 1e-9) - kesken);
   const arkipaivat = arkipaiviaValilla(tanaan, kkViimeinen(ensi));
-  const laskettu = Math.ceil((arkipaivat ? jaljella / arkipaivat : jaljella) - 1e-9);
-  const kiintio = avoinVaje <= 0 ? a.min : Math.min(a.max, Math.max(a.min, laskettu));
-  const rajoitettu = avoinVaje > 0 && laskettu > a.max;
+  const tahtiVajeesta = avoinVaje > 0 ? Math.ceil((arkipaivat ? jaljella / arkipaivat : jaljella) - 1e-9) : 0;
+  const tahtiViikosta = a.kauppojaViikossa > 0 && pk > 0 && kp > 0 ? Math.ceil(a.kauppojaViikossa / pk / kp / 5 - 1e-9) : 0;
+  const laskettu = Math.max(tahtiVajeesta, tahtiViikosta);
+  const kiintio = Math.min(a.max, Math.max(a.min, laskettu));
+  const rajoitettu = laskettu > a.max;
   const jonossa = lid.filter((l) => (l.tila === 'Uusi' || l.tila === '') && onEmail(l.email)).length;
   const odottaaHavaintoa = lid.filter((l) => (l.tila === 'Uusi' || l.tila === '') && onEmail(l.email) &&
     !l.havainto && !(a.autoHavainto && l.ehdotus)).length;
@@ -1215,26 +1403,32 @@ function laske(m, tanaan) {
     ryhmat[k] = (ryhmat[k] || 0) + t.summa;
   });
   voitetutKaupat.forEach((k) => {
-    const e = kauppaKuussa(k, nyt);
+    const e = kaupanKuukausi(k, nyt).laskutus;
     if (e) ryhmat[k.asiakas] = (ryhmat[k.asiakas] || 0) + e;
   });
   const suurin = Object.keys(ryhmat).sort((x, y) => ryhmat[y] - ryhmat[x])[0] || '';
   const keskittyma = { nimi: suurin, osuus: rNyt.varmistettu > 0 && suurin ? ryhmat[suurin] / rNyt.varmistettu : 0 };
 
   // Kaupat, jotka tarvitsevat huomiota
-  const avoimet = m.kaupat.filter((k) => k.vaihe && k.vaihe !== VOITETTU && k.vaihe !== HAVITTY);
+  const avoimet = kaupat.filter((k) => k.vaihe && k.vaihe !== VOITETTU && k.vaihe !== HAVITTY);
   const raja = lisaaPaivia(tanaan, 7);
   const askeleet = avoimet.filter((k) => !k.seuraavaPvm || !k.seuraava || k.seuraavaPvm <= raja)
-    .sort((x, y) => (x.seuraavaPvm || '0000') < (y.seuraavaPvm || '0000') ? -1 : 1);
+    .sort((x, y) => ((x.seuraavaPvm || '0000') < (y.seuraavaPvm || '0000') ? -1 : 1));
   const myohassa = avoimet.filter((k) => !k.seuraava || !k.seuraavaPvm || k.seuraavaPvm < tanaan).length;
-  const ilmanKuukautta = avoimet.filter((k) => (k.kerta > 0 && !k.lasku1 && !k.lasku2) ||
-    (k.kk > 0 && !k.kkAlkaa && !k.lasku1 && !k.lasku2)).length;
+  const arvioOhi = avoimet.filter((k) => k.tilauspvm && k.tilauspvm < tanaan).length;
+  const ilmanPaivaa = voitetutKaupat.filter((k) => !k._at.tilaus && (k.kerta || k.kk)).length;
+  const tuntematon = kaupat.filter((k) => !k.tuoteLoytyi).map((k) => k.tuote);
 
   const huomiot = [];
   if (!rNyt.tavoite) huomiot.push('Kuukaudelle ' + kkNimi(nyt) + ' ei ole tavoitetta – lisää rivi Tavoitteet-välilehdelle.');
   else if (rNyt.varmistettu >= rNyt.tavoite) huomiot.push('✓ ' + cap(kkNimi(nyt)) + ' on varmistettu: ' + eur(rNyt.varmistettu) + ' / ' + eur(rNyt.tavoite) + '.');
   else if (rNyt.ennuste >= rNyt.tavoite) huomiot.push('✓ ' + cap(kkNimi(nyt)) + ' riittää ennusteen mukaan, mutta ' + eur(rNyt.tavoite - rNyt.varmistettu) + ' on vielä putkessa. Vie kaupat maaliin.');
-  else huomiot.push('Vaje ' + eur(rNyt.vaje) + ' (' + kkNimi(nyt) + '). Tämän kuun vaje katetaan lämpimällä verkostolla ja ennakkolaskuilla – kylmä kontakti ehtii yleensä vasta ensi kuulle.');
+  else huomiot.push('Vaje ' + eur(rNyt.vaje) + ' (' + kkNimi(nyt) + '). Tämän kuun vaje katetaan lämpimällä verkostolla ja ensimmäisen erän laskuilla – kylmä kontakti ehtii yleensä vasta ensi kuulle.');
+  const edellinen = viikot.find((v) => v.loppu < tanaan && lisaaPaivia(v.loppu, 7) >= tanaan);
+  if (a.kauppojaViikossa > 0 && edellinen && edellinen.voitetut < a.kauppojaViikossa) {
+    huomiot.push('Viikko ' + edellinen.viikko + ': ' + edellinen.voitetut + ' kauppaa (tavoite ' + a.kauppojaViikossa + '). ' +
+      cap(kkNimi(nyt)) + ' tähän mennessä ' + kuunKaupat + ' kauppaa.');
+  }
   if (laskuttamatta.summa > 0) huomiot.push('Laskuttamatta ' + eur(laskuttamatta.summa) + ' (' + laskuttamatta.maara + ' riviä) – laskuta Laskut-välilehdeltä ja vaihda tila Lähetetty.');
   if (rajoitettu) huomiot.push('Tarvittava tahti ' + laskettu + ' kontaktia/pv ylittää katon ' + a.max + '. Pelkkä volyymi ei riitä: terävöitä havaintoja, nosta keskikauppaa (paketti + kk-palvelu) tai lisää lämpimiä kontakteja.');
   if (odottaaHavaintoa > 0) huomiot.push(odottaaHavaintoa + ' liidiä odottaa havaintoa – kopioi ehdotus tai kirjoita oma Havainto-sarakkeeseen.');
@@ -1243,33 +1437,68 @@ function laske(m, tanaan) {
   const vastasi = lid.filter((l) => l.tila === 'Vastasi').length;
   if (vastasi) huomiot.push(vastasi + ' vastausta odottaa – vastaa ja päivitä tila (Palaveri / Ei kiinnosta).');
   if (myohassa) huomiot.push(myohassa + ' avointa kauppaa ilman seuraavaa askelta tai askel myöhässä.');
-  if (ilmanKuukautta) huomiot.push(ilmanKuukautta + ' avointa kauppaa ilman laskutuskuukautta – ne eivät näy ennusteessa.');
+  if (arvioOhi) huomiot.push(arvioOhi + ' avoimen kaupan arvioitu tilauspäivä on mennyt – ennuste siirtää ne tälle päivälle. Päivitä arvio tai vaihe.');
+  if (ilmanPaivaa) huomiot.push(ilmanPaivaa + ' voitettua kauppaa ilman tilauspäivää – ne eivät näy laskutuksessa.');
+  if (tuntematon.length) huomiot.push('Tuntematon tuote Kaupat-välilehdellä: ' + Array.from(new Set(tuntematon)).join(', ') + ' – lisää se Tuotteet-välilehdelle.');
   if (keskittyma.osuus > 0.5) huomiot.push('Suurin asiakas (' + keskittyma.nimi + ') on ' + pct(keskittyma.osuus) + ' laskutuksesta. Tavoite: alle 50 %.');
 
   return {
-    tanaan, asetukset: a, kuukaudet: rivit, nyt: rNyt, ensi: rEnsi,
+    tanaan, asetukset: a, kuukaudet: rivit, nyt: rNyt, ensi: rEnsi, viikot, tamaViikko, kuunKaupat,
     konv: { kontaktoidut, vastanneet, palaverit, kpTot, pkTot, keskikauppaTot, kp, pk },
-    kone: { avoinVaje, kaupat, palaverit: palaveritTarve, kontaktit, kesken, arkipaivat, laskettu, kiintio, rajoitettu, jonossa, odottaaHavaintoa },
+    kone: { avoinVaje, kaupat: kauppojaTarve, palaverit: palaveritTarve, kontaktit, kesken, arkipaivat, tahtiVajeesta,
+      tahtiViikosta, laskettu, kiintio, rajoitettu, jonossa, odottaaHavaintoa },
     laskuttamatta, keskittyma, askeleet, huomiot,
   };
 }
 
-/** Kaupan euromäärä kuukaudelle kk (painottamaton). */
-function kauppaKuussa(k, kk) {
-  let e = 0;
-  const l1 = k.lasku1 ? k.lasku1.slice(0, 7) : null;
-  const l2 = k.lasku2 ? k.lasku2.slice(0, 7) : null;
-  if (k.kerta) {
-    if (l1 && l2) {
-      if (l1 === kk) e += k.kerta / 2;
-      if (l2 === kk) e += k.kerta / 2;
-    } else if ((l1 || l2) === kk) {
-      e += k.kerta;
-    }
+/**
+ * Kaupan tilauspäivä. Voitettu: Tilauspvm (tai luontipäivä). Avoin: arvioitu Tilauspvm tai luontipäivä + myyntisykli,
+ * kuitenkin aikaisintaan tänään – avointa kauppaa ei voi tilata menneisyydessä.
+ */
+function tilausPaiva(k, tanaan, a) {
+  if (k.vaihe === VOITETTU || k.vaihe === HAVITTY) return k.tilauspvm || k.luotu || null;
+  const arvio = k.tilauspvm || lisaaPaivia(k.luotu || tanaan, a.myyntisykli || 0);
+  return arvio < tanaan ? tanaan : arvio;
+}
+
+/** Kaupan laskutusaikataulu: erät laskutus- ja maksupäivineen sekä kk-tulon alkukuukausi. */
+function kaupanAikataulu(k, tanaan, a) {
+  const tilaus = tilausPaiva(k, tanaan, a);
+  const maksu = k.maksuaika === null || k.maksuaika === undefined ? a.maksuaika : k.maksuaika;
+  if (!tilaus) return { tilaus: null, erat: [], kkAlkaa: k.kkAlkaa || null, maksuaika: maksu };
+  const pohja = k.erat && k.erat.length ? k.erat : [{ osuus: 1, pv: 0 }];
+  const yht = summa(pohja.map((e) => e.osuus)) || 1;
+  const erat = pohja.map((e, i) => {
+    const pvm = lisaaPaivia(tilaus, e.pv || 0);
+    return { nro: i + 1, n: pohja.length, osuus: e.osuus / yht, summa: (k.kerta || 0) * e.osuus / yht, pvm, kassa: lisaaPaivia(pvm, maksu || 0) };
+  }).filter((e) => e.summa);
+  const viimeinen = lisaaPaivia(tilaus, Math.max.apply(null, pohja.map((e) => e.pv || 0)));
+  return { tilaus, erat, kkAlkaa: k.kkAlkaa || viimeinen, maksuaika: maksu };
+}
+
+/** Kaupan laskutus ja kassaan tuleva raha kuukaudelle kk (painottamaton). k._at = kaupanAikataulu(). */
+function kaupanKuukausi(k, kk) {
+  const at = k._at;
+  let laskutus = 0;
+  let kassa = 0;
+  at.erat.forEach((e) => {
+    if (e.pvm.slice(0, 7) === kk) laskutus += e.summa;
+    if (e.kassa.slice(0, 7) === kk) kassa += e.summa;
+  });
+  if (k.kk && at.kkAlkaa) {
+    if (aktiivinen(at.kkAlkaa, k.kkPaattyy, kk)) laskutus += k.kk;
+    kassa += kkTulonKassa(at.kkAlkaa, k.kkPaattyy, k.kk, at.maksuaika, kk);
   }
-  if (k.kk) {
-    const alku = k.kkAlkaa || k.lasku2 || k.lasku1;
-    if (alku && aktiivinen(alku, k.kkPaattyy, kk)) e += k.kk;
+  return { laskutus, kassa };
+}
+
+/** Kuukausittain laskutettavan summan kassaan tulo kuukaudelle kk (lasku kuun 1. päivä + maksuaika). */
+function kkTulonKassa(alkaa, paattyy, summaKk, maksuaika, kk) {
+  if (!summaKk) return 0;
+  let e = 0;
+  for (let i = -3; i <= 0; i++) {
+    const m = kkLisaa(kk, i);
+    if (aktiivinen(alkaa, paattyy, m) && lisaaPaivia(m + '-01', maksuaika || 0).slice(0, 7) === kk) e += summaKk;
   }
   return e;
 }
@@ -1278,8 +1507,48 @@ function aktiivinen(alkaa, paattyy, kk) {
   return (!alkaa || alkaa.slice(0, 7) <= kk) && (!paattyy || paattyy.slice(0, 7) >= kk);
 }
 
-/** Laskutuslistan rivit kuukaudelle kk. */
-function laskutusrivit(m, kk) {
+/** Viikkoseuranta: 8 mennyttä viikkoa, kuluva ja 4 tulevaa. Voitettu kauppa kuuluu Tilauspvm:n viikolle. */
+function viikkoseuranta(m, kaupat, tanaan, a) {
+  const tamaMa = lisaaPaivia(tanaan, -((viikonpaiva(tanaan) + 6) % 7));
+  // Seuranta alkaa ensimmäisestä tavoitekuukaudesta: sitä aiemmille viikoille ei merkitä ✓/✗
+  const alkaa = m.tavoitteet.length ? m.tavoitteet.map((t) => t.kk).sort()[0] + '-01' : '';
+  const rivit = [];
+  for (let i = -8; i <= 4; i++) {
+    const alku = lisaaPaivia(tamaMa, 7 * i);
+    const loppu = lisaaPaivia(alku, 6);
+    const sisalla = (k) => !!k && k >= alku && k <= loppu;
+    const voitetut = kaupat.filter((k) => k.vaihe === VOITETTU && sisalla(k._at.tilaus));
+    const osuu = {};
+    voitetut.forEach((k) => {
+      k._at.erat.forEach((e) => { const kk = e.pvm.slice(0, 7); osuu[kk] = (osuu[kk] || 0) + e.summa; });
+      if (k.kk && k._at.kkAlkaa) { const kk = k._at.kkAlkaa.slice(0, 7); osuu[kk] = (osuu[kk] || 0) + k.kk; }
+    });
+    const kuu = lisaaPaivia(alku, 3).slice(0, 7); // ISO-viikko kuuluu torstainsa kuukauteen
+    const kuunKaupat = kaupat.filter((k) => k.vaihe === VOITETTU && k._at.tilaus &&
+      k._at.tilaus.slice(0, 7) === kuu && k._at.tilaus <= loppu).length;
+    const nykyinen = alku <= tanaan && tanaan <= loppu;
+    const taysi = a.kauppojaViikossa > 0 && voitetut.length >= a.kauppojaViikossa;
+    let tila = '';
+    if (nykyinen) tila = taysi ? '✓ käynnissä' : 'käynnissä';
+    else if (loppu < tanaan && a.kauppojaViikossa > 0 && loppu >= alkaa) tila = taysi ? '✓' : '✗';
+    rivit.push({
+      alku, loppu, viikko: isoViikko(alku), nykyinen, tila, tavoite: a.kauppojaViikossa,
+      kontaktit: m.liidit.filter((l) => sisalla(l.aloitettu)).length,
+      vastaukset: m.liidit.filter((l) => sisalla(l.vastausPvm)).length,
+      uudetKaupat: kaupat.filter((k) => sisalla(k.luotu)).length,
+      voitetut: voitetut.length,
+      voitettuEur: summa(voitetut.map((k) => k.kerta || 0)),
+      kkTulo: summa(voitetut.map((k) => k.kk || 0)),
+      kuunKaupat,
+      osuu: Object.keys(osuu).sort().map((kk) => lyhytKk(kk) + ' ' + eur(osuu[kk])).join(' · '),
+    });
+  }
+  return rivit;
+}
+
+/** Laskutuslistan rivit kuukaudelle kk: toistuvat, voitettujen kauppojen erät ja kuukausimaksut. */
+function laskutusrivit(m, kk, tanaan) {
+  const a = m.asetukset;
   const rivit = [];
   m.toistuvat.forEach((t) => {
     if (t.summa > 0 && aktiivinen(t.alkaa, t.paattyy, kk)) {
@@ -1288,20 +1557,16 @@ function laskutusrivit(m, kk) {
     }
   });
   m.kaupat.filter((k) => k.vaihe === VOITETTU).forEach((k) => {
-    const l1 = k.lasku1 ? k.lasku1.slice(0, 7) : null;
-    const l2 = k.lasku2 ? k.lasku2.slice(0, 7) : null;
-    const perusta = 'K|' + k.asiakas + '|' + k.kuvaus + '|';
-    if (k.kerta) {
-      if (l1 && l2) {
-        if (l1 === kk) rivit.push({ kk, laskutettava: k.asiakas, kuvaus: k.kuvaus + ' – 1. lasku (50 %)', summa: k.kerta / 2, tunniste: perusta + 'L1|' + kk });
-        if (l2 === kk) rivit.push({ kk, laskutettava: k.asiakas, kuvaus: k.kuvaus + ' – loppulasku (50 %)', summa: k.kerta / 2, tunniste: perusta + 'L2|' + kk });
-      } else if ((l1 || l2) === kk) {
-        rivit.push({ kk, laskutettava: k.asiakas, kuvaus: k.kuvaus, summa: k.kerta, tunniste: perusta + 'L|' + kk });
-      }
-    }
-    const alku = k.kkAlkaa || k.lasku2 || k.lasku1;
-    if (k.kk && alku && aktiivinen(alku, k.kkPaattyy, kk)) {
-      rivit.push({ kk, laskutettava: k.asiakas, kuvaus: k.kuvaus + ' – kuukausimaksu ' + kkNimi(kk), summa: k.kk, tunniste: perusta + 'KK|' + kk });
+    const at = kaupanAikataulu(k, tanaan, a);
+    const nimi = k.kuvaus || k.tuote || 'Kauppa';
+    const perusta = 'K|' + k.asiakas + '|' + nimi + '|';
+    at.erat.filter((e) => e.pvm.slice(0, 7) === kk).forEach((e) => {
+      const era = e.n > 1 ? ' – erä ' + e.nro + '/' + e.n + ' (' + Math.round(e.osuus * 100) + ' %)' : '';
+      rivit.push({ kk, laskutettava: k.asiakas, kuvaus: nimi + era + ' · laskuta ' + suomiPvm(e.pvm), summa: e.summa,
+        tunniste: perusta + 'E' + e.nro + '|' + kk });
+    });
+    if (k.kk && at.kkAlkaa && aktiivinen(at.kkAlkaa, k.kkPaattyy, kk)) {
+      rivit.push({ kk, laskutettava: k.asiakas, kuvaus: nimi + ' – kuukausimaksu ' + kkNimi(kk), summa: k.kk, tunniste: perusta + 'KK|' + kk });
     }
   });
   return rivit;
@@ -1404,13 +1669,14 @@ function renderoiViesti(pohja, l, a, esikatselu) {
     etunimi: teksti(l.etunimi), sukunimi: teksti(l.sukunimi), yritys: teksti(l.yritys), rooli: teksti(l.rooli),
     sivusto: lyhytDomain(l.sivusto), paikkakunta: teksti(l.paikkakunta), havainto: siistiHavainto(l.havainto),
     nimi: teksti(a.nimi), allekirjoitus: teksti(a.allekirjoitus) || teksti(a.nimi), referenssi: teksti(a.referenssi),
+    tietosuoja: teksti(a.tietosuoja),
   };
   let virhe = '';
   const korvaa = (s, aiheessa) => String(s || '').replace(/\{\{\s*([a-zA-Z]+)\s*\}\}/g, (koko, nimi) => {
     const k = nimi.toLowerCase();
     if (!(k in arvot)) { virhe = virhe || 'Tuntematon muuttuja ' + koko; return koko; }
     if (arvot[k]) return arvot[k];
-    if (esikatselu) return '[' + k + ' puuttuu]';
+    if (esikatselu && PAKOLLISET_MUUTTUJAT.includes(k)) return '[' + k + ' puuttuu]';
     if (aiheessa || PAKOLLISET_MUUTTUJAT.includes(k)) virhe = virhe || 'Tyhjä {{' + k + '}}';
     return '';
   });
@@ -1576,7 +1842,7 @@ function otsikkoIndeksit(sh, nimi) {
   const idx = {};
   Object.keys(SAR[nimi]).forEach((k) => {
     const i = otsikot.indexOf(SAR[nimi][k]);
-    if (i < 0) throw new Error('Välilehdeltä ' + nimi + ' puuttuu sarake "' + SAR[nimi][k] + '". Palauta otsikko.');
+    if (i < 0) throw new Error('Välilehdeltä ' + nimi + ' puuttuu sarake "' + SAR[nimi][k] + '". Palauta otsikko tai aja valikosta Päivitä taulukon rakenne.');
     idx[k] = i;
   });
   return { idx, leveys };
@@ -1664,25 +1930,28 @@ function lueKaikki() {
   const asetukset = lueAsetukset();
   const vaiheet = lueVaiheet();
   const taulut = {
-    tav: lueTaulu(V.tavoitteet), tois: lueTaulu(V.toistuvat), kau: lueTaulu(V.kaupat),
-    las: lueTaulu(V.laskut), lii: lueTaulu(V.liidit), poh: lueTaulu(V.pohjat),
+    tav: lueTaulu(V.tavoitteet), tois: lueTaulu(V.toistuvat), kau: lueTaulu(V.kaupat), las: lueTaulu(V.laskut),
+    lii: lueTaulu(V.liidit), poh: lueTaulu(V.pohjat), tuo: lueTaulu(V.tuotteet),
   };
+  const osuus = (v) => { const x = luku(v); return x > 1 ? x / 100 : x; };
+  const tuotteet = taulut.tuo.rivit.filter((r) => teksti(r.tuote)).map((r) => ({
+    tuote: teksti(r.tuote), hinta: luku(r.hinta), kk: luku(r.kk), maksuaika: r.maksuaika === '' ? null : luku(r.maksuaika),
+    erat: [[r.e1, r.p1], [r.e2, r.p2], [r.e3, r.p3]].filter(([e]) => osuus(e) > 0).map(([e, p]) => ({ osuus: osuus(e), pv: luku(p) })),
+  }));
   const malli = {
     asetukset,
+    tuotteet,
     tavoitteet: taulut.tav.rivit.map((r) => ({ kk: kkAvain(r.kk), tavoite: luku(r.tavoite) })).filter((r) => r.kk),
     toistuvat: taulut.tois.rivit.map((r) => ({
       nimi: teksti(r.lahde), laskutettava: teksti(r.laskutettava), summa: luku(r.summa),
       alkaa: pvAvain(r.alkaa), paattyy: pvAvain(r.paattyy),
     })),
-    kaupat: taulut.kau.rivit.map((r) => {
-      const vaihe = teksti(r.vaihe);
-      return {
-        _rivi: r._rivi, asiakas: teksti(r.asiakas), kuvaus: teksti(r.kuvaus), vaihe,
-        tod: vaihe in vaiheet ? vaiheet[vaihe] : 0, kerta: luku(r.kerta), lasku1: pvAvain(r.lasku1),
-        lasku2: pvAvain(r.lasku2), kk: luku(r.kk), kkAlkaa: pvAvain(r.kkAlkaa), kkPaattyy: pvAvain(r.kkPaattyy),
-        seuraava: teksti(r.seuraava), seuraavaPvm: pvAvain(r.seuraavaPvm),
-      };
-    }),
+    kaupat: taulut.kau.rivit.map((r) => kaupanMalli({
+      _rivi: r._rivi, asiakas: teksti(r.asiakas), kuvaus: teksti(r.kuvaus), tuote: teksti(r.tuote), vaihe: teksti(r.vaihe),
+      kerta: r.kerta === '' ? null : luku(r.kerta), tilauspvm: pvAvain(r.tilauspvm), kk: r.kk === '' ? null : luku(r.kk),
+      kkAlkaa: pvAvain(r.kkAlkaa), kkPaattyy: pvAvain(r.kkPaattyy), seuraava: teksti(r.seuraava),
+      seuraavaPvm: pvAvain(r.seuraavaPvm), luotu: pvAvain(r.luotu),
+    }, tuotteet, vaiheet)),
     laskut: taulut.las.rivit.map((r) => ({
       kk: kkAvain(r.kk), summa: luku(r.summa), tila: teksti(r.tila), laskutettava: teksti(r.laskutettava),
       tunniste: teksti(r.tunniste),
@@ -1693,7 +1962,7 @@ function lueKaikki() {
       linkedin: teksti(r.linkedin), sivusto: teksti(r.sivusto), segmentti: teksti(r.segmentti),
       paikkakunta: teksti(r.paikkakunta), havainto: teksti(r.havainto), ehdotus: teksti(r.ehdotus),
       tila: teksti(r.tila), vaihe: Math.max(0, Math.round(luku(r.vaihe))), aloitettu: pvAvain(r.aloitettu),
-      seuraava: pvAvain(r.seuraava), ketju: teksti(r.ketju), luonnos: teksti(r.luonnos),
+      seuraava: pvAvain(r.seuraava), vastausPvm: pvAvain(r.vastausPvm), ketju: teksti(r.ketju), luonnos: teksti(r.luonnos),
       liTila: teksti(r.liTila), soitto: teksti(r.soitto), muistiinpano: teksti(r.muistiinpano),
     })),
     pohjat: taulut.poh.rivit.map((r) => ({
@@ -1702,6 +1971,22 @@ function lueKaikki() {
     })),
   };
   return { malli, taulut };
+}
+
+/**
+ * Täydentää kaupan tuotteen tiedoilla: tyhjä hinta / kk-tulo = tuotteen, erät ja maksuaika tuotteelta.
+ * kerta ja kk ovat null, jos solu oli tyhjä.
+ */
+function kaupanMalli(k, tuotteet, vaiheet) {
+  const t = tuotteet.find((x) => x.tuote.toLowerCase() === String(k.tuote || '').toLowerCase()) || null;
+  return Object.assign({}, k, {
+    kerta: k.kerta === null || k.kerta === undefined ? (t ? t.hinta : 0) : k.kerta,
+    kk: k.kk === null || k.kk === undefined ? (t ? t.kk : 0) : k.kk,
+    erat: t && t.erat.length ? t.erat : [{ osuus: 1, pv: 0 }],
+    maksuaika: t ? t.maksuaika : null,
+    tod: k.vaihe in vaiheet ? vaiheet[k.vaihe] : 0,
+    tuoteLoytyi: !k.tuote || !!t,
+  });
 }
 
 function pohjanVaihe(v) {
@@ -1834,6 +2119,20 @@ function lisaaArkipaivia(k, n) {
     if (onArkipaiva(x)) jaljella--;
   }
   return x;
+}
+
+/** ISO-viikon numero (ma–su, viikko kuuluu torstainsa vuoteen). */
+function isoViikko(k) {
+  const t = avainUTC(k);
+  const torstai = t + (3 - ((new Date(t).getUTCDay() + 6) % 7)) * 864e5;
+  const vuosi = new Date(torstai).getUTCFullYear();
+  const tammi4 = Date.UTC(vuosi, 0, 4);
+  const ekaTorstai = tammi4 + (3 - ((new Date(tammi4).getUTCDay() + 6) % 7)) * 864e5;
+  return 1 + Math.round((torstai - ekaTorstai) / (7 * 864e5));
+}
+
+function lyhytKk(kk) {
+  return KUUKAUDET[Number(kk.slice(5, 7)) - 1].replace(/kuu$/, '');
 }
 
 function kkNimi(kk) {

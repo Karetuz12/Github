@@ -39,6 +39,14 @@ const asetukset = (muut) => Object.assign({
   tila: 'LÄHETÄ', nimi: 'Testi Myyjä', allekirjoitus: 'Testi Myyjä\nYritys Oy', referenssi: 'Referenssi.',
   raportti: '', alias: '', keskikauppa: 2500, kp: 0.04, pk: 0.3, kynnys: 60, min: 3, max: 20, yhteensa: 40,
   loppuOdotus: 5, vaadiHavainto: true, autoHavainto: false, li: 5, soitot: 3, arkisin: true, kooste: true, ajo: 7,
+  kauppojaViikossa: 0, myyntisykli: 21, maksuaika: 14, oletusTuote: 'Verkkosivuprojekti', tietosuoja: '',
+}, muut || {});
+
+const VERKKOSIVU = [{ osuus: 0.5, pv: 7 }, { osuus: 0.5, pv: 35 }];
+const kauppa = (muut) => Object.assign({
+  asiakas: 'Asiakas', kuvaus: 'Verkkosivuprojekti', tuote: 'Verkkosivuprojekti', vaihe: 'Voitettu', tod: 1, kerta: 2000,
+  tilauspvm: '2026-11-01', kk: 0, kkAlkaa: null, kkPaattyy: null, erat: VERKKOSIVU, maksuaika: 14, seuraava: '', seuraavaPvm: null,
+  luotu: '2026-11-01', tuoteLoytyi: true,
 }, muut || {});
 
 const pohjat = () => [
@@ -68,8 +76,7 @@ const malli = (muut) => Object.assign({
     { nimi: 'Nordic Host', laskutettava: 'Nordic Host', summa: 0, alkaa: '2026-11-01', paattyy: null },
   ],
   kaupat: [
-    { asiakas: 'Verkkosivuasiakas', kuvaus: 'Verkkosivuprojekti', vaihe: 'Voitettu', tod: 1, kerta: 1000,
-      lasku1: '2026-11-01', lasku2: null, kk: 0, kkAlkaa: null, kkPaattyy: null, seuraava: 'Laskuta', seuraavaPvm: '2026-11-02' },
+    kauppa({ asiakas: 'Verkkosivuasiakas', tuote: 'Kertalasku', kerta: 1000, erat: [{ osuus: 1, pv: 0 }], seuraava: 'Laskuta', seuraavaPvm: '2026-11-02' }),
   ],
   laskut: [],
   liidit: [],
@@ -126,23 +133,113 @@ test('marraskuun vaje ja myyntikoneen tahti lähtötilanteesta', () => {
   assert.ok(t.huomiot.some((h) => h.includes('Suurin asiakas')));
 });
 
-test('putki, 50/50-laskutus ja kk-tulo', () => {
+test('putki: erät, kk-tulo ja kassa painotettuna', () => {
   const m = malli();
-  m.kaupat.push({ asiakas: 'Matkailu Oy', kuvaus: 'Sivusto', vaihe: 'Tarjous lähetetty', tod: 0.5, kerta: 3000,
-    lasku1: '2026-11-15', lasku2: '2026-12-10', kk: 150, kkAlkaa: null, kkPaattyy: null, seuraava: 'Soita', seuraavaPvm: '2026-11-05' });
+  m.kaupat.push(kauppa({ asiakas: 'Matkailu Oy', vaihe: 'Tarjous lähetetty', tod: 0.5, kerta: 3000, tilauspvm: '2026-11-10', kk: 150 }));
   const t = g.laske(m, '2026-11-02');
-  assert.equal(t.nyt.putki, 750); // 1500 × 0,5
-  assert.equal(t.ensi.putki, 825); // (1500 + 150) × 0,5
+  assert.equal(t.nyt.putki, 750); // erä 1 17.11. → 1 500 × 0,5
+  assert.equal(t.ensi.putki, 825); // erä 2 15.12. + kk-tulo joulukuusta → (1 500 + 150) × 0,5
   const tammi = t.kuukaudet.find((r) => r.kk === '2027-01');
   assert.equal(tammi.putki, 75);
-  assert.equal(g.kauppaKuussa({ kerta: 2000, lasku1: '2026-11-01', lasku2: null, kk: 0 }, '2026-11'), 2000);
-  assert.equal(g.kauppaKuussa({ kerta: 0, lasku1: '2026-11-01', lasku2: null, kk: 200, kkAlkaa: '2027-01-01', kkPaattyy: '2027-03-01' }, '2027-04'), 0);
-  assert.equal(g.kauppaKuussa({ kerta: 0, lasku1: '2026-11-01', lasku2: null, kk: 200, kkAlkaa: '2027-01-01', kkPaattyy: '2027-03-01' }, '2027-03'), 200);
+  // Kassa: toistuvat ja marraskuun kertalasku tulevat marraskuussa, putken erät joulukuussa (maksuaika 14 pv)
+  assert.equal(t.nyt.kassa, 12000);
+  assert.equal(t.ensi.kassa, 11000 + 1500 + 75);
+  assert.equal(t.nyt.kassaKumul, 12000);
+  assert.equal(t.ensi.kassaKumul, 24575);
+});
+
+test('kaksi 2 000 € kauppaa: marraskuun puolivälissä ja joulukuun alussa → kassa kumuloituu', () => {
+  const m = malli({ kaupat: [kauppa({ asiakas: 'A', tilauspvm: '2026-11-15' }), kauppa({ asiakas: 'B', tilauspvm: '2026-12-01' })] });
+  const t = g.laske(m, '2026-11-02');
+  const kk = (x) => t.kuukaudet.find((r) => r.kk === x);
+  // Laskutus: A erä 1 22.11., A erä 2 20.12., B erä 1 8.12., B erä 2 5.1.
+  assert.equal(kk('2026-11').voitetut, 1000);
+  assert.equal(kk('2026-12').voitetut, 2000);
+  assert.equal(kk('2027-01').voitetut, 1000);
+  // Kassa: A:n 1. erä ja B:n 1. erä joulukuussa, toiset erät tammikuussa
+  assert.equal(kk('2026-11').kassa, 11000);
+  assert.equal(kk('2026-12').kassa, 11000 + 2000);
+  assert.equal(kk('2027-01').kassa, 11000 + 2000);
+  const at = g.kaupanAikataulu(m.kaupat[0], '2026-11-02', asetukset());
+  assert.deepEqual(arr(at.erat.map((e) => [e.pvm, e.kassa, e.summa])), [['2026-11-22', '2026-12-06', 1000], ['2026-12-20', '2027-01-03', 1000]]);
+});
+
+test('avoimen kaupan arvioitu tilauspäivä', () => {
+  const a = asetukset();
+  assert.equal(g.tilausPaiva(kauppa({ vaihe: 'Liidi', tilauspvm: null, luotu: '2026-11-02' }), '2026-11-05', a), '2026-11-23');
+  assert.equal(g.tilausPaiva(kauppa({ vaihe: 'Liidi', tilauspvm: '2026-11-03' }), '2026-11-05', a), '2026-11-05');
+  assert.equal(g.tilausPaiva(kauppa({ vaihe: 'Voitettu', tilauspvm: '2026-10-20' }), '2026-11-05', a), '2026-10-20');
+  assert.equal(g.tilausPaiva(kauppa({ vaihe: 'Voitettu', tilauspvm: null, luotu: null }), '2026-11-05', a), null);
+  const t = g.laske(malli({ kaupat: [kauppa({ vaihe: 'Tarjous lähetetty', tod: 0.5, tilauspvm: '2026-11-01' })] }), '2026-11-10');
+  assert.ok(t.huomiot.some((h) => h.includes('arvioitu tilauspäivä on mennyt')));
+});
+
+test('kauppa saa hinnan ja aikataulun tuotteelta', () => {
+  const tuotteet = [{ tuote: 'Verkkosivuprojekti', hinta: 2500, kk: 0, maksuaika: 14, erat: VERKKOSIVU },
+    { tuote: 'Ylläpito ja hosting', hinta: 0, kk: 149, maksuaika: 14, erat: [] }];
+  const v = { Voitettu: 1, Liidi: 0.1 };
+  const k = g.kaupanMalli({ tuote: 'verkkosivuprojekti', kerta: null, kk: null, vaihe: 'Liidi' }, tuotteet, v);
+  assert.equal(k.kerta, 2500);
+  assert.equal(k.tod, 0.1);
+  assert.equal(k.erat.length, 2);
+  assert.equal(g.kaupanMalli({ tuote: 'Verkkosivuprojekti', kerta: 1800, kk: null, vaihe: 'Liidi' }, tuotteet, v).kerta, 1800);
+  const yp = g.kaupanMalli({ tuote: 'Ylläpito ja hosting', kerta: null, kk: null, vaihe: 'Voitettu', tilauspvm: '2026-11-20' }, tuotteet, v);
+  assert.equal(yp.kk, 149);
+  yp._at = g.kaupanAikataulu(yp, '2026-11-02', asetukset());
+  assert.equal(g.kaupanKuukausi(yp, '2026-11').laskutus, 149);
+  assert.equal(g.kaupanKuukausi(yp, '2026-10').laskutus, 0);
+  assert.equal(g.kaupanMalli({ tuote: 'Tuntematon', kerta: null, kk: null, vaihe: 'Liidi' }, tuotteet, v).tuoteLoytyi, false);
+});
+
+test('viikkoseuranta: tuliko kauppa ja mihin kuukausiin se osuu', () => {
+  const m = malli({ kaupat: [
+    kauppa({ asiakas: 'A', tilauspvm: '2026-11-04', luotu: '2026-11-02' }),
+    kauppa({ asiakas: 'B', tilauspvm: '2026-11-17', kerta: 300, erat: [{ osuus: 1, pv: 3 }] }),
+    kauppa({ asiakas: 'C', vaihe: 'Tarjous lähetetty', tod: 0.5, luotu: '2026-11-10', tilauspvm: null }),
+  ], liidit: [liidi({ aloitettu: '2026-11-03', vaihe: 1, tila: 'Sekvenssissä' }), liidi({ aloitettu: '2026-11-11', vastausPvm: '2026-11-12', vaihe: 1, tila: 'Vastasi' })],
+  asetukset: asetukset({ kauppojaViikossa: 1 }) });
+  const t = g.laske(m, '2026-11-18');
+  const vk = (n) => t.viikot.find((v) => v.viikko === n);
+  assert.equal(t.viikot.length, 13);
+  assert.equal(vk(45).voitetut, 1);
+  assert.equal(vk(45).tila, '✓');
+  assert.equal(vk(45).kontaktit, 1);
+  assert.equal(vk(45).uudetKaupat, 1); // A (B luotu 1.11. = vk 44, C vk 46)
+  assert.equal(vk(46).uudetKaupat, 1);
+  assert.equal(vk(45).osuu, 'marras 1\u00a0000\u00a0€ · joulu 1\u00a0000\u00a0€');
+  assert.equal(vk(46).voitetut, 0);
+  assert.equal(vk(46).tila, '✗');
+  assert.equal(vk(46).vastaukset, 1);
+  assert.equal(vk(47).nykyinen, true);
+  assert.equal(vk(47).tila, '✓ käynnissä');
+  assert.equal(vk(47).kuunKaupat, 2); // A + B (tässä mallissa ei ole lähtötilanteen kauppaa)
+  assert.equal(vk(45).kuunKaupat, 1);
+  assert.equal(t.kuunKaupat, 2);
+  assert.ok(t.huomiot.some((h) => h.startsWith('Viikko 46: 0 kauppaa')));
+});
+
+test('ISO-viikot', () => {
+  assert.equal(g.isoViikko('2026-01-01'), 1);
+  assert.equal(g.isoViikko('2026-11-02'), 45);
+  assert.equal(g.isoViikko('2026-12-31'), 53);
+  assert.equal(g.isoViikko('2027-01-01'), 53);
+  assert.equal(g.isoViikko('2027-01-04'), 1);
+  assert.equal(g.lyhytKk('2026-11'), 'marras');
+});
+
+test('viikkotavoite pitää tahdin vähintään 1 kauppa / vk -tasolla', () => {
+  const t = g.laske(malli({ asetukset: asetukset({ kauppojaViikossa: 1 }) }), '2026-11-02');
+  assert.equal(t.kone.tahtiVajeesta, 6);
+  assert.equal(t.kone.tahtiViikosta, 17); // 1 / 0,3 / 0,04 / 5 = 16,7
+  assert.equal(t.kone.kiintio, 17);
+  const kk = g.laske(malli({ asetukset: asetukset({ kauppojaViikossa: 2 }) }), '2026-11-02');
+  assert.equal(kk.kone.kiintio, 20);
+  assert.equal(kk.kone.rajoitettu, true);
 });
 
 test('kuukausi katettu → kiintiö minimissä', () => {
   const m = malli();
-  m.kaupat.push({ asiakas: 'Iso', kuvaus: 'Projekti', vaihe: 'Voitettu', tod: 1, kerta: 8000, lasku1: '2026-11-01', lasku2: '2026-12-01', kk: 0 });
+  m.kaupat.push(kauppa({ asiakas: 'Iso', kerta: 8000, erat: [{ osuus: 0.5, pv: 0 }, { osuus: 0.5, pv: 30 }] }));
   const t = g.laske(m, '2026-11-02');
   assert.equal(t.kone.avoinVaje, 0);
   assert.equal(t.kone.kiintio, 3);
@@ -179,6 +276,10 @@ test('viestin muuttujat', () => {
   assert.match(g.renderoiViesti(p, liidi(), asetukset({ nimi: '', allekirjoitus: '' }), false).virhe, /allekirjoitus/);
   assert.match(g.renderoiViesti(p, liidi(), asetukset({ nimi: '', allekirjoitus: '' }), true).viesti, /\[allekirjoitus puuttuu\]/);
   assert.equal(g.renderoiViesti(p, liidi(), asetukset({ referenssi: '' }), false).virhe, '');
+  const ts = { aihe: 'x', viesti: 'Viesti.\n\n{{tietosuoja}}' };
+  assert.equal(g.renderoiViesti(ts, liidi(), a, false).viesti, 'Viesti.');
+  assert.equal(g.renderoiViesti(ts, liidi(), asetukset({ tietosuoja: 'Tietosuoja: x.fi/ts' }), false).viesti, 'Viesti.\n\nTietosuoja: x.fi/ts');
+  assert.equal(g.renderoiViesti(ts, liidi(), a, true).viesti, 'Viesti.');
   assert.match(g.renderoiViesti({ aihe: '', viesti: '{{tuntematon}}' }, liidi(), a, false).virhe, /Tuntematon/);
 });
 
@@ -303,15 +404,17 @@ test('MIME-viesti: ääkköset ja ketjutus', () => {
   assert.match(g.rakennaMime({ to: 'a@b.fi', fromName: 'Ascii Name', fromEmail: 'm@x.fi', subject: 'Hi', body: 'x' }), /^From: "Ascii Name" <m@x\.fi>/);
 });
 
-test('laskutuslista: toistuvat ja voitetut kaupat', () => {
+test('laskutuslista: toistuvat, voitettujen kauppojen erät ja kuukausimaksut', () => {
   const m = malli();
-  m.kaupat.push({ asiakas: 'Matkailu Oy', kuvaus: 'Sivusto', vaihe: 'Voitettu', tod: 1, kerta: 3000,
-    lasku1: '2026-11-15', lasku2: '2026-12-10', kk: 150, kkAlkaa: '2027-01-01', kkPaattyy: null });
-  m.kaupat.push({ asiakas: 'Auki Oy', kuvaus: 'Sivusto', vaihe: 'Tarjous lähetetty', tod: 0.5, kerta: 3000, lasku1: '2026-11-15' });
-  const marras = g.laskutusrivit(m, '2026-11');
+  m.kaupat.push(kauppa({ asiakas: 'Matkailu Oy', kuvaus: 'Sivusto', kerta: 3000, tilauspvm: '2026-11-10', kk: 150, kkAlkaa: '2027-01-01' }));
+  m.kaupat.push(kauppa({ asiakas: 'Auki Oy', vaihe: 'Tarjous lähetetty', tod: 0.5, kerta: 3000, tilauspvm: '2026-11-10' }));
+  const marras = g.laskutusrivit(m, '2026-11', '2026-11-02');
   assert.deepEqual(arr(marras.map((r) => r.summa)), [8000, 2000, 1000, 1000, 1500]);
+  assert.equal(marras[4].kuvaus, 'Sivusto – erä 1/2 (50 %) · laskuta 17.11.2026');
+  assert.equal(marras[3].kuvaus, 'Verkkosivuprojekti · laskuta 1.11.2026');
   assert.equal(new Set(marras.map((r) => r.tunniste)).size, marras.length);
-  assert.deepEqual(arr(g.laskutusrivit(m, '2027-01').map((r) => r.summa)), [8000, 2000, 1000, 150]);
+  assert.deepEqual(arr(g.laskutusrivit(m, '2026-12', '2026-11-02').map((r) => r.summa)), [8000, 2000, 1000, 1500]);
+  assert.deepEqual(arr(g.laskutusrivit(m, '2027-01', '2026-11-02').map((r) => r.summa)), [8000, 2000, 1000, 150]);
 });
 
 test('laskutettu lasketaan vain lähetetyistä ja maksetuista', () => {

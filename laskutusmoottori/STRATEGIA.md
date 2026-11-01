@@ -18,7 +18,8 @@ Ilman projekteja vaje on 4 000 €/kk. Kaksi asiaa on tärkeämpiä kuin itse va
 
 - **Keskittymä.** Book Lapland -kokonaisuus on 8 000 / 11 000 = 73 % pohjasta. Jos se muuttuu, kaksi kolmasosaa laskutuksesta lähtee kerralla.
   Tavoite vuoden 2027 loppuun on, että yksikään asiakas ei ole yli 50 % laskutuksesta. Kojelauta näyttää osuuden joka päivä.
-- **Kapasiteetti.** Pullonkaula on toimitus, ei myynti. Kaksi projektia kuukaudessa päivätyön ohella onnistuu vain, jos projekti on tuote eikä räätälöinti.
+- **Kapasiteetti.** Toimituksessa on kaksi tekijää, joten pullonkaula ei ole tekeminen. Pullonkaula on laadukkaiden palaverien ja tarjousten määrä.
+  Oma aikasi kannattaa käyttää vastauksiin, palavereihin ja tarjouksiin. Toimitus pysyy hallittavana, kun projekti on tuote eikä räätälöinti.
 
 Mallin ulkopuolella:
 
@@ -36,6 +37,10 @@ Mallin ulkopuolella:
 
 Tahti on pieni, kun viestit ovat täsmäiskuja ja kone hoitaa jatkoviestit. Laskutusmoottori laskee tämän joka aamu uudelleen
 todellisen vajeen, putken ja toteutuneiden konversioiden perusteella ja lähettää juuri sen verran.
+
+**Tavoite yksi kauppa viikossa:** 1 kauppa ← 3,3 palaveria ← 83 kontaktia viikossa, eli 17 arkipäivässä. Sinun 100 viestiä viikossa
+riittää siihen valmiista listasta: 100 kontaktia → 4 palaveria → 1,2 kauppaa viikossa. Kone pitää tahdin vähintään viikkotavoitteen
+vaatimalla tasolla, vaikka kuukausi olisi jo katettu. Viikot-välilehti näyttää joka viikko, tuliko kauppa ja mihin kuukausiin sen laskutus osuu.
 
 ## 3. Kolme kerrosta
 
@@ -78,6 +83,19 @@ vanha ©-vuosi, hidas lataus). Sinä hyväksyt havainnon, ja vasta sitten viesti
 | Sähköposti | Kolmen viestin sarja: avaus → 3 arkipäivän päästä muistutus → 5 arkipäivän päästä lopetus | Kone |
 | LinkedIn | Kutsu ja viesti, 5 päivässä. Ensin ne, joille on jo lähtenyt sähköposti. | Sinä. Kone antaa listan ja tekstin. |
 | Puhelin | 3 päivässä: kaksi viestiä ilman vastausta | Sinä – myyntitaustasi vahvin ase |
+| nerot.fi | Valmiit tarjouspyynnöt: verkkosivut, koodaus, tuntityöt. Tavoite 1–2 kauppaa kuussa. | Kone poimii ja luonnostelee tarjouksen, sinä lähetät. |
+
+**nerot.fi.** Asiakas on siellä jo päättänyt ostaa, joten kyse on nopeudesta ja tarjouksen laadusta. Maksullinen jäsenyys
+(14,95–49,95 €/kk, halvin taso vain alle 500 € budjeteille) tuo sähköposti-ilmoitukset ja asiakkaan yhteystiedot ennen tarjousta.
+Automaatio kannattaa rakentaa näiden ilmoitusten varaan eikä sivuston kaapimisen:
+
+1. Gmail-ilmoitus nerot.fi:stä
+2. kone poimii pyynnön Tarjouspyynnöt-välilehdelle ja pisteyttää sopivuuden (verkkosivut, koodaus, budjetti, aikataulu)
+3. Claude luonnostelee kattavan tarjouksen hinnoiteltuna tuotteiden mukaan
+4. sinä luet ja lähetät sen nerot.fi:ssä
+
+Pienet koodaustyöt (Pikatyö, 200–300 €) ovat kannattavia, koska ne vievät tällä järjestelmällä puolesta tunnista tuntiin.
+Hinnoittele ne silti kiinteällä hinnalla eikä tuntihinnalla. Jokainen pikatyöasiakas on myös ehdokas ylläpitosopimukselle.
 
 **Tarjous tuotteena.** Kiinteä sisältö, kiinteä hinta ja 2–3 viikon toimitus. Hinnat ovat lähtöehdotus:
 
@@ -86,6 +104,10 @@ vanha ©-vuosi, hidas lataus). Sinä hyväksyt havainnon, ja vasta sitten viesti
 | Korjauspaketti | Nopeus, mobiili, varauspolku ja englanninkielinen versio olemassa olevaan sivustoon | 1 500 € |
 | Uusi sivusto | 5–8 sivua, 2 kieltä, varausintegraatio ja hakukoneoptimoinnin perusta | 2 900 € |
 | Ylläpito ja kasvu | Hosting (Nordic Host), päivitykset ja kuukausiraportti | 149–290 €/kk |
+| Pikatyö | Pieni koodaus- tai sivutyö, esim. nerot.fi-pyyntö | 200–300 € |
+
+Tuotteet ovat Laskutusmoottorin Tuotteet-välilehdellä laskutusaikatauluineen. Verkkosivuprojekti laskutetaan 50 % aloituksesta ja 50 % julkaisusta,
+iso projekti kolmessa erässä ja pikatyö kerralla.
 
 Toimitusta varten rakennetaan kerran yksi matkailusivun pohja, jota käytetään joka projektissa. Tavoite on enintään 20 tuntia omaa aikaa projektia kohden.
 
@@ -98,6 +120,22 @@ Toimitusta varten rakennetaan kerran yksi matkailusivun pohja, jota käytetään
 
 Yksi asiakas kulkee näin: sivuprojekti → hosting Nordic Hostiin → markkinointi Markkinointiboostiin → booking engine → referenssi seuraavaan kauppaan.
 Jokainen asiakas on siis arvokkaampi kuin yksittäinen projekti.
+
+### Työkalut
+
+| Työkalu | Sopii | Ei sovi |
+|---|---|---|
+| **Laskutusmoottori (Gmail)** | Kylmä täsmäisku 100 viestiä viikossa. Kytketty vajeeseen, tahtiin ja laskutukseen. Ilmainen. | Avausten seurantaa ei ole. Isoissa volyymeissä katto on yksi postilaatikko. |
+| **Brevo (ent. Sendinblue)** | Uutiskirje ja hoivaviestit niille, jotka ovat antaneet luvan: asiakkaat, vastanneet, tilaajat | Kylmä lista: Brevon käyttöehdot kieltävät ostetut ja kerätyt listat, ja tili voidaan sulkea |
+| **Woodpecker / Lemlist** | Jos tahti kasvaa yli yhden laatikon tai tarvitaan useita lähetyslaatikoita. Molemmat ovat EU-pohjaisia. | Tuplaa listan ja maksaa kuukausittain. Liidit pitää synkronoida takaisin moottoriin. |
+| **Apollo.io** | Tietokanta, jos oma lista loppuu, sekä osoitteiden rikastus ja tarkistus | Sinulla on jo dataa. Datan säilytys on Yhdysvalloissa. |
+
+Suositus: aloitetaan moottorilla ja omalla listalla, ja lista ajetaan osoitteentarkistuksen läpi ennen tuontia. Brevo otetaan käyttöön
+lämpimälle listalle. Woodpecker tai Lemlist lisätään vasta, jos tahti ylittää yhden laatikon katon. Moottorin Liidit-välilehti pysyy
+silloinkin seurannan keskipisteenä.
+
+Valmista työkalua, joka yhdistäisi yhden hengen yrityksen laskutusennusteen maksuerineen ja asiakashankinnan tahdin, ei löytynyt.
+Tarjolla on ennustepohjia taulukkolaskentaan ja erikseen kylmän sähköpostin työkaluja. Tämä yhdistelmä on siis oma etu.
 
 ## 4. Tavoiteportaat
 
@@ -139,8 +177,9 @@ Seurattavat luvut: laskutettu vs. tavoite, ennuste, kontakti → palaveri, palav
 
 ## 7. Seuraavaksi rakennetaan
 
-1. **Liidien haku:** Claude kokoaa viikoittain 30–50 matkailuyritystä (yritys, sivusto, päättäjä ja havainto) suoraan Liidit-välilehden muotoon.
+1. **Oman listan tuonti:** listan tarkistus, segmentointi (Matkailu / Yleinen) ja havainnot sivustotarkistuksella. Lisäksi Claude kokoaa matkailuyrityksiä täydennykseksi.
 2. **Lähetysdomain ja sen lämmitys** (2–3 viikkoa) ennen kuin tahti nostetaan yli 10 viestiin päivässä.
-3. **Verkkosivupaketin laskeutumissivu** ja kaksi case-sivua (SkyView ja Book Lapland). Myöhemmin avausviestiin voi lisätä linkin.
-4. **Booking engine -kampanja** tammikuussa.
-5. **Laskutusohjelman integraatio:** toteuma siirtyy Laskut-välilehdelle automaattisesti, kun laskutusohjelma tarjoaa rajapinnan.
+3. **nerot.fi-automaatio:** ilmoitukset → Tarjouspyynnöt-välilehti → Clauden tarjousluonnos → sinä lähetät. Tarvitaan jäsenyys ja yksi esimerkki-ilmoitus.
+4. **Verkkosivupaketin laskeutumissivu** ja kaksi case-sivua (SkyView ja Book Lapland). Myöhemmin avausviestiin voi lisätä linkin.
+5. **Booking engine -kampanja** tammikuussa.
+6. **Laskutusohjelman integraatio:** toteuma siirtyy Laskut-välilehdelle automaattisesti, kun laskutusohjelma tarjoaa rajapinnan.
