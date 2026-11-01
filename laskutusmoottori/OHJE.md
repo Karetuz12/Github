@@ -3,7 +3,7 @@
 Yksi Google Sheets -taulukko, joka pitää kirjaa laskutuksesta ja hoitaa asiakashankinnan. Siihen kirjataan
 kuukausitavoitteet, toistuvat tulot, kaupat ja laskut. Kojelauta kertoo joka muokkauksen jälkeen, paljonko
 kuukaudesta puuttuu. Joka aamu kone lähettää juuri sen verran uusia viestejä kuin vaje vaatii, hoitaa
-jatkoviestit ja merkitsee vastaukset. Sen jälkeen saat koosteen sekä LinkedIn- ja soittolistan.
+jatkoviestit ja merkitsee vastaukset. Kalenteriin varatut palaverit siirtyvät itsestään kauppoihin. Lopuksi saat päivän koosteen.
 
 Strategia, jonka varaan kone on rakennettu: [STRATEGIA.md](STRATEGIA.md).
 
@@ -58,6 +58,8 @@ Liitä rivit Liidit-välilehdelle. Tila (Uusi), Vaihe (0) ja Lisätty täyttyvä
   - *Matkailu*: matkailun pohjat.
   - *Yleinen* tai tyhjä: yleiset pohjat.
   - *Verkosto*: tutut ihmiset. Kaksi henkilökohtaista viestiä, jotka pyytävät suosittelua. Havaintoa tai yritystä ei tarvita.
+  - *Vanha asiakas*: vanhat projekti- ja markkinointiasiakkaat. Kaksi viestiä: yhteinen historia, havainto nykyisestä sivusta ja maksuton kuntotarkastus.
+    ⚠ Tarkista ennen lähettämistä mainostoimiston kauppakirjasta, koskeeko kilpailu- tai houkuttelukielto toimiston entisiä asiakkaita.
 
   Jos segmentillä on omia pohjia, sen liidit käyttävät vain niitä.
 - **Havainto** on täsmäiskun ydin: yksi asia yrityksen omalta sivulta. Se jatkaa lausetta *"kävin läpi sivujanne ja huomasin, että …"*,
@@ -75,10 +77,11 @@ Claude voi koota liidit puolestasi: pyydä esim. *"etsi 40 lappilaista ohjelmapa
 
 1. Kuun ensimmäisenä päivänä se luo kuun laskutuslistan Laskut-välilehdelle: toistuvat tulot ja voitetut kaupat tilalla *Laskuttamatta*.
 2. Se tarkistaa lähetetyt ketjut. Vastanneet merkitään *Vastasi* ja niiden sarja pysähtyy. Pomput merkitään *Pomppasi*. Automaattiset poissaoloviestit eivät pysäytä sarjaa. Lähetetyt luonnokset siirtyvät tilaan *Sekvenssissä*.
-3. Se tarkistaa jonon seuraavien 20 liidin sivustot.
-4. Arkipäivinä se lähettää ensin erääntyneet jatkoviestit samaan ketjuun ja sitten uudet avaukset kiintiön verran. Kiintiö näkyy kojelaudalla.
-5. Se valitsee päivän LinkedIn-listan (5 kpl) ja soittolistan (3 kpl).
-6. Se lähettää koosteen *Raporttien osoite* -asetuksen osoitteeseen. Maanantaisin mukana on viikkoraportti. Vastaukset ja virheet tulevat aina tietoon.
+3. Se tarkistaa kalenterin. Jos liidin sähköposti on tapahtuman vieraana tai järjestäjänä seuraavan 60 päivän aikana, liidi siirtyy kauppoihin vaiheeseen *Palaveri sovittu*. Palaverin päivä tulee kaupan seuraavaksi askeleeksi.
+4. Se tarkistaa jonon seuraavien 20 liidin sivustot. Jos PageSpeed-avain on asetettu, se mittaa myös mobiilinopeuden.
+5. Arkipäivinä se lähettää ensin erääntyneet jatkoviestit samaan ketjuun ja sitten uudet avaukset kiintiön verran. Kiintiö näkyy kojelaudalla.
+6. Se valitsee päivän LinkedIn-listan (5 kpl, valinnainen). Soittolista on oletuksena pois päältä.
+7. Se lähettää koosteen *Raporttien osoite* -asetuksen osoitteeseen. Maanantaisin mukana on viikkoraportti. Vastaukset ja virheet tulevat aina tietoon.
 
 Sarja: **avaus → 3 arkipäivän päästä muistutus → 5 arkipäivän päästä lopetusviesti → 5 arkipäivän päästä tila *Ei vastausta***.
 Odotusajat ja tekstit voi muuttaa Viestipohjat-välilehdellä.
@@ -86,8 +89,9 @@ Odotusajat ja tekstit voi muuttaa Viestipohjat-välilehdellä.
 ## Mitä sinä teet (20–30 min päivässä)
 
 - **Vastaukset:** vastaa Gmailissa ja päivitä liidin tila (*Palaveri*, *Ei kiinnosta* tai *Älä ota yhteyttä*). Kun palaveri on sovittu, valitse liidin rivi ja valikosta **Siirrä valittu liidi kauppoihin**.
-- **LinkedIn-lista:** lähetä kutsu ilman viestiä. Kun kutsu on hyväksytty, lähetä koosteen valmis viesti ja päivitä *LinkedIn-tila*.
-- **Soittolista:** soita ja kirjaa tulos *Soitto*-sarakkeeseen.
+- **Palaverit:** luo Google-kalenteriin ajanvaraussivu (Kalenteri → Luo → Ajanvarausaikataulu; vaatii Google Workspacen) ja liitä sen linkki Asetuksiin kohtaan *Ajanvarauslinkki*.
+  Linkki lisätään jatkoviesteihin. Varattu palaveri siirtää liidin kauppoihin ilman käsityötä. Sama toimii, kun lähetät kutsun itse ja liidi on vieraana.
+- **LinkedIn-lista (valinnainen):** lähetä kutsu ilman viestiä. Kun kutsu on hyväksytty, lähetä koosteen valmis viesti ja päivitä *LinkedIn-tila*. Lista pois: *LinkedIn-tehtäviä / päivä* = 0.
 - **Kaupat:** kirjoita asiakas. Tuote (oletus Verkkosivuprojekti), vaihe (Liidi) ja luontipäivä täyttyvät itsestään. Pidä *Vaihe*, *Seuraava askel* ja *Seuraava pvm* ajan tasalla.
   Kun kauppa on voitettu, vaihda vaiheeksi *Voitettu* ja kirjaa **Tilauspvm**. Avoimelle kaupalle Tilauspvm on arvio. Katso tarkemmin kohta *Laskutusaikataulut ja viikkoseuranta*.
 - **Laskut:** *Laskutetaan*-sarake kertoo, milloin rivi pitää laskuttaa. Kun lasku on lähtenyt, vaihda tilaksi *Lähetetty* ja korjaa summa toteutuneeksi, esim. Markkinointiboostin provisio.
@@ -169,6 +173,8 @@ Maanantain viikkoraportissa on viiden viikon seuranta.
 
 - **Erillinen lähetysdomain.** Kylmät viestit kannattaa lähettää omasta domainista ja postilaatikosta, ei päädomainista. Asenna moottori sen tilin taulukkoon. Laita domainille SPF, DKIM ja DMARC kuntoon ja lämmitä laatikkoa 2–3 viikkoa ennen kuin tahti nousee yli 10 viestin päivässä.
 - **Pelkkä teksti.** Pohjat on kirjoitettu ilman linkkejä ja liitteitä, koska ne heikentävät avausviestin perillemenoa.
+- **PageSpeed-avain (valinnainen, ilmainen):** Google Cloud Console → ota käyttöön *PageSpeed Insights API* → Credentials → *API key*.
+  Liitä avain Asetuksiin. Yksi mittaus kestää 10–30 sekuntia, joten aamuajo mittaa muutaman sivuston kerrallaan. Valikon *Tarkista sivustot* ehtii enemmän.
 - **Tarkista valmis lista ennen tuontia.** Kerätyissä listoissa on vanhentuneita osoitteita, ja pomput heikentävät lähetysdomainin mainetta.
   Aja lista osoitteentarkistuspalvelun läpi ennen kuin liität sen Liidit-välilehdelle.
 - **Kerätyt yhteystiedot ja GDPR.** Kun tiedot on kerätty muualta kuin henkilöltä itseltään, hänelle pitää kertoa tietojen lähde ja käsittely.
@@ -190,7 +196,7 @@ Maanantain viikkoraportissa on viiden viikon seuranta.
 ## Kehittäjälle
 
 - Laskenta, sekvenssien päätökset, sivustoanalyysi, viestien muodostus ja kooste ovat puhtaita funktioita
-  (`laske`, `kaupanAikataulu`, `viikkoseuranta`, `suunnittele`, `valitseTehtavat`, `analysoiSivu`, `renderoiViesti`, `rakennaMime`,
+  (`laske`, `kaupanAikataulu`, `viikkoseuranta`, `palaveritKalenterista`, `puraPageSpeed`, `suunnittele`, `valitseTehtavat`, `analysoiSivu`, `renderoiViesti`, `rakennaMime`,
   `rakennaKooste`, `laskutusrivit`).
   Google-palveluja kutsuvat vain ohuet kääreet niiden ympärillä.
 - Testit: `node --test "laskutusmoottori/testit/*.test.js"`. Yksikkötestit kattavat puhtaat funktiot. Integraatiotesti ajaa asennuksen,

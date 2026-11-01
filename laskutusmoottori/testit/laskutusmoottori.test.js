@@ -408,6 +408,47 @@ test('LinkedIn- ja soittolista', () => {
   assert.deepEqual(arr(t.soitot.map((l) => l._rivi)), [5]);
 });
 
+test('ajanvarauslinkin rivi jätetään pois, jos linkkiä ei ole', () => {
+  const p = { aihe: '', viesti: 'Hei {{etunimi}},\n\nnostan.\n\nVoit myös varata ajan: {{varauslinkki}}\n\n{{nimi}}' };
+  assert.equal(g.renderoiViesti(p, liidi(), asetukset(), false).viesti, 'Hei Anna,\n\nnostan.\n\nTesti Myyjä');
+  assert.equal(g.renderoiViesti(p, liidi(), asetukset({ varauslinkki: 'https://cal.example/x' }), false).viesti,
+    'Hei Anna,\n\nnostan.\n\nVoit myös varata ajan: https://cal.example/x\n\nTesti Myyjä');
+});
+
+test('vanha asiakas: oma kahden viestin sarja havainnolla', () => {
+  const vanha = { vaihe: 1, segmentti: 'Vanha asiakas', odota: 0, aihe: '{{yritys}} / sivujen kuntotarkastus', viesti: 'Moi {{etunimi}}, teimme yhteistyötä. Huomasin, että {{havainto}}.' };
+  const pp = pohjat().concat([vanha, { vaihe: 2, segmentti: 'Vanha asiakas', odota: 4, aihe: '', viesti: 'Moi, nostan.' }]);
+  assert.equal(g.haePohja(pp, 1, 'Vanha asiakas'), vanha);
+  assert.equal(g.haePohja(pp, 3, 'Vanha asiakas'), null);
+  const s = g.suunnittele(malli({ pohjat: pp, liidit: [liidi({ segmentti: 'Vanha asiakas', havainto: 'sivujen alalaidassa lukee vielä © 2019' })] }), 5, '2026-11-05', false);
+  assert.equal(s.uudet[0].aihe, 'Yritys Oy / sivujen kuntotarkastus');
+  assert.equal(s.uudet[0].viesti, 'Moi Anna, teimme yhteistyötä. Huomasin, että sivujen alalaidassa lukee vielä © 2019.');
+});
+
+test('kalenterin palaverit yhdistetään liideihin', () => {
+  const lid = [liidi({ _rivi: 2, email: 'anna@yritys.fi', tila: 'Vastasi' }), liidi({ _rivi: 3, email: 'ben@b.fi', tila: 'Kauppa' }),
+    liidi({ _rivi: 4, email: 'cec@c.fi', tila: 'Sekvenssissä' }), liidi({ _rivi: 5, email: 'dan@d.fi', tila: 'Älä ota yhteyttä' })];
+  const tap = [
+    { alku: '2026-11-20', otsikko: 'Palaveri', osallistujat: ['Anna@Yritys.fi', 'mina@x.fi'] },
+    { alku: '2026-11-12', otsikko: 'Aiempi', osallistujat: ['anna@yritys.fi'] },
+    { alku: '2026-11-13', otsikko: 'X', osallistujat: ['ben@b.fi', 'dan@d.fi'] },
+    { alku: '2026-11-14', otsikko: 'Y', osallistujat: ['cec@c.fi'] },
+  ];
+  const l = g.palaveritKalenterista(lid, tap);
+  assert.deepEqual(arr(l.map((x) => [x.liidi._rivi, x.tapahtuma.alku])), [[2, '2026-11-12'], [4, '2026-11-14']]);
+});
+
+test('PageSpeed: purku ja havainto', () => {
+  const json = { lighthouseResult: { categories: { performance: { score: 0.34 } }, audits: { 'largest-contentful-paint': { numericValue: 7800 } } } };
+  assert.deepEqual(Object.assign({}, g.puraPageSpeed(json)), { pisteet: 34, lcp: 7.8 });
+  assert.equal(g.puraPageSpeed({}), null);
+  const html = '<meta name="viewport" content="x"><meta name="description" content="Hyvä kuvaus yrityksestämme tässä">';
+  const t = g.analysoiSivu(html, { https: true, pagespeed: 34, lcp: 7.8 }, 'Yleinen', 2026);
+  assert.match(t.signaalit, /PageSpeed mobiili 34\/100, LCP 7,8 s/);
+  assert.equal(t.havainto, 'sivujen mobiilinopeus on Googlen PageSpeed-mittauksessa vain 34/100 ja etusivu latautuu puhelimella noin 8 sekunnissa');
+  assert.equal(g.analysoiSivu(html, { https: true, pagespeed: 82 }, 'Yleinen', 2026).havainto, '');
+});
+
 test('vastausten luokittelu', () => {
   assert.equal(g.luokitteleVastaus('Mail Delivery Subsystem <mailer-daemon@googlemail.com>', 'Delivery Status Notification (Failure)', ''), 'pomppu');
   assert.equal(g.luokitteleVastaus('Anna <anna@yritys.fi>', 'Automaattinen vastaus: Yritys Oy / verkkosivut', ''), 'automaattinen');

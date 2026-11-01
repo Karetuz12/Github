@@ -187,6 +187,7 @@ function ymparisto() {
   const triggerit = [];
   const dialogit = [];
   const sivut = {};
+  const tapahtumat = [];
   const muoto = (d, tz, f) => {
     const o = {};
     new Intl.DateTimeFormat('en-GB', { timeZone: tz, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })
@@ -227,6 +228,14 @@ function ymparisto() {
         return { getResponseCode: () => s.koodi || 200, getHeaders: () => s.otsakkeet || {}, getContentText: () => s.html || '', getContent: () => Buffer.from(s.html || '') };
       },
     },
+    CalendarApp: {
+      getDefaultCalendar: () => ({
+        getEvents: (alku, loppu) => tapahtumat.filter((e) => e.alku >= alku && e.alku <= loppu).map((e) => ({
+          getStartTime: () => e.alku, getTitle: () => e.otsikko, getCreators: () => [],
+          getGuestList: () => e.vieraat.map((v) => ({ getEmail: () => v })),
+        })),
+      }),
+    },
     Gmail: gm.Gmail,
     GmailApp: gm.GmailApp,
   };
@@ -265,7 +274,7 @@ function ymparisto() {
     ctx.onEdit({ range, source: ss });
     return alku;
   };
-  return { ctx, ss, gm, props, triggerit, dialogit, sivut, aika, solu, taulu, asetus, liita };
+  return { ctx, ss, gm, props, triggerit, dialogit, sivut, tapahtumat, aika, solu, taulu, asetus, liita };
 }
 
 test('koko polku: asennus, aamuajo, vastaus, jatkoviesti, luonnos ja kauppa', () => {
@@ -384,6 +393,7 @@ test('koko polku: asennus, aamuajo, vastaus, jatkoviesti, luonnos ja kauppa', ()
   assert.match(jatko.body, /^Hei Ben,\n\nnostan tämän vielä esiin/);
   assert.equal(y.ctx.pvAvain(liidit[1]['Seuraava viesti']), '2026-11-12');
   const torstai = y.gm.lahetetytKoosteet.pop();
+  assert.doesNotMatch(torstai.html, /Soita tänään/, 'soittolista on oletuksena pois');
   assert.match(torstai.subject, /1 vastausta/);
   assert.match(torstai.html, /Kiinnostaa, soitellaan!/);
 
@@ -452,6 +462,36 @@ test('kuun vaihtuessa uusi laskutuslista ja pomppu tunnistetaan', () => {
   assert.deepEqual(joulukuu.map((r) => r['Summa € (alv 0)']), [8000, 2000, 1000, 1000]);
   assert.equal(y.props.LASKUTUSLISTA_KK, '2026-12');
   assert.equal(y.solu('Kojelauta', 'A3'), 'JOULUKUU 2026');
+});
+
+test('palaveri kalenterissa siirtää liidin kauppoihin', () => {
+  const y = ymparisto();
+  y.aika('2026-11-01T13:00:00Z');
+  y.ctx.asenna();
+  y.asetus('Nimesi', 'Myyjä');
+  y.asetus('Tila', 'LÄHETÄ');
+  y.liita([{ Yritys: 'Kalenteri Oy', Etunimi: 'Kaisa', Sähköposti: 'kaisa@kalenteri.fi', Verkkosivu: 'kalenteri.fi', Havainto: 'testi', Segmentti: 'Vanha asiakas' }]);
+  y.aika('2026-11-02T05:00:00Z');
+  y.ctx.paivittainen();
+  assert.equal(y.taulu('Liidit')[0].Tila, 'Sekvenssissä');
+  const avaus = [...y.gm.ketjut.values()][0][0];
+  assert.equal(avaus.subject, 'Kalenteri Oy / sivujen kuntotarkastus');
+  // Kaisa varaa ajan ajanvaraussivulta → tapahtuma kalenteriin
+  y.tapahtumat.push({ alku: new Date('2026-11-10T09:00:00Z'), otsikko: 'Kuntotarkastus', vieraat: ['Kaisa@Kalenteri.fi'] });
+  y.aika('2026-11-03T05:00:00Z');
+  y.ctx.paivittainen();
+  assert.equal(y.taulu('Liidit')[0].Tila, 'Kauppa');
+  const kauppa = y.taulu('Kaupat').pop();
+  assert.equal(kauppa.Asiakas, 'Kalenteri Oy');
+  assert.equal(kauppa.Vaihe, 'Palaveri sovittu');
+  assert.equal(kauppa.Lähde, 'Olemassa oleva asiakas');
+  assert.equal(y.ctx.pvAvain(kauppa['Seuraava pvm']), '2026-11-10');
+  assert.match(kauppa.Muistiinpanot, /Palaveri 10\.11\. 11\.00 \(kalenteri\)/);
+  assert.match(y.gm.lahetetytKoosteet.pop().html, /Uudet palaverit kalenterista \(1\)/);
+  // Seuraavana päivänä sama tapahtuma ei luo toista kauppaa
+  y.aika('2026-11-04T05:00:00Z');
+  y.ctx.paivittainen();
+  assert.equal(y.taulu('Kaupat').filter((k) => k.Asiakas === 'Kalenteri Oy').length, 1);
 });
 
 test('vanhan version taulukko päivittyy: puuttuvat välilehdet, sarakkeet ja asetukset', () => {

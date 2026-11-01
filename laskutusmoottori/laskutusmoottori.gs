@@ -85,7 +85,10 @@ const ASETUSRIVIT = [
   ['autoHavainto', 'Hyväksy ehdotetut havainnot automaattisesti', false, 'Kyllä = jos Havainto on tyhjä, kone käyttää sivustotarkistuksen ehdotusta.'],
   ['tietosuoja', 'Tietosuojalause', '', '{{tietosuoja}} avausviestin loppuun. Jos lista on kerätty julkisista lähteistä, kerro lähde ja linkki tietosuojaselosteeseen.'],
   ['li', 'LinkedIn-tehtäviä / päivä', 5, 'Kone ei käytä LinkedIniä itse. Saat listan profiileista ja valmiin viestin.'],
-  ['soitot', 'Soittoja / päivä', 3, 'Liidit, joilla on puhelinnumero ja kaksi viestiä ilman vastausta.'],
+  ['soitot', 'Soittoja / päivä', 0, '0 = ei soittolistaa. Muuten liidit, joilla on puhelinnumero ja kaksi viestiä ilman vastausta.'],
+  ['varauslinkki', 'Ajanvarauslinkki', '', 'Esim. Google-kalenterin ajanvaraussivu. Lisätään jatkoviestiin muuttujalla {{varauslinkki}}. Jos kenttä on tyhjä, rivi jätetään pois.'],
+  ['kalenteri', 'Palaverit kalenterista', true, 'Kone etsii kalenterista tapahtumat, joissa liidin sähköposti on vieraana tai järjestäjänä, ja siirtää liidin kauppoihin (Palaveri sovittu).'],
+  ['pagespeed', 'PageSpeed API -avain', '', 'Valinnainen ilmainen Google-avain (PageSpeed Insights API). Kun avain on täytetty, sivustotarkistus mittaa mobiilinopeuden 0–100.'],
   ['arkisin', 'Lähetä vain arkipäivinä', true, 'Viikonloppuisin ja arkipyhinä kone tarkistaa vain vastaukset.'],
   ['kooste', 'Päivittäinen kooste sähköpostiin', true, 'Ei = vain maanantain viikkoraportti (ja kooste, kun joku on vastannut).'],
   ['ajo', 'Ajo klo', 7, 'Muutoksen jälkeen: valikko Laskutusmoottori → Asenna ajastus uudelleen.'],
@@ -114,7 +117,7 @@ const PALAVERIT = ['Palaveri', 'Kauppa'];
 const ESTAA_DOMAININ = ['Luonnos', 'Sekvenssissä', 'Vastasi', 'Palaveri', 'Kauppa', 'Ei kiinnosta', 'Älä ota yhteyttä'];
 const LI_TILAT = ['Tehtävälistalla', 'Kutsuttu', 'Yhdistetty', 'Viesti lähetetty', 'Ei LinkedInissä'];
 const SOITTOTILAT = ['Soittolistalla', 'Ei vastannut', 'Palaveri sovittu', 'Ei kiinnosta', 'Soita myöhemmin'];
-const SEGMENTIT = ['Matkailu', 'Yleinen', 'Verkosto'];
+const SEGMENTIT = ['Matkailu', 'Yleinen', 'Verkosto', 'Vanha asiakas'];
 const TILAT = ['TESTI', 'LUONNOS', 'LÄHETÄ'];
 const YLEISET_DOMAINIT = ['gmail.com', 'googlemail.com', 'outlook.com', 'hotmail.com', 'hotmail.fi', 'live.com',
   'live.fi', 'msn.com', 'yahoo.com', 'icloud.com', 'me.com', 'luukku.com', 'suomi24.fi', 'kolumbus.fi',
@@ -161,10 +164,12 @@ const POHJAT_OLETUS = [
   [2, '', 3, '',
     'Hei {{etunimi}},\n\n' +
     'nostan tämän vielä esiin. Jos puhelu tuntuu isolta askeleelta, voin lähettää ne kolme korjausehdotusta suoraan sähköpostilla. Laitanko?\n\n' +
+    'Voit myös varata ajan suoraan kalenteristani: {{varauslinkki}}\n\n' +
     '{{nimi}}'],
   [2, 'Matkailu', 3, '',
     'Hei {{etunimi}},\n\n' +
     'nostan tämän vielä esiin. Jos puhelu tuntuu isolta askeleelta, voin lähettää ne kolme korjausehdotusta suoraan sähköpostilla. Laitanko?\n\n' +
+    'Voit myös varata ajan suoraan kalenteristani: {{varauslinkki}}\n\n' +
     '{{nimi}}'],
   [3, 'Matkailu', 5, '',
     'Hei {{etunimi}},\n\n' +
@@ -184,6 +189,19 @@ const POHJAT_OLETUS = [
   [2, 'Verkosto', 5, '',
     'Moi {{etunimi}},\n\n' +
     'nostan tämän vielä – jos joku tulee mieleen, vinkkaa vaikka pelkällä nimellä. Kiitos!\n\n' +
+    '{{nimi}}'],
+  [1, 'Vanha asiakas', '', '{{yritys}} / sivujen kuntotarkastus',
+    'Moi {{etunimi}},\n\n' +
+    'teimme aikanaan yhteistyötä, ja kävin nyt sivunne ({{sivusto}}) läpi. Huomasin, että {{havainto}}.\n\n' +
+    'Muutamassa vuodessa verkossa ehtii muuttua paljon: hakukoneet, mobiilikäyttö ja asiakkaiden odotukset. ' +
+    'Vanhoille asiakkaille teen nyt sivujen kuntotarkastuksen maksutta ja päivityksen kiinteällä hinnalla.\n\n' +
+    'Sopisiko 15 minuutin puhelu, jossa käyn läpi, mitä päivittäisin ensimmäisenä?\n\n' +
+    '{{allekirjoitus}}\n\n' +
+    'P.S. Jos tämä ei ole nyt ajankohtaista, kuittaa vain lyhyesti, niin en vaivaa enempää.'],
+  [2, 'Vanha asiakas', 4, '',
+    'Moi {{etunimi}},\n\n' +
+    'nostan tämän vielä esiin. Kuntotarkastus on vanhoille asiakkaille maksuton eikä sido mihinkään. Laitanko havainnot sähköpostilla?\n\n' +
+    'Voit myös varata ajan suoraan kalenteristani: {{varauslinkki}}\n\n' +
     '{{nimi}}'],
   ['LinkedIn', '', '', '',
     'Hei {{etunimi}}, kiitos kun hyväksyit kutsun! Kävin läpi sivujanne ja huomasin, että {{havainto}}. ' +
@@ -669,28 +687,84 @@ function siirraKauppoihin() {
   const t = lueTaulu(V.liidit);
   const l = t.rivit.find((r) => r._rivi === rivi);
   if (!l) throw new Error('Rivillä ei ole liidiä.');
-  const a = lueAsetukset();
   const kaupat = ss.getSheetByName(V.kaupat);
-  const k = lueTaulu(V.kaupat);
-  const uusiRivi = k.rivit.reduce((m, r) => Math.max(m, r._rivi), 1) + 1;
-  kirjoitaRivi(kaupat, V.kaupat, uusiRivi, {
-    asiakas: teksti(l.yritys) || teksti(l.email),
-    kuvaus: a.oletusTuote || 'Verkkosivuprojekti',
-    tuote: a.oletusTuote,
-    lahde: luku(l.vaihe) >= 1 ? 'Sähköposti' : (teksti(l.liTila) ? 'LinkedIn' : 'Muu'),
-    vaihe: 'Palaveri sovittu',
-    seuraava: 'Palaveri',
-    seuraavaPvm: pvmSolu(lisaaArkipaivia(tanaanAvain(), 2)),
-    yhteys: [teksti(l.etunimi), teksti(l.sukunimi), teksti(l.email), teksti(l.puhelin)].filter(String).join(' '),
-    muistiinpano: teksti(l.havainto),
-    luotu: new Date(),
-  });
-  tallenna(t, rivi, { tila: 'Kauppa' });
-  loki('Siirretty kauppoihin', teksti(l.yritys), 'Kaupat rivi ' + uusiRivi);
+  const uusiRivi = luoKauppaLiidista(t, l, lueAsetukset(), lisaaArkipaivia(tanaanAvain(), 2), '');
   paivitaKojelauta();
   ss.setActiveSheet(kaupat);
   kaupat.setActiveRange(kaupat.getRange(uusiRivi, 1));
   ilmoita('Siirretty Kaupat-välilehdelle. Tarkista tuote, hinta ja arvioitu tilauspäivä.');
+}
+
+/**
+ * Lisää liidistä kaupan vaiheeseen Palaveri sovittu ja merkitsee liidin tilaan Kauppa.
+ * liidit = lueTaulu(V.liidit), l = sen rivi (raaka tai malli), palaveri = 'YYYY-MM-DD'. Palauttaa Kaupat-rivin numeron.
+ */
+function luoKauppaLiidista(liidit, l, a, palaveri, lisatieto) {
+  const kaupat = valilehti(V.kaupat);
+  const t = otsikkoIndeksit(kaupat, V.kaupat);
+  const asiakkaat = kaupat.getLastRow() > 1 ? kaupat.getRange(2, t.idx.asiakas + 1, kaupat.getLastRow() - 1, 1).getValues() : [];
+  const uusiRivi = asiakkaat.reduce((m, r, i) => (teksti(r[0]) ? i + 2 : m), 1) + 1;
+  const sahkoposti = teksti(l.email).toLowerCase();
+  kirjoitaRivi(kaupat, V.kaupat, uusiRivi, {
+    asiakas: teksti(l.yritys) || [teksti(l.etunimi), teksti(l.sukunimi)].filter(String).join(' ') || sahkoposti,
+    kuvaus: a.oletusTuote || 'Verkkosivuprojekti',
+    tuote: a.oletusTuote,
+    lahde: teksti(l.segmentti) === 'Verkosto' ? 'Verkosto' : teksti(l.segmentti) === 'Vanha asiakas' ? 'Olemassa oleva asiakas' :
+      luku(l.vaihe) >= 1 ? 'Sähköposti' : (teksti(l.liTila) ? 'LinkedIn' : 'Muu'),
+    vaihe: 'Palaveri sovittu',
+    seuraava: 'Palaveri',
+    seuraavaPvm: pvmSolu(palaveri),
+    yhteys: [teksti(l.etunimi), teksti(l.sukunimi), sahkoposti, teksti(l.puhelin)].filter(String).join(' '),
+    muistiinpano: [teksti(l.havainto), lisatieto].filter(String).join(' · '),
+    luotu: new Date(),
+  });
+  poistaLuonnos(teksti(l.luonnos));
+  tallenna(liidit, l._rivi, { tila: 'Kauppa', luonnos: '', seuraava: '' });
+  loki('Siirretty kauppoihin', teksti(l.yritys) || sahkoposti, 'Kaupat rivi ' + uusiRivi + (lisatieto ? ' · ' + lisatieto : ''));
+  return uusiRivi;
+}
+
+/** Kalenterin palaverit: liidi, jonka sähköposti on tapahtuman vieraana tai järjestäjänä, siirtyy kauppoihin. */
+function tarkistaKalenteri(d, raportti) {
+  const a = d.malli.asetukset;
+  if (!a.kalenteri) return;
+  let tapahtumat;
+  try {
+    const nyt = Date.now();
+    tapahtumat = CalendarApp.getDefaultCalendar().getEvents(new Date(nyt - 7 * 864e5), new Date(nyt + 60 * 864e5)).map((t) => ({
+      alku: pvAvain(t.getStartTime()), aika: Utilities.formatDate(t.getStartTime(), tz(), 'd.M. HH.mm'), otsikko: t.getTitle(),
+      osallistujat: t.getGuestList().map((g) => g.getEmail()).concat(t.getCreators ? t.getCreators() : []),
+    }));
+  } catch (e) {
+    raportti.virheet.push('Kalenterin luku ei onnistunut: ' + e.message);
+    return;
+  }
+  palaveritKalenterista(d.malli.liidit, tapahtumat).forEach(({ liidi, tapahtuma }) => {
+    try {
+      luoKauppaLiidista(d.taulut.lii, liidi, a, tapahtuma.alku, 'Palaveri ' + tapahtuma.aika + ' (kalenteri)');
+      raportti.palaverit.push({ liidi, tapahtuma });
+    } catch (e) {
+      raportti.virheet.push('Palaverin kirjaus ' + (liidi.yritys || liidi.email) + ': ' + e.message);
+    }
+  });
+}
+
+const KALENTERIIN_KELPAAVAT = ['', 'Uusi', 'Luonnos', 'Sekvenssissä', 'Vastasi', 'Palaveri', 'Ei vastausta', 'Tauko'];
+
+/** Puhdas: yhdistää kalenterin tapahtumat liideihin sähköpostin perusteella. Liidille aikaisin tapahtuma. */
+function palaveritKalenterista(liidit, tapahtumat) {
+  const sahkopostista = {};
+  liidit.forEach((l) => {
+    if (l.email && KALENTERIIN_KELPAAVAT.includes(l.tila) && !sahkopostista[l.email]) sahkopostista[l.email] = l;
+  });
+  const loydot = {};
+  tapahtumat.slice().sort((x, y) => (x.alku < y.alku ? -1 : 1)).forEach((t) => {
+    t.osallistujat.map((x) => String(x || '').trim().toLowerCase()).forEach((email) => {
+      const l = sahkopostista[email];
+      if (l && !loydot[email]) loydot[email] = { liidi: l, tapahtuma: t };
+    });
+  });
+  return Object.keys(loydot).map((k) => loydot[k]);
 }
 
 function valikkoLaskutuslista() {
@@ -717,10 +791,11 @@ function paivittainen() {
 
     let d = lueKaikki();
     const a = d.malli.asetukset;
-    const raportti = { lahetetyt: [], luonnokset: [], jatkot: [], vastaukset: [], pomput: [], loppuneet: [],
+    const raportti = { palaverit: [], lahetetyt: [], luonnokset: [], jatkot: [], vastaukset: [], pomput: [], loppuneet: [],
       tuplat: [], virheet: [], esikatselu: [], linkedin: [], soitot: [], tarkistetut: 0 };
 
     tarkistaKetjut(d, raportti);
+    tarkistaKalenteri(lueKaikki(), raportti);
     tarkistaJononSivustot(20, 120);
 
     d = lueKaikki();
@@ -738,7 +813,7 @@ function paivittainen() {
     kirjoitaKojelauta(tulos);
 
     const maanantai = viikonpaiva(tanaan) === 1;
-    const sisaltoa = raportti.vastaukset.length || raportti.pomput.length ||
+    const sisaltoa = raportti.vastaukset.length || raportti.pomput.length || raportti.palaverit.length ||
       (lahetyspaiva && (raportti.lahetetyt.length || raportti.luonnokset.length || raportti.jatkot.length ||
         raportti.linkedin.length || raportti.soitot.length || raportti.esikatselu.length));
     // Virheet ja vastaukset tulevat aina tietoon, vaikka päivittäinen kooste olisi pois päältä
@@ -760,7 +835,7 @@ function lahetaViikkoraportti() {
 }
 
 function tyhjaRaportti() {
-  return { lahetetyt: [], luonnokset: [], jatkot: [], vastaukset: [], pomput: [], loppuneet: [], tuplat: [],
+  return { palaverit: [], lahetetyt: [], luonnokset: [], jatkot: [], vastaukset: [], pomput: [], loppuneet: [], tuplat: [],
     virheet: [], esikatselu: [], linkedin: [], soitot: [], tarkistetut: 0 };
 }
 
@@ -1020,10 +1095,15 @@ function tarkistaJononSivustot(maara, sekunnit) {
     ['Uusi', ''].includes(teksti(r.tila)));
   const alku = Date.now();
   const vuosi = Number(tanaanAvain().slice(0, 4));
+  const avain = lueAsetukset().pagespeed;
   let tarkistettu = 0;
   for (const r of jono) {
     if (tarkistettu >= maara || Date.now() - alku > sekunnit * 1000) break;
     const sivu = haeSivu(teksti(r.sivusto));
+    if (avain && !sivu.virhe) {
+      const ps = haePageSpeed(sivu.url, avain);
+      if (ps) Object.assign(sivu, { pagespeed: ps.pisteet, lcp: ps.lcp });
+    }
     const tulos = analysoiSivu(sivu.html || '', sivu, teksti(r.segmentti), vuosi);
     const muutos = { signaalit: tulos.signaalit };
     if (!teksti(r.ehdotus)) muutos.ehdotus = tulos.havainto;
@@ -1073,6 +1153,26 @@ function haeSivu(osoite) {
   if (koodi >= 400) return { virhe: 'HTTP ' + koodi, url: url };
   return { html: vastaus.getContentText(), url: url, https: /^https:/i.test(url), ms: Date.now() - alku,
     tavut: vastaus.getContent().length };
+}
+
+/** Google PageSpeed Insights, mobiili. Palauttaa { pisteet 0–100, lcp sekunteina } tai null. Kestää 10–30 s. */
+function haePageSpeed(url, avain) {
+  try {
+    const vastaus = UrlFetchApp.fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?strategy=mobile&category=performance&url=' +
+      encodeURIComponent(url) + '&key=' + encodeURIComponent(avain), { muteHttpExceptions: true });
+    if (vastaus.getResponseCode() !== 200) return null;
+    return puraPageSpeed(JSON.parse(vastaus.getContentText()));
+  } catch (e) {
+    return null;
+  }
+}
+
+function puraPageSpeed(json) {
+  const lh = json && json.lighthouseResult;
+  const score = lh && lh.categories && lh.categories.performance && lh.categories.performance.score;
+  if (typeof score !== 'number') return null;
+  const lcp = lh.audits && lh.audits['largest-contentful-paint'] && lh.audits['largest-contentful-paint'].numericValue;
+  return { pisteet: Math.round(score * 100), lcp: typeof lcp === 'number' ? lcp / 1000 : null };
 }
 
 // ───────────────────────────── Kojelauta ─────────────────────────────
@@ -1260,6 +1360,11 @@ function rakennaKooste(t, r, a, viikko, taulukkoUrl) {
     osio('Vastaukset – reagoi tänään (' + r.vastaukset.length + ')');
     r.vastaukset.forEach((v) => h.push('<p><b>' + esc(v.liidi.yritys) + '</b> – ' + esc(nimi(v.liidi)) +
       ' · <a href="' + esc(v.linkki) + '">avaa Gmailissa</a><br><span style="color:#4b5563">' + esc(v.ote) + '</span></p>'));
+  }
+  if (r.palaverit && r.palaverit.length) {
+    osio('Uudet palaverit kalenterista (' + r.palaverit.length + ')');
+    h.push('<p>Siirretty Kaupat-välilehdelle vaiheeseen Palaveri sovittu: ' + esc(r.palaverit.map((x) =>
+      (x.liidi.yritys || nimi(x.liidi)) + ' ' + x.tapahtuma.aika).join(', ')) + '</p>');
   }
   if (r.lahetetyt.length || r.jatkot.length) {
     osio('Lähetetty tänään: ' + r.lahetetyt.length + ' avausta, ' + r.jatkot.length + ' jatkoviestiä');
@@ -1717,6 +1822,8 @@ function seuraavaLahetys(pohjat, segmentti, vaihe, pvm, a) {
 
 // Näiden pitää olla täytetty, muuten viesti jätetään lähettämättä. Muut saavat olla tyhjiä.
 const PAKOLLISET_MUUTTUJAT = ['yritys', 'sivusto', 'havainto', 'nimi', 'allekirjoitus'];
+// Jos nämä ovat tyhjiä, koko rivi jätetään viestistä pois
+const RIVIN_POISTO = ['varauslinkki', 'tietosuoja'];
 
 /** Täyttää pohjan muuttujat. esikatselu = puuttuvat asetukset näytetään paikkamerkkeinä. */
 function renderoiViesti(pohja, l, a, esikatselu) {
@@ -1724,7 +1831,7 @@ function renderoiViesti(pohja, l, a, esikatselu) {
     etunimi: teksti(l.etunimi), sukunimi: teksti(l.sukunimi), yritys: teksti(l.yritys), rooli: teksti(l.rooli),
     sivusto: lyhytDomain(l.sivusto), paikkakunta: teksti(l.paikkakunta), havainto: siistiHavainto(l.havainto),
     nimi: teksti(a.nimi), allekirjoitus: teksti(a.allekirjoitus) || teksti(a.nimi), referenssi: teksti(a.referenssi),
-    tietosuoja: teksti(a.tietosuoja),
+    tietosuoja: teksti(a.tietosuoja), varauslinkki: teksti(a.varauslinkki),
   };
   let virhe = '';
   const korvaa = (s, aiheessa) => String(s || '').replace(/\{\{\s*([a-zA-Z]+)\s*\}\}/g, (koko, nimi) => {
@@ -1737,8 +1844,11 @@ function renderoiViesti(pohja, l, a, esikatselu) {
   });
   const siivoa = (s) => s.replace(/[ \t]+([,.!?])/g, '$1').replace(/[ \t]{2,}/g, ' ').replace(/[ \t]+\n/g, '\n')
     .replace(/\n{3,}/g, '\n\n').trim();
+  // Rivi, jossa on tyhjä linkkimuuttuja, jätetään kokonaan pois ("Voit varata ajan: " ilman linkkiä)
+  const runko = String(pohja.viesti || '').split('\n').filter((rivi) => !RIVIN_POISTO.some((k) =>
+    new RegExp('\\{\\{\\s*' + k + '\\s*\\}\\}', 'i').test(rivi) && !arvot[k])).join('\n');
   const aihe = siivoa(korvaa(pohja.aihe, true));
-  const viesti = siivoa(korvaa(pohja.viesti, false));
+  const viesti = siivoa(korvaa(runko, false));
   return { aihe, viesti, virhe };
 }
 
@@ -1816,6 +1926,8 @@ function analysoiSivu(html, meta, segmentti, vuosi) {
   if (!kuvaus) s.push('ei meta-kuvausta');
   if (meta.ms) s.push((meta.ms / 1000).toFixed(1).replace('.', ',') + ' s');
   if (meta.tavut) s.push(Math.round(meta.tavut / 1024) + ' kt');
+  const ps = typeof meta.pagespeed === 'number' ? meta.pagespeed : null;
+  if (ps !== null) s.push('PageSpeed mobiili ' + ps + '/100' + (meta.lcp ? ', LCP ' + meta.lcp.toFixed(1).replace('.', ',') + ' s' : ''));
   const alusta = ALUSTAT.find(([, re2]) => re2.test(h));
   if (alusta) s.push(alusta[0]);
 
@@ -1823,6 +1935,10 @@ function analysoiSivu(html, meta, segmentti, vuosi) {
   let havainto = '';
   if (!https) havainto = 'sivuilla ei ole suojattua yhteyttä (https), joten selain näyttää kävijälle "Ei turvallinen" -merkinnän';
   else if (!viewport) havainto = 'sivusto ei skaalaudu puhelimen näytölle';
+  else if (ps !== null && ps < 50) {
+    havainto = 'sivujen mobiilinopeus on Googlen PageSpeed-mittauksessa vain ' + ps + '/100' +
+      (meta.lcp > 4 ? ' ja etusivu latautuu puhelimella noin ' + Math.round(meta.lcp) + ' sekunnissa' : '');
+  }
   else if (matkailu && ota.length && !moottori) havainto = 'varaukset ohjautuvat sivuilta ' + taivutus[ota[0]] + ', jolloin jokaisesta varauksesta lähtee välityspalkkio';
   else if (matkailu && !moottori && !varaussana) havainto = 'sivuilta ei näytä pääsevän varaamaan suoraan';
   else if (matkailu && !englanti) havainto = 'sivuilta ei löydy englanninkielistä versiota';

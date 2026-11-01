@@ -85,7 +85,7 @@ vanha ©-vuosi, hidas lataus). Sinä hyväksyt havainnon, ja vasta sitten viesti
 |---|---|---|
 | Sähköposti | Kolmen viestin sarja: avaus → 3 arkipäivän päästä muistutus → 5 arkipäivän päästä lopetus | Kone |
 | LinkedIn | Kutsu ja viesti, 5 päivässä. Ensin ne, joille on jo lähtenyt sähköposti. | Sinä. Kone antaa listan ja tekstin. |
-| Puhelin | 3 päivässä: kaksi viestiä ilman vastausta | Sinä – myyntitaustasi vahvin ase |
+| Vanhat asiakkaat | Sähköposti vanhoille projekti- ja markkinointiasiakkaille: historia, havainto ja maksuton kuntotarkastus | Kone, sinä tarkistat luonnokset |
 | nerot.fi | Valmiit tarjouspyynnöt: verkkosivut, koodaus, tuntityöt. Tavoite 1–2 kauppaa kuussa. | Kone poimii ja luonnostelee tarjouksen, sinä lähetät. |
 
 **nerot.fi.** Asiakas on siellä jo päättänyt ostaa, joten kyse on nopeudesta ja tarjouksen laadusta. Maksullinen jäsenyys
@@ -125,6 +125,29 @@ Toimitusta varten rakennetaan kerran yksi matkailusivun pohja, jota käytetään
 
 Yksi asiakas kulkee näin: sivuprojekti → hosting Nordic Hostiin → markkinointi Markkinointiboostiin → booking engine → referenssi seuraavaan kauppaan.
 Jokainen asiakas on siis arvokkaampi kuin yksittäinen projekti.
+
+Kylmiä puheluita ei tehdä. Sähköposti on pääkanava, ja kaikki muu on kytketty tukemaan sitä.
+
+**Segmenttien järjestys lämpimimmästä kylmimpään:**
+
+1. *Verkosto* marraskuussa
+2. *Vanha asiakas* joulukuussa: 5–6 vuoden takaiset projektit ja vanhat markkinointiasiakkaat. Niiden sivut ovat todennäköisesti vanhentuneet, ja sivustotarkistus löytää havainnon itse.
+3. Kylmä lista tammikuusta
+
+⚠ Mainostoimisto myytiin keväällä. Tarkista kauppakirjasta, koskeeko kilpailu- tai houkuttelukielto toimiston asiakkaita, ja jos koskee, kuinka kauan.
+
+### Kytketyt järjestelmät
+
+| Järjestelmä | Mitä se tekee | Tila |
+|---|---|---|
+| **Gmail + erillinen lähetysdomain** | Lähettää sarjat, tunnistaa vastaukset, pomput ja poissaoloviestit | Käytössä. Domain hankitaan vk 46. |
+| **Google-kalenteri + ajanvaraussivu** | Linkki jatkoviestiin. Varattu palaveri siirtää liidin kauppoihin, ja palaverien määrä on oikea luku eikä arvio. | Käytössä, tarvitsee ajanvaraussivun |
+| **Google PageSpeed** | Mobiilinopeus 0–100 havainnoksi, esim. *"mobiilinopeus on PageSpeed-mittauksessa vain 34/100"* | Valinnainen, ilmainen avain |
+| **Osoitteiden tarkistus** | Kerätyn listan siivous ennen tuontia (CSV sisään ja ulos) | Kerran ennen tuontia |
+| **nerot.fi-ilmoitukset** | Valmiit tarjouspyynnöt → Clauden tarjousluonnos | Tulossa, kun jäsenyys ja esimerkki-ilmoitus ovat olemassa |
+| **Brevo** | Uutiskirje asiakkaille ja niille, jotka ovat antaneet luvan | Myöhemmin |
+
+Ei kytketä: kylmäsoittoja, LinkedIn-automaatiota (käyttöehdot) eikä Apolloa (sinulla on jo dataa).
 
 ### Työkalut
 
@@ -176,7 +199,7 @@ Seurattavat luvut: laskutettu vs. tavoite, ennuste, kontakti → palaveri, palav
 
 | Milloin | Mitä | Aika |
 |---|---|---|
-| Joka arkiaamu klo 7 | Kone ajaa kierroksen ja lähettää koosteen. Sinä vastaat vastauksiin, teet LinkedIn-listan ja soitot. | 20–30 min |
+| Joka arkiaamu klo 7 | Kone ajaa kierroksen ja lähettää koosteen. Sinä vastaat vastauksiin ja valmistaudut palavereihin. | 20–30 min |
 | Maanantai | Viikkoraportti sähköpostiin: kuukaudet, konversiot ja huomiot | 10 min |
 | Perjantai | Päivitä Kaupat-vaiheet ja lisää 30–50 liidiä seuraavalle viikolle (Claude voi tutkia ne puolestasi) | 30 min |
 | Kuun 1. päivä | Laskutuslista on valmiina: laskuta kolmen päivän sisällä ja merkitse rivit lähetetyiksi | 15 min |
@@ -188,6 +211,7 @@ Seurattavat luvut: laskutettu vs. tavoite, ennuste, kontakti → palaveri, palav
 | vk 45 (nyt) | Asenna moottori (10 min). Täytä nimi, allekirjoitus ja oikeat asiakkaiden nimet. Tarkista käynnissä olevan projektin erät. Laskuta marraskuun toistuvat. | TESTI |
 | vk 45–46 | Verkostoviestit: 25 tuttua Liidit-välilehdelle segmentillä *Verkosto*. Luet ja lähetät luonnokset itse. | LUONNOS |
 | vk 46 | Lähetysdomain ja Google Workspace -laatikko kylmille viesteille. SPF, DKIM ja DMARC kuntoon ja lämmitys käyntiin. | – |
+| vk 47 | Ajanvaraussivu Google-kalenteriin ja linkki asetuksiin. Vanhojen asiakkaiden lista vanhoista laskutus- ja asiakastiedoista segmentillä *Vanha asiakas*. Sivustotarkistus tuottaa havainnot. | LUONNOS |
 | vk 47–48 | Oma lista: osoitteiden tarkistus, segmentointi (Matkailu / Yleinen), tuonti, sivustotarkistus ja havainnot. Tietosuojalause asetuksiin. | TESTI |
 | vk 49–50 | Kylmä sarja luonnoksina uudesta laatikosta, 5–10 päivässä: pohjien hionta oikeiden vastausten perusteella. Booking engine julkaistaan. | LUONNOS |
 | vk 51–52 | Joulutauko: kone tarkistaa vain vastaukset. Loppulaskut joulukuulle. | TESTI |
