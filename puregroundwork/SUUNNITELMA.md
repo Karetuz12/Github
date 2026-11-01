@@ -1,5 +1,9 @@
 # Pure Groundwork – oma sivusto
 
+> **Tila:** ensimmäinen versio on rakennettu (Next.js, tämä kansio). Sivut: etusivu, `/groundwork`, `/sivustot`, `/minusta` ja `/tietosuoja`.
+> Lomake on kytketty Laskutusmoottoriin. Nimi, kuvat, logo, referenssit ja domain odottavat aineistoja, ks. [README.md](README.md).
+> Videot ja mainoskuvat: [MARKKINOINTI.md](MARKKINOINTI.md).
+
 Sivusto omalla nimellä ja kasvoilla. Ei toimistoa eikä tiimiesittelyä: yksi kokenut tekijä, joka tekee markkinoinnin perustan kuntoon.
 Sivusto tekee kolme asiaa:
 

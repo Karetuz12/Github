@@ -204,18 +204,21 @@ function ymparisto() {
       formatDate: muoto,
       base64Encode: (s) => Buffer.from(String(s), 'utf8').toString('base64'),
       base64EncodeWebSafe: (s) => Buffer.from(String(s), 'utf8').toString('base64').replace(/\+/g, '-').replace(/\//g, '_'),
+      getUuid: () => '1234abcd-0000-4000-8000-feedbeefcafe',
     },
+    ContentService: { createTextOutput: (t) => ({ teksti: t, setMimeType() { return this; } }), MimeType: { JSON: 'json' } },
     SpreadsheetApp: {
       getActiveSpreadsheet: () => ss, getActive: () => ss, newDataValidation: validointi,
       getUi: () => {
-        const ui = { createMenu: () => ui, addItem: () => ui, addSeparator: () => ui, addToUi: () => ui, showModalDialog: (h, t) => dialogit.push({ html: h.html, t }) };
+        const ui = { createMenu: () => ui, addItem: () => ui, addSeparator: () => ui, addToUi: () => ui, showModalDialog: (h, t) => dialogit.push({ html: h.html, t }),
+          alert: (o, t) => dialogit.push({ html: t, t: o }), ButtonSet: { OK: 'ok' } };
         return ui;
       },
     },
     HtmlService: { createHtmlOutput: (html) => { const o = { html, setWidth: () => o, setHeight: () => o }; return o; } },
     Session: { getActiveUser: () => ({ getEmail: () => oma }), getEffectiveUser: () => ({ getEmail: () => oma }) },
     PropertiesService: { getScriptProperties: () => ({ getProperty: (k) => (k in props ? props[k] : null), setProperty: (k, v) => { props[k] = v; } }) },
-    LockService: { getScriptLock: () => ({ tryLock: () => true, releaseLock: () => {} }) },
+    LockService: { getScriptLock: () => ({ tryLock: () => true, waitLock: () => {}, releaseLock: () => {} }) },
     ScriptApp: {
       getProjectTriggers: () => triggerit.slice(),
       deleteTrigger: (t) => triggerit.splice(triggerit.indexOf(t), 1),
@@ -497,6 +500,45 @@ test('palaveri kalenterissa siirtää liidin kauppoihin', () => {
   y.aika('2026-11-04T05:00:00Z');
   y.ctx.paivittainen();
   assert.equal(y.taulu('Kaupat').filter((k) => k.Asiakas === 'Kalenteri Oy').length, 1);
+});
+
+test('verkkosivun lomake: kysely Liidit-välilehdelle tilaan Vastasi ja ilmoitus', () => {
+  const y = ymparisto();
+  y.aika('2026-11-01T13:00:00Z');
+  y.ctx.asenna();
+  const posti = (o) => JSON.parse(y.ctx.doPost({ postData: { contents: JSON.stringify(o) } }).teksti);
+  assert.deepEqual(posti({ secret: 'x', nimi: 'A', email: 'a@b.fi' }), { ok: false, error: 'auth' }, 'ei salaisuutta ennen asennusta');
+  const salaisuus = y.ctx.asennaLomake();
+  assert.equal(salaisuus, '1234abcd000040008000feedbeefcafe');
+  assert.match(y.dialogit.pop().html, /APPS_SCRIPT_SECRET = 1234abcd/);
+  assert.deepEqual(posti({ secret: 'väärä', nimi: 'A', email: 'a@b.fi' }), { ok: false, error: 'auth' });
+  assert.deepEqual(posti({ secret: salaisuus, nimi: 'A', email: 'ei-osoite' }), { ok: false, error: 'email' });
+
+  y.aika('2026-11-03T10:00:00Z');
+  assert.deepEqual(posti({ secret: salaisuus, nimi: 'Liisa Lomake', email: 'Liisa@Firma.fi', yritys: 'Firma Oy', sivusto: 'firma.fi',
+    palvelu: 'Groundwork-katselmus', viesti: 'Mainonta ei tuota.' }), { ok: true });
+  const l = y.taulu('Liidit')[0];
+  assert.equal(l.Etunimi, 'Liisa');
+  assert.equal(l.Sukunimi, 'Lomake');
+  assert.equal(l.Sähköposti, 'liisa@firma.fi');
+  assert.equal(l.Segmentti, 'Inbound');
+  assert.equal(l.Tila, 'Vastasi');
+  assert.equal(l.Muistiinpanot, '[Groundwork-katselmus] Mainonta ei tuota.');
+  assert.equal(y.ctx.pvAvain(l['Vastasi pvm']), '2026-11-03');
+  const ilmoitus = y.gm.lahetetytKoosteet.pop();
+  assert.equal(ilmoitus.subject, 'Uusi yhteydenotto sivustolta: Liisa Lomake, Firma Oy');
+  assert.match(ilmoitus.body, /Mainonta ei tuota\./);
+  assert.ok(y.taulu('Loki').some((r) => r.Toiminto === 'Yhteydenotto sivustolta'));
+
+  // Sama henkilö uudelleen: ei uutta riviä, viesti kirjataan
+  posti({ secret: salaisuus, nimi: 'Liisa Lomake', email: 'liisa@firma.fi', viesti: 'Vielä yksi asia.' });
+  assert.equal(y.taulu('Liidit').length, 1);
+  assert.match(y.taulu('Liidit')[0].Muistiinpanot, /Mainonta ei tuota\. · Sivuston lomake 3\.11\.2026: Vielä yksi asia\.$/);
+  // Aamuajo ei lähetä Inbound-liidille kylmää sarjaa
+  y.asetus('Nimesi', 'Myyjä');
+  y.asetus('Tila', 'LÄHETÄ');
+  y.ctx.paivittainen();
+  assert.equal(y.gm.ketjut.size, 0);
 });
 
 test('vanhan version taulukko päivittyy: puuttuvat välilehdet, sarakkeet ja asetukset', () => {

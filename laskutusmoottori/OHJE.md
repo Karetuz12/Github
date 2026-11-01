@@ -174,6 +174,12 @@ Maanantain viikkoraportissa on viiden viikon seuranta.
 | Pomppasi, Tupla | Osoite ei toimi / sama osoite on jo listalla | Kone |
 | Tauko | Sarja pysäytetty (myös kun poistat luonnoksen) | Sinä / kone |
 
+## Verkkosivun lomake
+
+Pure Groundwork -sivuston yhteydenottolomake kirjoittaa kyselyt suoraan Liidit-välilehdelle segmentillä *Inbound* ja tilalla *Vastasi*,
+ja saat kyselystä heti sähköpostin. Käyttöönotto: valikko **Laskutusmoottori → Asenna verkkosivun lomake** ja sen ohjeet
+(ks. myös [../puregroundwork/README.md](../puregroundwork/README.md)). Jos kyselyn lähettäjä on jo liidinä, hänen sarjansa pysähtyy ja viesti kirjataan muistiinpanoihin.
+
 ## Toimitettavuus ja pelisäännöt
 
 - **Erillinen lähetysdomain.** Kylmät viestit kannattaa lähettää omasta domainista ja postilaatikosta, ei päädomainista. Asenna moottori sen tilin taulukkoon. Laita domainille SPF, DKIM ja DMARC kuntoon ja lämmitä laatikkoa 2–3 viikkoa ennen kuin tahti nousee yli 10 viestin päivässä.

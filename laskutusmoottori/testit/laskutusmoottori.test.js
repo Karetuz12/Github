@@ -543,6 +543,18 @@ test('kulmatilastot segmenteittäin', () => {
   assert.equal(t.segmentit[0].segmentti, 'WordPress');
 });
 
+test('lomakkeen tiedot liidiksi', () => {
+  const r = g.lomakeLiidiksi({ nimi: ' Anna  Maria Asiakas ', email: 'ANNA@x.fi', palvelu: 'Uusi sivusto', viesti: ' Hei ' }, '2026-11-03');
+  assert.equal(r.etunimi, 'Anna');
+  assert.equal(r.sukunimi, 'Maria Asiakas');
+  assert.equal(r.email, 'anna@x.fi');
+  assert.equal(r.tila, 'Vastasi');
+  assert.equal(r.segmentti, 'Inbound');
+  assert.equal(r.muistiinpano, '[Uusi sivusto] Hei');
+  assert.equal(g.lomakeLiidiksi({ email: 'a@b.fi' }, '2026-11-03').virhe, 'nimi');
+  assert.equal(g.lomakeLiidiksi({ nimi: 'A', email: 'x' }, '2026-11-03').virhe, 'email');
+});
+
 test('vastausten luokittelu', () => {
   assert.equal(g.luokitteleVastaus('Mail Delivery Subsystem <mailer-daemon@googlemail.com>', 'Delivery Status Notification (Failure)', ''), 'pomppu');
   assert.equal(g.luokitteleVastaus('Anna <anna@yritys.fi>', 'Automaattinen vastaus: Yritys Oy / verkkosivut', ''), 'automaattinen');

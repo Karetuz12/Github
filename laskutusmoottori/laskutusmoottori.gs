@@ -118,7 +118,7 @@ const PALAVERIT = ['Palaveri', 'Kauppa'];
 const ESTAA_DOMAININ = ['Luonnos', 'Sekvenssissä', 'Vastasi', 'Palaveri', 'Kauppa', 'Ei kiinnosta', 'Älä ota yhteyttä'];
 const LI_TILAT = ['Tehtävälistalla', 'Kutsuttu', 'Yhdistetty', 'Viesti lähetetty', 'Ei LinkedInissä'];
 const SOITTOTILAT = ['Soittolistalla', 'Ei vastannut', 'Palaveri sovittu', 'Ei kiinnosta', 'Soita myöhemmin'];
-const SEGMENTIT = ['WordPress', 'Groundwork', 'Mainonta', 'Sparraus', 'Matkailu', 'Yleinen', 'Verkosto', 'Vanha asiakas'];
+const SEGMENTIT = ['Inbound', 'WordPress', 'Groundwork', 'Mainonta', 'Sparraus', 'Matkailu', 'Yleinen', 'Verkosto', 'Vanha asiakas'];
 const TILAT = ['TESTI', 'LUONNOS', 'LÄHETÄ'];
 const YLEISET_DOMAINIT = ['gmail.com', 'googlemail.com', 'outlook.com', 'hotmail.com', 'hotmail.fi', 'live.com',
   'live.fi', 'msn.com', 'yahoo.com', 'icloud.com', 'me.com', 'luukku.com', 'suomi24.fi', 'kolumbus.fi',
@@ -750,6 +750,7 @@ function onOpen() {
     .addItem('Luo tämän kuun laskutuslista', 'valikkoLaskutuslista')
     .addItem('Asenna ajastus uudelleen', 'asennaAjastus')
     .addItem('Päivitä taulukon rakenne (uuden version jälkeen)', 'paivitaRakenne')
+    .addItem('Asenna verkkosivun lomake', 'asennaLomake')
     .addToUi();
 }
 
@@ -908,6 +909,104 @@ function valikkoLaskutuslista() {
   const n = luoLaskutuslista(tanaanAvain().slice(0, 7));
   paivitaKojelauta();
   ilmoita(n ? n + ' riviä lisätty Laskut-välilehdelle.' : 'Kaikki tämän kuun rivit olivat jo listalla.');
+}
+
+// ───────────────────────────── Verkkosivun lomake ─────────────────────────────
+
+/**
+ * Luo salaisuuden verkkosivun lomakkeelle ja kertoo, miten web-osoite otetaan käyttöön.
+ * Sivuston /api/yhteys lähettää kyselyt tänne (doPost) salaisuuden kanssa.
+ */
+function asennaLomake() {
+  const props = PropertiesService.getScriptProperties();
+  let salaisuus = props.getProperty('LOMAKE_SALAISUUS');
+  if (!salaisuus) {
+    salaisuus = Utilities.getUuid().replace(/-/g, '');
+    props.setProperty('LOMAKE_SALAISUUS', salaisuus);
+  }
+  const ohje = 'APPS_SCRIPT_SECRET = ' + salaisuus + '\n\n' +
+    'Ota web-osoite käyttöön: Apps Script → Ota käyttöön (Deploy) → Uusi käyttöönotto → Verkkosovellus.\n' +
+    'Suorita käyttäjänä: Minä. Käyttöoikeus: Kuka tahansa. Kopioi web-osoite.\n\n' +
+    'Vercel → projekti puregroundwork → Settings → Environment Variables:\n' +
+    'APPS_SCRIPT_URL = web-osoite\nAPPS_SCRIPT_SECRET = yllä oleva salaisuus';
+  Logger.log(ohje);
+  try {
+    SpreadsheetApp.getUi().alert('Verkkosivun lomake', ohje, SpreadsheetApp.getUi().ButtonSet.OK);
+  } catch (e) {
+    // ajettu editorista: ohje näkyy lokissa
+  }
+  return salaisuus;
+}
+
+/** Verkkosivun yhteydenotto: POST { secret, nimi, email, yritys, sivusto, palvelu, viesti } → Liidit, tila Vastasi. */
+function doPost(e) {
+  let data;
+  try {
+    data = JSON.parse((e && e.postData && e.postData.contents) || '{}');
+  } catch (err) {
+    return jsonVastaus({ ok: false, error: 'json' });
+  }
+  const salaisuus = PropertiesService.getScriptProperties().getProperty('LOMAKE_SALAISUUS');
+  if (!salaisuus || data.secret !== salaisuus) return jsonVastaus({ ok: false, error: 'auth' });
+  const tanaan = tanaanAvain();
+  const uusi = lomakeLiidiksi(data, tanaan);
+  if (uusi.virhe) return jsonVastaus({ ok: false, error: uusi.virhe });
+
+  const lukko = LockService.getScriptLock();
+  lukko.waitLock(20000);
+  try {
+    const t = lueTaulu(V.liidit);
+    const olemassa = t.rivit.find((r) => teksti(r.email).toLowerCase() === uusi.email);
+    if (olemassa) {
+      // Tuttu liidi otti itse yhteyttä: sarja pysähtyy ja viesti kirjataan
+      poistaLuonnos(teksti(olemassa.luonnos));
+      tallenna(t, olemassa._rivi, { tila: 'Vastasi', vastausPvm: pvmSolu(tanaan), seuraava: '', luonnos: '',
+        muistiinpano: lisaaMuistiinpano(olemassa.muistiinpano, 'Sivuston lomake ' + suomiPvm(tanaan) + ': ' + uusi.muistiinpano) });
+    } else {
+      const rivi = new Array(t.leveys).fill('');
+      Object.keys(uusi).forEach((k) => { if (k in t.idx) rivi[t.idx[k]] = uusi[k]; });
+      rivi[t.idx.vastausPvm] = pvmSolu(tanaan);
+      rivi[t.idx.lisatty] = new Date();
+      t.sh.getRange(Math.max(t.sh.getLastRow(), 1) + 1, 1, 1, t.leveys).setValues([rivi]);
+    }
+    loki('Yhteydenotto sivustolta', (uusi.yritys || uusi.etunimi) + ' <' + uusi.email + '>', uusi.muistiinpano.slice(0, 120));
+    try {
+      const a = lueAsetukset();
+      GmailApp.sendEmail(raporttiOsoite(a), 'Uusi yhteydenotto sivustolta: ' + [uusi.etunimi, uusi.sukunimi].filter(String).join(' ') +
+        (uusi.yritys ? ', ' + uusi.yritys : ''),
+        [uusi.etunimi + ' ' + uusi.sukunimi, uusi.yritys, uusi.email, uusi.sivusto, '', uusi.muistiinpano, '',
+          'Liidi on Liidit-välilehdellä tilassa Vastasi. Kun palaveri on sovittu, siirrä se kauppoihin.',
+          SpreadsheetApp.getActiveSpreadsheet().getUrl()].filter((x) => x !== undefined).join('\n'),
+        { name: 'Laskutusmoottori', replyTo: uusi.email });
+    } catch (err) {
+      loki('Virhe', 'Yhteydenoton ilmoitus', err.message);
+    }
+    paivitaKojelauta();
+  } finally {
+    lukko.releaseLock();
+  }
+  return jsonVastaus({ ok: true });
+}
+
+function jsonVastaus(o) {
+  return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
+}
+
+/** Puhdas: lomakkeen tiedot Liidit-rivin kentiksi. Palauttaa { virhe } tai kentät. */
+function lomakeLiidiksi(d, tanaan) {
+  const s = (v, max) => String(v === undefined || v === null ? '' : v).replace(/\s+/g, ' ').trim().slice(0, max);
+  const email = s(d.email, 200).toLowerCase();
+  const nimi = s(d.nimi, 120);
+  if (!nimi) return { virhe: 'nimi' };
+  if (!onEmail(email)) return { virhe: 'email' };
+  const osat = nimi.split(' ');
+  const palvelu = s(d.palvelu, 80);
+  const viesti = String(d.viesti === undefined || d.viesti === null ? '' : d.viesti).trim().slice(0, 3000);
+  return {
+    yritys: s(d.yritys, 160), etunimi: osat[0], sukunimi: osat.slice(1).join(' '), email, sivusto: s(d.sivusto, 300),
+    segmentti: 'Inbound', tila: 'Vastasi', vaihe: 0,
+    muistiinpano: [palvelu ? '[' + palvelu + ']' : '', viesti].filter(String).join(' ') || '(ei viestiä)',
+  };
 }
 
 // ───────────────────────────── Päivittäinen kierros ─────────────────────────────
