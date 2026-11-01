@@ -29,12 +29,13 @@ export const hero = {
     'Yksi kokenut tekijä, ei toimistoa.',
 };
 
+// Numerot lasketaan näkyviin animaationa: ennen + arvo + jälkeen
 export const numerot = [
-  { luku: '10+', selite: 'vuotta myyntiä, markkinointia ja verkkosivuja' },
-  { luku: '~1 000', selite: 'projektia: verkkosivuja, verkkokauppoja ja kampanjoita' },
-  { luku: '~5 M€', selite: 'asiakkaiden mainosbudjetteja Metassa ja Googlessa' },
-  { luku: '50+ M€', selite: 'mitattua myyntiä asiakkaille' },
-  { luku: '250 000+', selite: 'liidiä eri toimialoille' },
+  { arvo: 10, ennen: '', jalkeen: '+', selite: 'vuotta myyntiä, markkinointia ja verkkosivuja' },
+  { arvo: 1000, ennen: '~', jalkeen: '', selite: 'projektia: verkkosivuja, verkkokauppoja ja kampanjoita' },
+  { arvo: 5, ennen: '~', jalkeen: ' M€', selite: 'asiakkaiden mainosbudjetteja Metassa ja Googlessa' },
+  { arvo: 50, ennen: '', jalkeen: '+ M€', selite: 'mitattua myyntiä asiakkaille' },
+  { arvo: 250000, ennen: '', jalkeen: '+', selite: 'liidiä eri toimialoille' },
 ];
 export const numerotHuomautus = 'Luvut kertovat urani ja vetämäni markkinointitoimiston ajalta.';
 
@@ -149,7 +150,7 @@ export const palvelut: Palvelu[] = [
     teksti:
       'Mainonnan hoito tai markkinoinnin sparraus kevyellä mallilla: palaveri kerran kuussa, kuukausiraportti ja viestit tarpeen mukaan. ' +
       'Ei viikkopalavereita.',
-    linkki: '/minusta',
+    linkki: '/kumppanuus',
   },
 ];
 export const hinnatHuomautus = 'Hinnat alv 0 %. Tarkka hinta sovitaan aina ennen aloitusta.';
@@ -226,3 +227,83 @@ export const kysymykset = [
 ];
 
 export const lomakePalvelut = ['Groundwork-katselmus', 'Groundwork-kunnostus', 'Uusi sivusto', 'Mainonta', 'Markkinoinnin sparraus', 'En tiedä vielä'];
+
+// ── Kokemus: toimialat ja asiakkaat ──
+export const toimialat = [
+  { luku: '25+', otsikko: 'autoliikettä', teksti: 'Markkinointia ja liidien hankintaa autokaupalle.', koko: 'iso' },
+  { luku: '30–40', otsikko: 'suoramyyntiyritystä', teksti: 'Asiakashankintaa, jossa jokainen liidi lasketaan.', koko: 'iso' },
+  { luku: '7 v', otsikko: 'oma markkinointitoimisto', teksti: 'Parhaimmillaan 25 ammattilaista: graafikoita, kuvaajia, koodareita ja myyjiä.', koko: 'normaali' },
+  { luku: 'KV', otsikko: 'matkailu ja elämykset', teksti: 'Kansainvälistä markkinointia matkailuun, myös Lapin kohteille.', koko: 'normaali' },
+  { luku: 'B2C + B2B', otsikko: 'verkkokaupat ja palvelut', teksti: 'Brändimarkkinointia, verkkokauppamyyntiä ja liidejä.', koko: 'normaali' },
+];
+
+// Asiakkaita vuosien varrelta. TÄYTÄ / TARKISTA: kirjoitusasu ja lupa nimen käyttöön.
+export const asiakkaat = ['iSkates', 'X-Beeli'];
+
+// Alustat, joilla olen tehnyt tulosta (simple-icons-kuvakkeet, ks. components/LogoNauha.tsx)
+export const alustat = ['Meta', 'Facebook', 'Instagram', 'Google', 'Google Ads', 'Google Analytics', 'Google Tag Manager', 'Search Console',
+  'WordPress', 'WooCommerce', 'Shopify', 'Elementor', 'Next.js', 'Vercel', 'TikTok', 'YouTube', 'Mailchimp', 'HubSpot', 'Brevo', 'Figma'];
+
+// ── Megavalikko ──
+export const megavalikko = [
+  { nimi: 'Groundwork', kuvake: 'kerrokset', linkki: '/groundwork', teksti: 'Seurannat, mainostilit, nopeus ja yhteydenottopolut kuntoon.' },
+  { nimi: 'Uusi sivusto', kuvake: 'selain', linkki: '/sivustot', teksti: 'Koodilla tehty, nopea sivusto ja kevyt hallintapaneeli.' },
+  { nimi: 'Mainonnan kumppanuus', kuvake: 'kohde', linkki: '/kumppanuus#mainonta', teksti: 'Meta ja Google kevyellä kuukausimallilla.' },
+  { nimi: 'Markkinoinnin sparraus', kuvake: 'puhe', linkki: '/kumppanuus#sparraus', teksti: 'Taustatuki markkinoinnista vastaavalle.' },
+];
+
+// ── Hinnasto (alv 0 %) ──
+export const hinnasto = [
+  {
+    ryhma: 'Groundwork',
+    kuvaus: 'Markkinoinnin perusta kuntoon.',
+    rivit: [
+      { nimi: 'Groundwork-katselmus', hinta: '490 €', teksti: 'Korjauslista tärkeysjärjestyksessä. Hyvitetään, jos korjaukset tehdään.', suosittu: true },
+      { nimi: 'Groundwork-kunnostus', hinta: 'alkaen 1 900 €', teksti: 'Seurannat, mainostilit, nopeus, SEO-perusta ja liidielementit kuntoon.' },
+    ],
+  },
+  {
+    ryhma: 'Sivustot',
+    kuvaus: 'Koodilla, hallintapaneelilla, kiinteällä hinnalla.',
+    rivit: [
+      { nimi: 'Pieni sivusto', hinta: '1 000 €', teksti: '1–3 sivua, valmis noin kahdessa viikossa.' },
+      { nimi: 'Keskikokoinen sivusto', hinta: '1 500–2 500 €', teksti: 'Palvelusivut, yhteydenottopolut ja hallintapaneeli.' },
+      { nimi: 'Laaja sivusto', hinta: '3 000–4 000 €', teksti: 'Enemmän sivuja, kieliversiot ja integraatiot.' },
+    ],
+  },
+  {
+    ryhma: 'Kuukausikumppanuus',
+    kuvaus: 'Palaveri kerran kuussa, raportti ja viestit tarpeen mukaan.',
+    rivit: [
+      { nimi: 'Mainonnan kumppanuus', hinta: '490–990 €/kk', teksti: 'Meta- ja Google-mainonta, kuukausiraportti. Hinta mainosbudjetin mukaan.' },
+      { nimi: 'Markkinoinnin sparraus', hinta: '600–1 200 €/kk', teksti: 'Taustatuki markkinoinnista vastaavalle tai tiimille.' },
+      { nimi: 'Sparrauspalaveri', hinta: '790 €', teksti: 'Kertaluonteinen 2 tunnin läpikäynti. Hyvitetään, jos jatketaan.' },
+    ],
+  },
+  {
+    ryhma: 'Ylläpito ja lisätyöt',
+    kuvaus: 'Kun sivu on valmis, se pysyy kunnossa.',
+    rivit: [
+      { nimi: 'Hosting ja ylläpito', hinta: 'alkaen 149 €/kk', teksti: 'Hosting Nordic Hostilla, päivitykset ja kuukausiraportti.' },
+      { nimi: 'Pikatyöt', hinta: 'alkaen 200 €', teksti: 'Pienet koodaus- ja sivutyöt, myös WordPressin ylläpito ja kehitys.' },
+    ],
+  },
+];
+export const maksuehdot = 'Sivustot ja kunnostukset laskutetaan 50 % aloituksesta ja 50 % valmistuttua. Kuukausikumppanuudet ilman pitkää sitoumusta.';
+
+// ── Kumppanuus ──
+export const kumppanuus = {
+  mainonta: {
+    otsikko: 'Mainonnan kumppanuus',
+    hinta: '490–990 €/kk',
+    teksti: 'Hoidan Meta- ja Google-mainonnan kevyellä mallilla. Käyn tilit läpi kuukausittain, teen tarvittavat muutokset ja kokoan raportin, jonka pohjalta päätetään seuraava kuukausi.',
+    sisaltaa: ['Meta- ja Google-tilien hoito', 'Kuukausiraportti: mitä tehtiin, mitä tuli, mitä seuraavaksi', 'Palaveri kerran kuussa tai joka toinen kuukausi', 'Viestit tarpeen mukaan, noin 15 minuuttia viikossa'],
+  },
+  sparraus: {
+    otsikko: 'Markkinoinnin sparraus',
+    hinta: '600–1 200 €/kk',
+    teksti: 'Taustatukea markkinoinnista vastaavalle. Käymme kerran kuussa läpi luvut, mainostilit ja tulevat kampanjat, ja tuon ulkopuolisen näkemyksen siitä, mistä saa enemmän irti.',
+    sisaltaa: ['Palaveri kerran kuussa', 'Kuukausikatsaus ja kommentit mainostileihin ja kampanjoihin', 'Näkemys liidien hankintaan ja myynnin ja markkinoinnin yhteistyöhön', 'Viestit tarpeen mukaan'],
+  },
+  ei: ['Ei viikkopalavereita', 'Ei pitkiä sopimuksia', 'Ei ad hoc -työtä kuukausimaksulla – lisätyöt sovitaan ja hinnoitellaan erikseen'],
+};

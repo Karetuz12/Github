@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Tietosuoja() {
   return (
     <Osio>
-      <div className="tekstisivu">
+      <div className="tekstisivu lasi">
         <h1>Tietosuojaseloste</h1>
         <p className="hiljainen">Päivitetty marraskuussa 2026.</p>
 

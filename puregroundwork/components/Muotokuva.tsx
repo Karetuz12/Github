@@ -3,7 +3,7 @@ import { henkilo } from '@/lib/sisalto';
 
 export function Muotokuva() {
   return (
-    <div className={henkilo.kuva ? 'muotokuva' : 'muotokuva on-tyhja'}>
+    <div className={henkilo.kuva ? 'muotokuva lasi' : 'muotokuva lasi on-tyhja'}>
       {henkilo.kuva ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={henkilo.kuva} alt={henkilo.nimi} />

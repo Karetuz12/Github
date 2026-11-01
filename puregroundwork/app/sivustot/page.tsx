@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { Merkki } from '@/components/Logo';
-import { Osio, varausOsoite } from '@/components/Rakenne';
+import { Kuvake } from '@/components/Kuvakkeet';
+import { Osio, SivunHero, varausOsoite } from '@/components/Rakenne';
 import { hinnatHuomautus, sivustot } from '@/lib/sisalto';
 
 export const metadata: Metadata = {
@@ -9,39 +9,38 @@ export const metadata: Metadata = {
   alternates: { canonical: '/sivustot' },
 };
 
+const etuKuvakkeet = ['salama', 'kerrokset', 'lomake', 'kohde'];
+
 export default function Sivustot() {
   return (
     <>
-      <section className="hero">
-        <div className="sisalto">
-          <p className="ylaotsikko">
-            <Merkki koko={18} /> Sivustot
-          </p>
-          <h1>{sivustot.otsikko}</h1>
-          <p className="iso">{sivustot.teksti}</p>
-          <div className="painikkeet">
-            <a className="painike" href={varausOsoite}>
-              Kysy arvio
-            </a>
-          </div>
+      <SivunHero ylaotsikko="Sivustot" otsikko={sivustot.otsikko} teksti={sivustot.teksti}>
+        <div className="painikkeet">
+          <a className="painike" href={varausOsoite}>
+            Kysy arvio <Kuvake nimi="nuoli" koko={18} />
+          </a>
         </div>
-      </section>
+      </SivunHero>
 
-      <Osio otsikko="Miksi koodilla">
+      <Osio ylaotsikko="Miksi koodilla" otsikko="Nopea, kevyt ja valmiina myyntiin.">
         <div className="kortit">
-          {sivustot.edut.map((e) => (
-            <div key={e.otsikko} className="kortti">
+          {sivustot.edut.map((e, i) => (
+            <div key={e.otsikko} className={`kortti lasi ilmesty viive-${i}`}>
+              <span className="kortti-kuvake">
+                <Kuvake nimi={etuKuvakkeet[i]} />
+              </span>
               <h3>{e.otsikko}</h3>
-              <p>{e.teksti}</p>
+              <p style={{ margin: 0 }}>{e.teksti}</p>
             </div>
           ))}
         </div>
       </Osio>
 
-      <Osio otsikko="Koot ja hinnat" tumma>
+      <Osio ylaotsikko="Koot ja hinnat" otsikko="Kolme kokoa, kiinteä hinta.">
         <div className="koot">
-          {sivustot.koot.map((k) => (
-            <div key={k.nimi} className="palvelu koko">
+          {sivustot.koot.map((k, i) => (
+            <div key={k.nimi} className={`palvelu lasi ilmesty viive-${i}${i === 1 ? ' suosittu' : ''}`}>
+              {i === 1 && <span className="merkki-pieni">Yleisin</span>}
               <h3>{k.nimi}</h3>
               <div className="hinta">{k.hinta}</div>
               <p>{k.teksti}</p>
@@ -51,12 +50,7 @@ export default function Sivustot() {
         <p className="hiljainen" style={{ marginTop: 22 }}>
           {sivustot.maksu} {hinnatHuomautus}
         </p>
-      </Osio>
-
-      <Osio>
-        <p className="korostus" style={{ marginTop: 0 }}>
-          {sivustot.wordpress}
-        </p>
+        <p className="korostus ilmesty">{sivustot.wordpress}</p>
       </Osio>
     </>
   );

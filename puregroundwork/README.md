@@ -15,6 +15,19 @@ Tiedostossa `lib/sisalto.ts` on merkintä `TÄYTÄ` seuraavissa kohdissa:
 - **Referenssit:** lisää vain asiakkaat, joiden nimen saa mainita. Osio näkyy vasta, kun listassa on jotain.
 - **Logo:** väliaikainen merkki (kolme maakerrosta) on tiedostossa `components/Logo.tsx`. Oikean logon voi tallentaa nimellä `public/logo.svg` ja vaihtaa komponenttiin.
 
+## Ilme
+
+- **Tumma liquid glass -ilme:** lasipinnat, liikkuva väritausta, megavalikko, liikkuva logonauha, laskurit ja näkyviin liukuvat osiot.
+  Animaatiot pysähtyvät, jos kävijä on pyytänyt laitteeltaan vähemmän liikettä.
+- **Värit:** tiedoston `app/globals.css` alussa (`:root`). **Fontit:** tiedostossa `app/layout.tsx` (`next/font`).
+  Nämä vaihdetaan Nordic Hostin brändin mukaisiksi, kun nordichost.fi on sallittu istunnon verkkoasetuksissa tai fontit ja värit on kerrottu.
+- **Alustojen logot** tulevat `simple-icons`-paketista (`components/LogoNauha.tsx`). Lista on tiedostossa `lib/sisalto.ts` (`alustat`).
+- **Asiakkaat** (`asiakkaat`) näkyvät tekstilogoina. Tarkista kirjoitusasu ja nimen käyttölupa.
+
+## Sivut
+
+`/` · `/groundwork` · `/sivustot` · `/kumppanuus` · `/hinnat` · `/minusta` · `/tietosuoja`
+
 ## Yhteydenottolomake → Laskutusmoottori
 
 1. Valitse Laskutusmoottorin taulukossa **Laskutusmoottori → Asenna verkkosivun lomake**. Saat salaisuuden ja ohjeen.
