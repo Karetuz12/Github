@@ -78,7 +78,10 @@ addresses, and customers can't get past it. A custom domain skips that protectio
 
 1. Open the spreadsheet → **Morning**. It shows last night's tours.
    - Sign-ups until 06:00 count towards the previous night, so tours that run past midnight stay together.
-   - To see another night, type a date in the yellow cell **B1**. Clear the cell to go back to last night.
+   - To see another night, type a date in the yellow cell **B1**, day first: `31/10/2026` or `31.10.2026`
+     (or double-click B1 for a calendar). Clear the cell to go back to last night.
+   - Spreadsheets set up before 2 Nov 2026: run **fixDatePicker** once in Extensions → Apps Script
+     (after pasting the latest `backend.gs`) so B1 also accepts dates typed with dots and gets the calendar.
 2. Copy a group's email addresses into the **BCC** field and send the link to the group's photos.
    Use BCC so customers don't see each other's addresses.
 

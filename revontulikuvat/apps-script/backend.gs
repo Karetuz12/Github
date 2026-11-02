@@ -220,6 +220,19 @@ function escapeHtml(text) {
   return String(text).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 }
 
+// B1 can hold a real date or text typed as 1.11.2026 / 1/11/2026 (day first). Empty = last night.
+const PICKED_NIGHT_FORMULA =
+  '=IF(B1="",TODAY()-1,IF(ISNUMBER(B1),INT(B1),IFERROR(DATE(INDEX(SPLIT(B1,"./-"),1,3),' +
+  'INDEX(SPLIT(B1,"./-"),1,2),INDEX(SPLIT(B1,"./-"),1,1)),"Check the date in B1")))';
+
+/** Fixes the date picker on an existing Morning sheet (B1/B2). Safe to run again. */
+function fixDatePicker() {
+  const s = SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('SHEET_ID'))
+    .getSheetByName('Morning');
+  s.getRange('B1').setDataValidation(SpreadsheetApp.newDataValidation().requireDate().setAllowInvalid(true).build());
+  s.getRange('B2').setFormula(PICKED_NIGHT_FORMULA).setNumberFormat('ddd d mmm yyyy');
+}
+
 function buildMorningSheet(spreadsheet) {
   const s = spreadsheet.getSheetByName('Morning');
   const time = 'Responses!$A$2:$A';
@@ -233,8 +246,10 @@ function buildMorningSheet(spreadsheet) {
     [''],
   ]);
   s.getRange('B1:B2').setNumberFormat('ddd d mmm yyyy');
-  s.getRange('B1').setBackground('#fff8c5');
-  s.getRange('B2').setFormula('=IF(B1="",TODAY()-1,B1)').setFontWeight('bold');
+  // Date picker on B1 (double-click). Typed text like 01.11.2026 is still accepted and read by B2.
+  s.getRange('B1').setBackground('#fff8c5')
+    .setDataValidation(SpreadsheetApp.newDataValidation().requireDate().setAllowInvalid(true).build());
+  s.getRange('B2').setFormula(PICKED_NIGHT_FORMULA).setFontWeight('bold');
   s.getRange('A3').setFormula(
     `="Emails in total: "&IFERROR(ROWS(FILTER(${email},${onDay})),0)`);
 
