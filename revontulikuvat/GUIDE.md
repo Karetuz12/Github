@@ -103,7 +103,9 @@ Share the spreadsheet with the colleagues who send the photos (Share button).
 
 1. Spreadsheet → **Extensions → Apps Script** → replace all the code with the latest `apps-script/backend.gs` → save.
 2. Run **addGuideColumns** once. It adds the Guides sheet and the Guide and Camera columns to Morning.
-3. **Deploy → Manage deployments → edit (pencil) → Version: New version → Deploy.** This one is needed this time,
+3. Run **importSmallGroupPrintFiles** once. It copies the Small Group print PDFs (`print/small-group/` in this repo)
+   into Drive: QR-koodit painoon → SMALL GROUP → A4 julisteet / Käyntikortit 85x55.
+4. **Deploy → Manage deployments → edit (pencil) → Version: New version → Deploy.** This one is needed this time,
    because the web app now also receives the guide page's saves. The URL stays the same.
 
 ## Morning reminder email

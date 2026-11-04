@@ -145,6 +145,38 @@ function addGuideColumns() {
   Logger.log('Done: Guides sheet and Guide/Camera columns are in place.');
 }
 
+/**
+ * Copies the Small Group print files (A4 posters and 85x55 business cards) from GitHub into
+ * Drive: Valokuvien lähetys → QR-koodit painoon → SMALL GROUP. Files already there are skipped.
+ * Run once; safe to run again.
+ */
+function importSmallGroupPrintFiles() {
+  const base = 'https://raw.githubusercontent.com/Karetuz12/Github/claude/hopeful-bohr-f21rsr/revontulikuvat/print/small-group/';
+  const targets = [
+    { dir: 'a4', folderId: '1XFNdakFz-GCRpJUwdXRBElA8520hC602', prefix: 'BL-A4-small-group-' },
+    { dir: 'cards', folderId: '12kqXkkBFsGkDAu0WxrtZPVPOAf9zZulF', prefix: 'BL-QR-small-group-' },
+  ];
+  let added = 0;
+  let skipped = 0;
+  targets.forEach(({ dir, folderId, prefix }) => {
+    const folder = DriveApp.getFolderById(folderId);
+    const names = [];
+    for (let n = 1; n <= 25; n++) names.push(prefix + String(n).padStart(2, '0') + '.pdf');
+    if (dir === 'a4') names.push('_KAIKKI-A4-small-group-toimistotulostus.pdf');
+    names.forEach((name) => {
+      if (folder.getFilesByName(name).hasNext()) {
+        skipped++;
+        return;
+      }
+      const res = UrlFetchApp.fetch(base + dir + '/' + encodeURIComponent(name), { muteHttpExceptions: true });
+      if (res.getResponseCode() !== 200) throw new Error('Could not download ' + name + ' (' + res.getResponseCode() + ')');
+      folder.createFile(res.getBlob().setName(name).setContentType('application/pdf'));
+      added++;
+    });
+  });
+  Logger.log('Small Group print files: ' + added + ' added, ' + skipped + ' already there.');
+}
+
 /** Opened in a browser, shows that the service is running. */
 function doGet() {
   return reply({ ok: true, service: 'northern-lights-photos' });
