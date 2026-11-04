@@ -79,21 +79,35 @@ export default async function Cards({
       </div>
 
       <div className="sheet">
-        {cards.map(({ group, url, svg }) => (
-          <article className="qr-card" key={group ?? 'general'}>
-            <div className="qr-card-top">
-              <Wordmark className="dark" />
-            </div>
-            <p className="qr-card-title">Your northern lights photos</p>
-            <p className={`qr-card-group${group?.startsWith('S') ? ' long' : ''}`}>
-              {group ? groupLabel(group).toUpperCase() : 'TOUR PHOTOS'}
-            </p>
+        {cards.map(({ group, url, svg }) => {
+          // Small Group cards look clearly different so they don't get mixed up with bus group cards
+          const smallNumber = group?.match(/^S(\d+)$/)?.[1];
+          return (
+          <article className={`qr-card${smallNumber ? ' small' : ''}`} key={group ?? 'general'}>
+            {smallNumber ? (
+              <>
+                <div className="small-band">
+                  <span className="small-band-label">SMALL GROUP</span>
+                  <span className="small-band-brand">Book Lapland · Northern lights photos</span>
+                </div>
+                <p className="small-number">{smallNumber}</p>
+              </>
+            ) : (
+              <>
+                <div className="qr-card-top">
+                  <Wordmark className="dark" />
+                </div>
+                <p className="qr-card-title">Your northern lights photos</p>
+                <p className="qr-card-group">{group ? groupLabel(group).toUpperCase() : 'TOUR PHOTOS'}</p>
+              </>
+            )}
             <div className="qr" dangerouslySetInnerHTML={{ __html: svg }} />
             <p className="qr-card-cta">Scan &amp; leave your email</p>
             <p className="qr-card-sub">We&apos;ll send you the photos from tonight&apos;s tour.</p>
             <p className="qr-card-url">{url.replace(/^https?:\/\//, '')}</p>
           </article>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

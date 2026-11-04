@@ -40,7 +40,21 @@
 .qr-card .wordmark { font-size: 11pt; }
 .qr-card-title { margin: 4mm 0 0; font-size: 11pt; font-weight: 600; color: #4a5b70; }
 .qr-card-group { margin: 1mm 0 4mm; font-size: 26pt; font-weight: 800; letter-spacing: .02em; }
-.qr-card-group.long { font-size: 21pt; white-space: nowrap; }
+
+/* Small Group cards: violet frame, big "SMALL GROUP" band and a large number */
+.qr-card.small { border: 3mm solid #5a3fd8; padding: 0 8mm 6mm; }
+.qr-card.small:nth-child(2n) { border-right: 3mm solid #5a3fd8; }
+.qr-card.small::before { display: none; }
+.small-band {
+  align-self: stretch; margin: 0 -8mm; padding: 5mm 0 4mm;
+  display: flex; flex-direction: column; align-items: center; gap: 1.5mm;
+  background: linear-gradient(90deg, #4a2fc4, #8c7bff); color: #fff;
+}
+.small-band-label { font-size: 30pt; font-weight: 800; letter-spacing: .06em; line-height: 1; }
+.small-band-brand { font-size: 8.5pt; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; opacity: .9; }
+.small-number { margin: 3mm 0 2mm; font-size: 56pt; font-weight: 800; line-height: 1; color: #4a2fc4; }
+.qr-card.small .qr { width: 56mm; height: 56mm; }
+.qr-card.small .qr-card-cta { margin-top: 4mm; }
 .toolbar a { color: var(--bl-brand); }
 .qr { width: 62mm; height: 62mm; }
 .qr svg { width: 100%; height: 100%; display: block; }

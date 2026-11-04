@@ -33,7 +33,7 @@ export default function GuideForm() {
     e.preventDefault();
     const code = groupCode(type, number);
     const cleanGuide = normalizeText(guide, 40);
-    const cleanCamera = normalizeText(camera, 20);
+    const cleanCamera = /^\d{1,3}$/.test(camera.trim()) ? camera.trim() : null;
     if (!code) return setError('group');
     if (!cleanGuide) return setError('guide');
     if (!cleanCamera) return setError('camera');
@@ -147,16 +147,17 @@ export default function GuideForm() {
               </div>
 
               <div className="field">
-                <label htmlFor="camera">Camera</label>
+                <label htmlFor="camera">Camera number</label>
                 <input
                   id="camera"
+                  inputMode="numeric"
                   autoComplete="off"
-                  maxLength={20}
+                  maxLength={3}
                   value={camera}
                   onChange={(e) => setCamera(e.target.value)}
                   aria-invalid={error === 'camera'}
                 />
-                {error === 'camera' && <p className="help error">Enter the camera number or name.</p>}
+                {error === 'camera' && <p className="help error">Enter the camera number (e.g. 3).</p>}
               </div>
 
               {error === 'server' && <p className="error form-error">Could not save. Please try again in a moment.</p>}

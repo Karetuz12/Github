@@ -13,7 +13,7 @@ export async function POST(req: Request) {
 
   const group = groupCode(body.type === 'small' ? 'small' : 'bus', body.number);
   const guide = normalizeText(body.guide, 40);
-  const camera = normalizeText(body.camera, 20);
+  const camera = typeof body.camera === 'string' && /^\d{1,3}$/.test(body.camera.trim()) ? body.camera.trim() : null;
   if (!group || !guide || !camera) {
     return NextResponse.json({ ok: false, error: !group ? 'group' : !guide ? 'guide' : 'camera' }, { status: 400 });
   }
