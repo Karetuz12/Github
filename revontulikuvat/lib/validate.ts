@@ -62,3 +62,26 @@ export function suggestEmail(input: string): string | null {
   const limit = domain.length >= 8 ? 2 : 1;
   return best && bestDistance <= limit ? email.slice(0, at + 1) + best : null;
 }
+
+export type TourType = 'bus' | 'small';
+
+/** Bus groups keep their plain number (7); small groups are stored as S7. */
+export function groupCode(type: TourType, number: unknown): string | null {
+  const n = typeof number === 'number' ? String(number) : typeof number === 'string' ? number.trim() : '';
+  if (!/^\d{1,3}$/.test(n) || Number(n) < 1) return null;
+  return type === 'small' ? `S${Number(n)}` : String(Number(n));
+}
+
+/** "S7" → "Small Group 7", "7" → "Group 7". */
+export function groupLabel(code: string): string {
+  const small = /^S(\d+)$/.exec(code);
+  return small ? `Small Group ${small[1]}` : `Group ${code}`;
+}
+
+/** Guide name or camera: trimmed text, or null if empty, too long or looking like a formula. */
+export function normalizeText(input: unknown, maxLength: number): string | null {
+  if (typeof input !== 'string') return null;
+  const text = input.trim().replace(/\s+/g, ' ');
+  if (!text || text.length > maxLength || /^[=+\-@]/.test(text)) return null;
+  return text;
+}

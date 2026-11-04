@@ -19,8 +19,12 @@ Guide's QR card ◄── photos.booklapland.fi/cards (printable A4)            
   - Typo check: `anna@gmial.com` → "Did you mean anna@gmail.com?"
   - Confirmation screen with "Add another email" (for family members).
   - Privacy note: the email is deleted within 30 days, which the nightly clean-up takes care of.
-- **QR cards** `/cards`: groups 1–20 plus a general card, four per A4 page, with a Print button.
-  - Other groups: `/cards?from=21&to=40`, or named groups `/cards?groups=A1,A2,B1`.
+- **QR cards** `/cards`: Bus Groups 1–20 plus a general card, four per A4 page, with a Print button.
+  - **Small Groups 1–25**: `/cards?type=small`. Their cards say "SMALL GROUP 7" and point to `/S7`.
+  - Other ranges: `/cards?from=21&to=40`, `/cards?type=small&from=26&to=30`, or named groups `/cards?groups=A1,A2`.
+- **Guide page** `/guide`: before the tour the guide picks **Bus Group / Small Group**, types the **group number**,
+  **their name** and **camera**, and taps Save. The phone remembers the name and camera for next time. Share the
+  address with the guides only (e.g. save it to their home screen); it is not linked from the customer pages.
 - **Spam protection**: a hidden field that only bots fill in. The Google Sheet only accepts writes with the secret.
 
 ## Setup (once, about 20 minutes)
@@ -86,6 +90,21 @@ addresses, and customers can't get past it. A custom domain skips that protectio
    Use BCC so customers don't see each other's addresses.
 
 Share the spreadsheet with the colleagues who send the photos (Share button).
+
+## Guides, cameras and Small Groups in the spreadsheet
+
+- **Guides** sheet: every save on the guide page (time, group, guide, camera).
+- **Morning** sheet columns: **Group** (bus groups as `7`, Small Groups as `S7`) · **Guide** · **Camera** ·
+  **Emails** · **Email addresses**. Guide and camera come from the Guides sheet for the same night and group.
+  If two guides logged the same group, both are shown.
+- The morning reminder email lists the same per group, e.g. "Small Group 2 – Anna – camera 7 – 8 emails".
+
+**Turning this on in the spreadsheet that is already in use** (new installs get it from `setup`):
+
+1. Spreadsheet → **Extensions → Apps Script** → replace all the code with the latest `apps-script/backend.gs` → save.
+2. Run **addGuideColumns** once. It adds the Guides sheet and the Guide and Camera columns to Morning.
+3. **Deploy → Manage deployments → edit (pencil) → Version: New version → Deploy.** This one is needed this time,
+   because the web app now also receives the guide page's saves. The URL stays the same.
 
 ## Morning reminder email
 

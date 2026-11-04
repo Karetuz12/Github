@@ -40,6 +40,8 @@
 .qr-card .wordmark { font-size: 11pt; }
 .qr-card-title { margin: 4mm 0 0; font-size: 11pt; font-weight: 600; color: #4a5b70; }
 .qr-card-group { margin: 1mm 0 4mm; font-size: 26pt; font-weight: 800; letter-spacing: .02em; }
+.qr-card-group.long { font-size: 21pt; white-space: nowrap; }
+.toolbar a { color: var(--bl-brand); }
 .qr { width: 62mm; height: 62mm; }
 .qr svg { width: 100%; height: 100%; display: block; }
 .qr-card-cta { margin: 5mm 0 1mm; font-size: 13pt; font-weight: 700; }

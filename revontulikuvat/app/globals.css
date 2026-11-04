@@ -171,3 +171,16 @@ h1 { margin: 0 0 10px; font-size: clamp(26px, 7.5vw, 32px); line-height: 1.15; f
 .foot { font-size: 12.5px; line-height: 1.5; color: var(--bl-muted); text-align: center; padding: 0 8px; }
 .foot p { margin: 0; }
 .foot a { color: var(--bl-text); }
+
+/* ---------- guide page ---------- */
+.field .label { display: block; margin-bottom: 8px; font-size: 14px; font-weight: 600; }
+.segmented {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px;
+  background: var(--bl-field); border: 1px solid var(--bl-line); border-radius: 14px;
+}
+.segmented button {
+  height: 48px; border: 0; border-radius: 10px; cursor: pointer;
+  background: transparent; color: var(--bl-muted); font-size: 16px; font-weight: 600;
+}
+.segmented button.active { background: var(--bl-brand); color: #fff; }
+.segmented button:focus-visible { outline: 3px solid var(--bl-aurora); outline-offset: 2px; }

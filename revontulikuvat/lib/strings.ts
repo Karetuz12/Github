@@ -3,7 +3,6 @@ export const STRINGS = {
   tour: 'Northern Lights Tour',
   title: 'Get your northern lights photos',
   lead: "Leave your email and we'll send you the photos from tonight's tour.",
-  group: 'Group',
   groupInput: 'Group number',
   groupHelp: "Ask your guide if you're not sure.",
   email: 'Email address',

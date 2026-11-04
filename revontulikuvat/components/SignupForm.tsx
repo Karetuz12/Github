@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { BRAND } from '@/lib/brand';
 import { STRINGS as t, fill } from '@/lib/strings';
-import { normalizeEmail, normalizeGroup, suggestEmail } from '@/lib/validate';
+import { groupLabel, normalizeEmail, normalizeGroup, suggestEmail } from '@/lib/validate';
 import Wordmark from './Wordmark';
 
 type Status = 'idle' | 'sending' | 'done';
@@ -92,7 +92,7 @@ export default function SignupForm({ group: fixedGroup }: { group: string | null
             <form onSubmit={submit} noValidate>
               {fixedGroup ? (
                 <p className="group-chip">
-                  {t.group} <strong>{fixedGroup}</strong>
+                  {groupLabel(fixedGroup).replace(/ \S+$/, '')} <strong>{fixedGroup.replace(/^S(?=\d)/, '')}</strong>
                 </p>
               ) : (
                 <div className="field">

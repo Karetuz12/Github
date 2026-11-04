@@ -2,7 +2,8 @@
  * Book Lapland – Northern lights photos: Google Sheets backend
  *
  * The website (Vercel) sends every sign-up here. The script stores it on the
- * Responses sheet, and the Morning sheet lists last night's emails by group.
+ * Responses sheet, guides log their group and camera on the Guides sheet, and
+ * the Morning sheet lists last night's emails, guide and camera by group.
  * Every morning a reminder email links to the Morning sheet, and rows older
  * than 30 days are deleted every night.
  *
@@ -42,6 +43,7 @@ function setup() {
   responses.getRange('A2:A').setNumberFormat('ddd d mmm yyyy HH:mm');
   responses.setColumnWidth(1, 170);
   responses.setColumnWidth(3, 280);
+  ensureGuidesSheet(spreadsheet);
 
   buildMorningSheet(spreadsheet);
   spreadsheet.setActiveSheet(morning);
@@ -61,12 +63,13 @@ function showSecret() {
   Logger.log(PropertiesService.getScriptProperties().getProperty('SECRET'));
 }
 
-/** Sign-ups from the website arrive here. */
+/** Sign-ups and guide logs from the website arrive here. */
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
     const props = PropertiesService.getScriptProperties();
     if (!data || data.secret !== props.getProperty('SECRET')) return reply({ ok: false, error: 'forbidden' });
+    if (data.kind === 'guide') return logGuide(data, props);
 
     const email = String(data.email || '').trim().toLowerCase();
     const group = String(data.group || '').trim().toUpperCase();
@@ -92,19 +95,74 @@ function doPost(e) {
   }
 }
 
+/** A guide's group, name and camera for tonight, from the /guide page. */
+function logGuide(data, props) {
+  const group = String(data.group || '').trim().toUpperCase();
+  // Same checks as the website; a leading = + - @ would be read as a formula
+  const text = (value, max) => {
+    const t = String(value || '').trim().replace(/\s+/g, ' ');
+    return t && t.length <= max && !/^[=+\-@]/.test(t) ? t : null;
+  };
+  const guide = text(data.guide, 40);
+  const camera = text(data.camera, 20);
+  if (!/^S?\d{1,3}$/.test(group)) return reply({ ok: false, error: 'group' });
+  if (!guide) return reply({ ok: false, error: 'guide' });
+  if (!camera) return reply({ ok: false, error: 'camera' });
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(15000);
+  try {
+    const guides = ensureGuidesSheet(SpreadsheetApp.openById(props.getProperty('SHEET_ID')));
+    guides.appendRow([new Date(), /^\d+$/.test(group) ? Number(group) : group, guide, camera]);
+  } finally {
+    lock.releaseLock();
+  }
+  return reply({ ok: true });
+}
+
+function ensureGuidesSheet(spreadsheet) {
+  let guides = spreadsheet.getSheetByName('Guides');
+  if (!guides) {
+    guides = spreadsheet.insertSheet('Guides');
+    guides.getRange('A1:D1').setValues([['Time', 'Group', 'Guide', 'Camera']]).setFontWeight('bold');
+    guides.setFrozenRows(1);
+    guides.getRange('A2:A').setNumberFormat('ddd d mmm yyyy HH:mm');
+    guides.getRange('D2:D').setNumberFormat('@'); // camera as plain text, so "03" stays "03"
+    guides.setColumnWidth(1, 170);
+    guides.setColumnWidth(3, 200);
+  }
+  return guides;
+}
+
+/**
+ * Adds the Guides sheet and the Guide and Camera columns to an existing Morning sheet.
+ * Run once in spreadsheets set up before guides could log their camera. Safe to run again.
+ */
+function addGuideColumns() {
+  const spreadsheet = SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('SHEET_ID'));
+  ensureGuidesSheet(spreadsheet);
+  buildMorningSheet(spreadsheet);
+  Logger.log('Done: Guides sheet and Guide/Camera columns are in place.');
+}
+
 /** Opened in a browser, shows that the service is running. */
 function doGet() {
   return reply({ ok: true, service: 'northern-lights-photos' });
 }
 
-/** Deletes rows older than retentionDays. Runs every night. */
+/** Deletes rows older than retentionDays from Responses and Guides. Runs every night. */
 function deleteOldRows() {
+  const spreadsheet = SpreadsheetApp.openById(PropertiesService.getScriptProperties().getProperty('SHEET_ID'));
+  ['Responses', 'Guides'].forEach((name) => {
+    const sheet = spreadsheet.getSheetByName(name);
+    if (sheet) deleteOldRowsIn(sheet);
+  });
+}
+
+function deleteOldRowsIn(responses) {
   const cutoff = new Date(Date.now() - SETTINGS.retentionDays * 24 * 3600 * 1000);
   const isOld = (value) => value instanceof Date && value < cutoff;
 
-  const responses = SpreadsheetApp
-    .openById(PropertiesService.getScriptProperties().getProperty('SHEET_ID'))
-    .getSheetByName('Responses');
   const lastRow = responses.getLastRow();
   if (lastRow < 2) return;
   // Always keep an empty row, because a sheet cannot lose all its rows
@@ -174,9 +232,33 @@ function sendReminder(sendWhenEmpty) {
     groups[key] = groups[key] || {};
     groups[key][String(email).trim().toLowerCase()] = true;
   });
+  // Guide and camera per group, logged on the /guide page
+  const crew = {};
+  const guides = spreadsheet.getSheetByName('Guides');
+  const guideRows = !guides || guides.getLastRow() < 2 ? [] : guides.getRange(2, 1, guides.getLastRow() - 1, 4).getValues();
+  guideRows.forEach(([time, group, guide, camera]) => {
+    if (!(time instanceof Date)) return;
+    if (Utilities.formatDate(new Date(time.getTime() - shift), tz, 'yyyy-MM-dd') !== lastNight) return;
+    // Arrays keep the order the guides logged in
+    const entry = (crew[String(group)] = crew[String(group)] || { guides: [], cameras: [] });
+    if (guide && !entry.guides.includes(guide)) entry.guides.push(guide);
+    if (camera !== '' && !entry.cameras.includes(String(camera))) entry.cameras.push(String(camera));
+  });
+
+  // Bus groups 1, 2, 10 first, then small groups S1, S2, S10
+  const order = (code) => [/^S/.test(code) ? 1 : 0, Number(code.replace(/\D/g, '')) || 0, code];
   const list = Object.keys(groups)
-    .sort((a, b) => (isNaN(a) || isNaN(b) ? a.localeCompare(b) : Number(a) - Number(b)))
-    .map((group) => ({ group, count: Object.keys(groups[group]).length }));
+    .sort((a, b) => {
+      const x = order(a), y = order(b);
+      return x[0] - y[0] || x[1] - y[1] || x[2].localeCompare(y[2]);
+    })
+    .map((group) => ({
+      group,
+      name: groupName(group),
+      count: Object.keys(groups[group]).length,
+      guide: crew[group] ? crew[group].guides.join(', ') : '',
+      camera: crew[group] ? crew[group].cameras.join(', ') : '',
+    }));
   const total = list.reduce((sum, g) => sum + g.count, 0);
   if (!total && !sendWhenEmpty) return;
 
@@ -186,9 +268,15 @@ function sendReminder(sendWhenEmpty) {
     ? `Northern lights photos to send – ${total} email${total === 1 ? '' : 's'} from ${nightText}`
     : `Northern lights photos – no sign-ups on ${nightText}`;
 
-  const rowsHtml = list.map((g) =>
-    `<tr><td style="padding:6px 16px 6px 0">Group ${escapeHtml(g.group)}</td>` +
-    `<td style="padding:6px 0;text-align:right">${g.count} email${g.count === 1 ? '' : 's'}</td></tr>`).join('');
+  const cell = 'padding:6px 16px 6px 0;border-bottom:1px solid #e2e8f2';
+  const rowsHtml =
+    `<tr style="font-size:12px;color:#5d7189;text-align:left"><th style="${cell}">Group</th><th style="${cell}">Guide</th>` +
+    `<th style="${cell}">Camera</th><th style="${cell};text-align:right">Emails</th></tr>` +
+    list.map((g) =>
+      `<tr><td style="${cell}"><b>${escapeHtml(g.name)}</b></td>` +
+      `<td style="${cell}">${escapeHtml(g.guide || '–')}</td>` +
+      `<td style="${cell}">${escapeHtml(g.camera || '–')}</td>` +
+      `<td style="${cell};text-align:right">${g.count}</td></tr>`).join('');
   const htmlBody = `
 <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#17293f;max-width:560px">
   <p style="margin:0 0 4px;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#0b7a54"><b>Book Lapland · Northern lights photos</b></p>
@@ -208,12 +296,19 @@ function sendReminder(sendWhenEmpty) {
 </div>`;
   const body = (total
       ? `Last night's tours (${nightText}) collected ${total} email(s):\n` +
-        list.map((g) => `- Group ${g.group}: ${g.count}`).join('\n')
+        list.map((g) => `- ${g.name}: ${g.count}` +
+          (g.guide || g.camera ? ` (guide ${g.guide || '–'}, camera ${g.camera || '–'})` : '')).join('\n')
       : `No sign-ups on ${nightText}.`) +
     `\n\nOpen the Morning sheet: ${link}\n\n` +
     'Copy each group\'s email addresses into the BCC field and send the link to the group\'s photos.';
 
   MailApp.sendEmail({ to: SETTINGS.reminderTo, subject, body, htmlBody, name: 'Book Lapland Photos' });
+}
+
+/** "S7" → "Small Group 7", "7" → "Bus Group 7". */
+function groupName(code) {
+  const small = /^S(\d+)$/.exec(code);
+  return small ? 'Small Group ' + small[1] : 'Bus Group ' + code;
 }
 
 function escapeHtml(text) {
@@ -239,6 +334,8 @@ function buildMorningSheet(spreadsheet) {
   const group = 'Responses!$B$2:$B';
   const email = 'Responses!$C$2:$C';
   const onDay = `${time}<>"",INT(${time}-${SETTINGS.dayStartsAtHour}/24)=$B$2`;
+  const guideTime = 'Guides!$A$2:$A';
+  const guideOnDay = `${guideTime}<>"",INT(${guideTime}-${SETTINGS.dayStartsAtHour}/24)=$B$2`;
 
   s.getRange('A1:A3').setValues([
     ['Pick a date (empty = last night):'],
@@ -253,27 +350,37 @@ function buildMorningSheet(spreadsheet) {
   s.getRange('A3').setFormula(
     `="Emails in total: "&IFERROR(ROWS(FILTER(${email},${onDay})),0)`);
 
-  s.getRange('A5:C5')
-    .setValues([['Group', 'Emails', 'Email addresses – paste into the BCC field']])
+  s.getRange('A5:E5')
+    .setValues([['Group (S = Small Group)', 'Guide', 'Camera', 'Emails', 'Email addresses – paste into the BCC field']])
     .setFontWeight('bold')
     .setBackground('#e8eef7');
-  s.getRange('A6').setFormula(`=IFERROR(SORT(UNIQUE(FILTER(${group},${onDay}))),"")`);
+  // Bus groups 1, 2, 10 first, then small groups S1, S2, S10
+  s.getRange('A6').setFormula(
+    `=IFERROR(ARRAYFORMULA(LET(g,UNIQUE(FILTER(${group},${onDay})),` +
+    `SORT(g,ISTEXT(g),TRUE,IFERROR(VALUE(REGEXREPLACE(g&"","[^0-9]","")),0),TRUE,g&"",TRUE))),"")`);
 
   const formulas = [];
   for (let r = 6; r < 6 + SETTINGS.morningRows; r++) {
     const addresses = `UNIQUE(LOWER(TRIM(FILTER(${email},${onDay},${group}=$A${r}))))`;
+    const fromGuides = (col) =>
+      `=IF($A${r}="","",IFERROR(TEXTJOIN(", ",TRUE,UNIQUE(FILTER(Guides!$${col}$2:$${col},${guideOnDay},Guides!$B$2:$B=$A${r}))),""))`;
     formulas.push([
+      fromGuides('C'),
+      fromGuides('D'),
       `=IF($A${r}="","",ARRAYFORMULA(COUNTA(${addresses})))`,
       `=IF($A${r}="","",ARRAYFORMULA(TEXTJOIN(", ",TRUE,${addresses})))`,
     ]);
   }
-  s.getRange(6, 2, SETTINGS.morningRows, 2).setFormulas(formulas).setVerticalAlignment('top');
+  s.getRange(6, 2, SETTINGS.morningRows, 4).setFormulas(formulas).setVerticalAlignment('top');
   s.getRange('A6:A').setHorizontalAlignment('left').setVerticalAlignment('top');
-  s.getRange('C6:C').setWrap(true);
+  s.getRange('C6:C').setWrap(false);
+  s.getRange('E6:E').setWrap(true);
 
   s.setColumnWidth(1, 220);
-  s.setColumnWidth(2, 110);
-  s.setColumnWidth(3, 560);
+  s.setColumnWidth(2, 150);
+  s.setColumnWidth(3, 90);
+  s.setColumnWidth(4, 80);
+  s.setColumnWidth(5, 560);
   s.setFrozenRows(5);
 }
 
